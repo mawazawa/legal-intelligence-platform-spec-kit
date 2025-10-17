@@ -1,6 +1,5 @@
 import path from 'node:path';
 import { parseAllEmails, EmailEvent } from '@/lib/ingestion/email-parser';
-import { getNeo4jClient } from '@/lib/neo4j';
 
 export interface Citation {
   id: string;
@@ -50,6 +49,7 @@ export async function buildCitations() {
   // Neo4j graph (best-effort)
   const graphCitations: Citation[] = [];
   try {
+    const { getNeo4jClient } = await import('@/lib/neo4j');
     const neo = getNeo4jClient();
     await neo.connect();
     const events = await neo.getEvents();
@@ -70,4 +70,3 @@ export async function buildCitations() {
 
   return { emailCitations, graphCitations };
 }
-
