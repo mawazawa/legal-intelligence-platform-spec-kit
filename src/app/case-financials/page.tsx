@@ -99,19 +99,19 @@ export default async function Page() {
 
   return (
     <DashboardLayout>
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6 mx-auto max-w-6xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Case Financials — Calculator Breakdown</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Case Financials — Calculator Breakdown</h1>
         <Badge variant="secondary">Auto‑loaded from case‑financials/results</Badge>
       </div>
 
       {fromPot.respondent && (
-        <div className="rounded-lg bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+        <div className="rounded-lg bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 soft-shadow p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <div className="text-sm text-slate-600">Final (From‑the‑Pot Variant)</div>
-            <div className="text-2xl font-semibold">Respondent {toCurrency(fromPot.respondent)} · Petitioner {toCurrency(fromPot.petitioner)}</div>
+            <div className="text-2xl font-semibold tracking-tight">Respondent {toCurrency(fromPot.respondent)} · Petitioner {toCurrency(fromPot.petitioner)}</div>
           </div>
-          <div className="text-sm text-slate-600">Total after Form 593 removal: <span className="font-medium">{toCurrency(fromPot.total)}</span></div>
+          <div className="text-sm text-slate-600">Total after Form 593 removal: <span className="font-medium tracking-tight">{toCurrency(fromPot.total)}</span></div>
         </div>
       )}
 
