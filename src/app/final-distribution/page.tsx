@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { 
@@ -119,6 +119,30 @@ const FinalDistributionSSOT: React.FC = () => {
   const [petTypedName, setPetTypedName] = useState('');
   const [respSignedAt, setRespSignedAt] = useState<string | null>(null);
   const [petSignedAt, setPetSignedAt] = useState<string | null>(null);
+
+  // Petitioner documents (RFO + Attorney Declaration)
+  const [petitionerRFO, setPetitionerRFO] = useState<string>('');
+  const [petitionerDecl, setPetitionerDecl] = useState<string>('');
+  useEffect(() => {
+    fetch('/api/case-financials/source?file=petitioner_rfo')
+      .then(r=>r.ok? r.json(): null)
+      .then(d=> setPetitionerRFO(d?.text || ''))
+      .catch(()=> setPetitionerRFO(''))
+    fetch('/api/case-financials/source?file=petitioner_declaration')
+      .then(r=>r.ok? r.json(): null)
+      .then(d=> setPetitionerDecl(d?.text || ''))
+      .catch(()=> setPetitionerDecl(''))
+  }, [])
+
+  const rfoAttachment7Excerpt = useMemo(() => {
+    if (!petitionerRFO) return ''
+    const lower = petitionerRFO.toLowerCase()
+    const marker = 'attachment 7'
+    const i = lower.indexOf(marker)
+    if (i === -1) return petitionerRFO.slice(0, 1500)
+    const start = Math.max(0, i - 800)
+    return petitionerRFO.slice(start, i + 1600)
+  }, [petitionerRFO])
 
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -821,13 +845,45 @@ const FinalDistributionSSOT: React.FC = () => {
     </div>
   );
 
-  // Declarations Content Renderer (placeholder)
+  // Declarations Content Renderer
   const renderDeclarationsContent = () => (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">Court Declarations</h2>
-          <p className="text-slate-600">This tab will show the court declarations and supporting documents.</p>
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Petitioner Declarations (Attorney + Attachment 7) */}
+        <div className="bg-white rounded-lg shadow-lg p-6 border border-red-200">
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold text-red-800">Petitioner’s RFO — Declarations</h2>
+            <p className="text-slate-600 text-sm">Attorney declaration and Attachment 7 excerpt, rendered inline.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <div className="text-sm font-semibold text-red-700 mb-2">Attachment 7 — Excerpt</div>
+              <div className="bg-red-50 border border-red-200 rounded p-3 max-h-80 overflow-auto">
+                <pre className="whitespace-pre-wrap text-xs leading-relaxed text-slate-800">{rfoAttachment7Excerpt || 'RFO not ingested yet.'}</pre>
+              </div>
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-red-700 mb-2">Declaration of Selam Gezahegn — Excerpt</div>
+              <div className="bg-red-50 border border-red-200 rounded p-3 max-h-80 overflow-auto">
+                <pre className="whitespace-pre-wrap text-xs leading-relaxed text-slate-800">{petitionerDecl ? petitionerDecl.slice(0, 2000) : 'Attorney declaration not ingested yet.'}</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Calculation context below declarations for immediate comparison */}
+        <div className="bg-white rounded-lg shadow-lg p-6 border border-slate-200">
+          <h3 className="text-lg font-bold text-slate-800 mb-2">Final Distribution Summary (For Context)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 p-4 text-center">
+              <div className="text-xs text-slate-700 mb-1">Rosanna Alvero</div>
+              <div className="text-2xl font-black text-slate-900">${calculationResult?.summary?.rosannaFinalDistribution?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}</div>
+            </div>
+            <div className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 p-4 text-center">
+              <div className="text-xs text-slate-700 mb-1">Mathieu Wauters</div>
+              <div className="text-2xl font-black text-slate-900">${calculationResult?.summary?.mathieuFinalDistribution?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
