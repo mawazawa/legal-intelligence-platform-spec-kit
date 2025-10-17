@@ -111,7 +111,7 @@ Respondent, in pro per`;
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Responsive Declaration (FL-320)</h1>
           <p className="text-slate-600">Court-ready responsive declaration with Tom Rotert's points and authorities</p>
-        </div>
+          </div>
 
         {/* Action Buttons */}
         <div className="mb-6 flex gap-4">
@@ -146,7 +146,7 @@ Respondent, in pro per`;
               <div>
                 <div className="text-sm font-bold text-slate-900">
                   MATHIEU WAUTERS,
-                </div>
+                    </div>
                 <div className="text-sm text-slate-700 ml-4">
                   Petitioner,
                 </div>
@@ -207,7 +207,7 @@ Respondent, in pro per`;
                       <Badge variant="outline" className="text-xs">Statement of Decision</Badge>
                       <Badge variant="outline" className="text-xs">Closing Statement</Badge>
                     </div>
-                  </div>
+              </div>
 
                   {/* Point 2 */}
                   <div className="border-l-4 border-blue-200 pl-4">
@@ -219,8 +219,8 @@ Respondent, in pro per`;
                       <Badge variant="outline" className="text-xs">Watts v. Watts</Badge>
                       <Badge variant="outline" className="text-xs">Statement of Decision</Badge>
                       <Badge variant="outline" className="text-xs">Court Order</Badge>
-                    </div>
-                  </div>
+              </div>
+            </div>
 
                   {/* Point 3 */}
                   <div className="border-l-4 border-blue-200 pl-4">
@@ -232,8 +232,8 @@ Respondent, in pro per`;
                       <Badge variant="outline" className="text-xs">Form 593</Badge>
                       <Badge variant="outline" className="text-xs">Closing Statement</Badge>
                       <Badge variant="outline" className="text-xs">Equal Treatment</Badge>
-                    </div>
-                  </div>
+              </div>
+            </div>
 
                   {/* Point 4 */}
                   <div className="border-l-4 border-blue-200 pl-4">
@@ -250,7 +250,7 @@ Respondent, in pro per`;
                 </div>
               </CardContent>
             </Card>
-          </div>
+              </div>
 
           {/* Footer */}
           <div className="mt-16 pt-8 border-t border-slate-300 text-center text-xs text-slate-500">
