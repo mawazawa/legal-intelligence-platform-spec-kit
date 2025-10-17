@@ -14,7 +14,8 @@ import {
   X,
   Home,
   FolderOpen,
-  Scale
+  Scale,
+  FileCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -27,7 +28,9 @@ interface NavItem {
 
 const navigation: NavItem[] = [
   { name: 'Dashboard', href: '/', icon: <LayoutDashboard className="h-5 w-5" /> },
-  { name: 'Final Distribution', href: '/final-distribution', icon: <Scale className="h-5 w-5" />, badge: 'NEW' },
+  { name: 'RFO Opposition Filing', href: '/rfo-opposition', icon: <FileCheck className="h-5 w-5" />, badge: 'NEW' },
+  { name: 'Final Distribution', href: '/final-distribution', icon: <Scale className="h-5 w-5" /> },
+  { name: 'FL-320 Checklist', href: '/fl320-checklist', icon: <FileText className="h-5 w-5" /> },
   { name: 'Housing Costs', href: '/housing-costs', icon: <Calculator className="h-5 w-5" /> },
   { name: 'Tax Withholding', href: '/tax-withholding', icon: <Receipt className="h-5 w-5" /> },
   { name: 'Case Financials', href: '/case-financials', icon: <FileText className="h-5 w-5" /> },

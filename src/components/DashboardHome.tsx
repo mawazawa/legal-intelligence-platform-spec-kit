@@ -17,7 +17,9 @@ import {
   DollarSign,
   Users,
   Clock,
-  BarChart3
+  BarChart3,
+  FileCheck,
+  Scale
 } from 'lucide-react';
 
 export function DashboardHome() {
@@ -54,20 +56,27 @@ export function DashboardHome() {
 
   const quickActions = [
     {
-      title: 'Housing Cost Calculator',
-      description: 'Interactive mortgage allocation breakdown with legal justifications',
-      href: '/housing-costs',
-      icon: <Calculator className="h-8 w-8" />,
+      title: 'RFO Opposition Filing',
+      description: 'Step-by-step guide to file your FL-320 response in plain English',
+      href: '/rfo-opposition',
+      icon: <FileCheck className="h-8 w-8" />,
+      color: 'from-red-500 to-rose-600',
+      badge: 'NEW'
+    },
+    {
+      title: 'Final Distribution Calculation',
+      description: 'Court-ready property division calculation with Statement of Decision',
+      href: '/final-distribution',
+      icon: <Scale className="h-8 w-8" />,
       color: 'from-blue-500 to-indigo-600',
-      badge: 'Most Used'
+      badge: 'Featured'
     },
     {
       title: 'Tax Withholding Analysis',
       description: 'Form 593 failure impact and FTB withholding breakdown',
       href: '/tax-withholding',
       icon: <Receipt className="h-8 w-8" />,
-      color: 'from-purple-500 to-pink-600',
-      badge: 'NEW'
+      color: 'from-purple-500 to-pink-600'
     },
     {
       title: 'Case Financials',
@@ -75,13 +84,6 @@ export function DashboardHome() {
       href: '/case-financials',
       icon: <FileText className="h-8 w-8" />,
       color: 'from-emerald-500 to-teal-600'
-    },
-    {
-      title: 'Intelligence Scorecards',
-      description: 'Network analysis and participant leverage scores',
-      href: '/scorecards',
-      icon: <BarChart3 className="h-8 w-8" />,
-      color: 'from-orange-500 to-red-600'
     }
   ];
 

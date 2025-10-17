@@ -1,29 +1,23 @@
 "use client";
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useMemo, useRef } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+// Removed PDF generation dependencies - using browser print-to-PDF instead
 import {
   FileText,
-  Download,
   Printer,
   CheckCircle2,
   Circle,
   Scale as ScaleIcon,
-  Calendar,
   FolderOpen,
   FileCheck,
-  AlertTriangle,
   Clock,
   User,
-  Mail,
-  Phone,
-  MapPin
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 interface ChecklistItem {
@@ -233,8 +227,7 @@ const FL320_CHECKLIST: ChecklistItem[] = [
 ];
 
 const FL320ChecklistPage: React.FC = () => {
-  const pdfRef = useRef<HTMLDivElement>(null);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
   const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>(FL320_CHECKLIST);
   const [markdownContent, setMarkdownContent] = useState(FL320_CHECKLIST_TEMPLATE);
   const [isEditing, setIsEditing] = useState(false);
@@ -290,46 +283,6 @@ const FL320ChecklistPage: React.FC = () => {
       const newLine = isChecked ? line.replace('- [ ]', '- [x]') : line.replace('- [x]', '- [ ]');
       lines[lineIndex] = newLine;
       setMarkdownContent(lines.join('\n'));
-    }
-  };
-
-  const generatePDF = async () => {
-    if (!pdfRef.current) return;
-    
-    setIsGeneratingPDF(true);
-    try {
-      const canvas = await html2canvas(pdfRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff'
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      
-      let position = 0;
-      
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      
-      pdf.save('FL-320-Court-Packet-Checklist.pdf');
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-    } finally {
-      setIsGeneratingPDF(false);
     }
   };
 
@@ -440,32 +393,20 @@ const FL320ChecklistPage: React.FC = () => {
       `}</style>
 
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-        {/* Export/Print Controls */}
-        <div className="fixed top-4 right-4 z-50 flex gap-2 no-print">
-          <Button
-            onClick={generatePDF}
-            disabled={isGeneratingPDF}
-            className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-            size="sm"
-          >
-            {isGeneratingPDF ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
-            ) : (
-              <Download className="h-4 w-4" />
-            )}
-          </Button>
-
+        {/* Print Control */}
+        <div className="fixed top-4 right-4 z-50 no-print">
           <Button
             onClick={printChecklist}
             className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
             size="sm"
           >
-            <Printer className="h-4 w-4" />
+            <Printer className="h-4 w-4 mr-2" />
+            Print / Save as PDF
           </Button>
         </div>
 
         {/* Court-Ready Document Layout */}
-        <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-5xl rounded-lg" ref={pdfRef}>
+        <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-5xl rounded-lg" ref={printRef}>
           {/* Sophisticated Page Edge Shading */}
           <div className="relative">
             {/* Top Edge Shading */}
@@ -587,11 +528,11 @@ const FL320ChecklistPage: React.FC = () => {
                     <Label htmlFor="markdown-content" className="text-sm font-semibold text-slate-700">
                       Edit Checklist (Markdown Format)
                     </Label>
-                    <Textarea
+                    <textarea
                       id="markdown-content"
                       value={markdownContent}
                       onChange={(e) => setMarkdownContent(e.target.value)}
-                      className="min-h-[600px] font-mono text-sm"
+                      className="min-h-[600px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       placeholder="Enter markdown checklist content..."
                     />
                     <div className="flex gap-2">

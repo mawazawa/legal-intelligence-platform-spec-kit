@@ -5,20 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+// Removed PDF generation dependencies - using browser print-to-PDF instead
 import {
   FileText,
   ChevronDown,
   ChevronRight,
-  Download,
   Printer,
   Eye,
   EyeOff,
   ScrollText,
   Scale as ScaleIcon,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Download
 } from 'lucide-react';
 
 interface DocumentSource {
@@ -59,25 +58,15 @@ interface CalculationStep {
   isExpanded?: boolean;
 }
 
-interface SODAdjustments {
-  wattsChargesOriginal: number;
-  rentalIncomeShare: number;
-  motorcycleShare: number;
-  furnitureShare: number;
-  rosannaExclusivePossession: number;
-  furnitureCorrection: number;
-  rosannaWithholding: number;
-  mathieuTaxObligation: number;
-}
+// Removed unused SODAdjustments interface
 
 const FinalDistributionSSOT: React.FC = () => {
-  const pdfRef = useRef<HTMLDivElement>(null);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set(['1', '2', '3']));
   const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(false);
 
   // Load ledger (single source of truth) instead of hard-coded adjustments
-  const [ledger, setLedger] = useState<any>(null);
+  const [ledger, setLedger] = useState<Record<string, any> | null>(null);
   useEffect(() => {
     fetch('/api/case-financials/ledger', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
@@ -632,47 +621,6 @@ const FinalDistributionSSOT: React.FC = () => {
     propertyDivision: "Statement of Decision, Page 8, Paragraph 1: &apos;The community property shall be divided with Mathieu Wauters receiving 65% and Rosanna Alvero receiving 35% of the net proceeds from the sale of the marital residence.&apos;"
   }), []);
 
-  const generatePDF = async () => {
-    if (!pdfRef.current) return;
-    
-    setIsGeneratingPDF(true);
-    try {
-      const canvas = await html2canvas(pdfRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff'
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      
-      let position = 0;
-      
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      
-      const fileName = `Final_Distribution_SSOT_${new Date().toISOString().split('T')[0]}.pdf`;
-      pdf.save(fileName);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-    } finally {
-      setIsGeneratingPDF(false);
-    }
-  };
-
   const printCalculation = () => {
     window.print();
   };
@@ -1015,46 +963,27 @@ const FinalDistributionSSOT: React.FC = () => {
 
       <TooltipProvider>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-          {/* Export/Print Controls */}
-          <div className="fixed top-4 right-4 z-50 flex gap-2 no-print">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={generatePDF}
-                  disabled={isGeneratingPDF}
-                  className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                  size="sm"
-                >
-                  {isGeneratingPDF ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
-                  ) : (
-                    <Download className="h-4 w-4" />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Export to PDF for court filing</p>
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={printCalculation}
-                  className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                  size="sm"
-                >
-                  <Printer className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Print calculation</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
+        {/* Print Control */}
+        <div className="fixed top-4 right-4 z-50 no-print">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={printCalculation}
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                size="sm"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print / Save as PDF
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Print calculation or save as PDF</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
 
         {/* Court-Ready Document Layout */}
-        <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-5xl rounded-lg" ref={pdfRef}>
+        <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-5xl rounded-lg" ref={printRef}>
             {/* Sophisticated Page Edge Shading */}
             <div className="relative">
               {/* Top Edge Shading */}
