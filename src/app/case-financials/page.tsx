@@ -67,6 +67,7 @@ export default async function Page() {
   let petitionerA = { respondent: undefined as number | undefined, petitioner: undefined as number | undefined }
   let equalC1 = { respondent: undefined as number | undefined, petitioner: undefined as number | undefined }
   let possAdj = { respondent: undefined as number | undefined, petitioner: undefined as number | undefined }
+  let fromPot = { respondent: undefined as number | undefined, petitioner: undefined as number | undefined, total: undefined as number | undefined }
 
   if (md) {
     const aLine = pickLine(md, '## Final Distribution — Scenario A')
@@ -79,6 +80,15 @@ export default async function Page() {
     const possTitle = pickLine(md, '## Equal-Arrears — Possession Adjusted')
     const possAmounts = md.split('\n')[md.split('\n').indexOf(possTitle) + 2] || ''
     possAdj = extractAmounts(possAmounts)
+
+    const potTitle = pickLine(md, '## From-the-Pot Variant')
+    const potAmounts = md.split('\n')[md.split('\n').indexOf(potTitle) + 2] || ''
+    const potParsed = extractAmounts(potAmounts)
+    if (potParsed.respondent && potParsed.petitioner) {
+      const totalLine = potAmounts.match(/Total:\s*\$([0-9,\.]+)/)
+      const tot = totalLine ? Number(totalLine[1].replace(/,/g, '')) : undefined
+      fromPot = { respondent: potParsed.respondent, petitioner: potParsed.petitioner, total: tot }
+    }
   }
 
   const total = results?.method_add_back?.total ?? results?.inputs?.sale?.actual_net_to_trust
@@ -90,7 +100,7 @@ export default async function Page() {
         <Badge variant="secondary">Auto‑loaded from case‑financials/results</Badge>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader>
             <CardTitle>Petitioner Method (A)</CardTitle>
@@ -127,6 +137,20 @@ export default async function Page() {
           </CardContent>
         </Card>
       </div>
+
+      {fromPot.respondent && (
+        <Card>
+          <CardHeader>
+            <CardTitle>From‑the‑Pot Variant (Latest)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-sm text-muted-foreground mb-2">Remove Respondent’s Form 593 from pot pre‑split (mirror Petitioner)</div>
+            <div>Respondent: <strong>{toCurrency(fromPot.respondent)}</strong></div>
+            <div>Petitioner: <strong>{toCurrency(fromPot.petitioner)}</strong></div>
+            <div className="text-xs mt-2">Total: {toCurrency(fromPot.total)}</div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>
