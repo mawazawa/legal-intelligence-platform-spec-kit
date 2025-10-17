@@ -12,8 +12,9 @@ export interface RAGQueryRequest {
 }
 
 export interface RAGQueryResponse {
+  claim: string;
   answer: string;
-  citations: Array<{
+  evidence: Array<{
     id: string;
     content: string;
     source: string;
@@ -97,11 +98,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 4: Generate answer with citations
+    // Step 4: Generate answer with evidence
     const answer = generateAnswer(query, searchResults, graphContext);
-    
-    // Step 5: Prepare citations
-    const citations = searchResults.map(result => ({
+
+    // Step 5: Prepare evidence citations
+    const evidence = searchResults.map(result => ({
       id: result.id,
       content: result.content,
       source: result.metadata.source,
@@ -110,15 +111,16 @@ export async function POST(request: NextRequest) {
     }));
 
     // Step 6: Extract unique sources
-    const sources = [...new Set(citations.map(c => c.source))];
+    const sources = [...new Set(evidence.map(c => c.source))];
 
     const response: RAGQueryResponse = {
+      claim: query,
       answer,
-      citations,
+      evidence,
       graphContext,
       metadata: {
         query,
-        totalResults: citations.length,
+        totalResults: evidence.length,
         processingTime: Date.now() - startTime,
         sources
       }

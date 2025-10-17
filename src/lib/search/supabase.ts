@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { env } from '../../env';
 
 export interface SupabaseConfig {
   url: string;
@@ -335,9 +336,9 @@ let supabaseClient: SupabaseVectorClient | null = null;
 export function getSupabaseClient(): SupabaseVectorClient {
   if (!supabaseClient) {
     const config: SupabaseConfig = {
-      url: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project-ref.supabase.co',
-      anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key',
-      serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY
+      url: env.NEXT_PUBLIC_SUPABASE_URL,
+      anonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      serviceRoleKey: env.SUPABASE_SERVICE_ROLE_KEY,
     };
     
     supabaseClient = new SupabaseVectorClient(config);

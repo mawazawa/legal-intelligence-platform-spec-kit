@@ -1,0 +1,6 @@
+# Default code owners
+*       @mathieuwauters
+
+# App and components
+/src/**  @mathieuwauters
+

@@ -113,22 +113,21 @@ const ContinuancesAnalytics: React.FC = () => {
   }), []);
 
   useEffect(() => {
-    // Simulate API call
     const fetchStats = async () => {
       setLoading(true);
       try {
-        // TODO: Replace with real API call
-        // const response = await fetch('/api/analytics/continuances');
-        // const data = await response.json();
-        // setStats(data);
-        
-        // Use mock data for now
-        setTimeout(() => {
-          setStats(mockStats);
-          setLoading(false);
-        }, 1000);
+        const response = await fetch('/api/analytics/continuances');
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setStats(data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching continuance stats:', error);
+        // Fall back to mock data if API fails
         setStats(mockStats);
         setLoading(false);
       }

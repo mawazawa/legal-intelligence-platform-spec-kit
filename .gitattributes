@@ -1,0 +1,14 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Ensure shell scripts keep executable bit
+*.sh text eol=lf
+
+# Treat common binary formats
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+

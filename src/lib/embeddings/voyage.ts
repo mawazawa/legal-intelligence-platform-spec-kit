@@ -1,4 +1,5 @@
 import { VoyageAI } from 'voyageai';
+import { env } from '../../env';
 
 export interface VoyageConfig {
   apiKey: string;
@@ -175,8 +176,8 @@ let voyageClient: VoyageEmbeddingClient | null = null;
 export function getVoyageClient(): VoyageEmbeddingClient {
   if (!voyageClient) {
     const config: VoyageConfig = {
-      apiKey: process.env.VOYAGE_API_KEY || 'pa-V_j7Vzh_Nmw0qrNAlXZWfrKL1BWnkIiTzvscMxvjm5p',
-      model: process.env.VOYAGE_MODEL || 'voyage-3-large'
+      apiKey: env.VOYAGE_API_KEY,
+      model: env.VOYAGE_MODEL || 'voyage-3-large',
     };
     
     voyageClient = new VoyageEmbeddingClient(config);

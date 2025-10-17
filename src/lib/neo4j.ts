@@ -1,4 +1,5 @@
 import { Driver, Session, Result } from 'neo4j-driver';
+import { env } from '../env';
 
 export interface Neo4jConfig {
   uri: string;
@@ -290,14 +291,14 @@ let neo4jClient: Neo4jClient | null = null;
 export function getNeo4jClient(): Neo4jClient {
   if (!neo4jClient) {
     const config: Neo4jConfig = {
-      uri: process.env.NEO4J_URI || 'neo4j+s://3884f0bc.databases.neo4j.io',
-      username: process.env.NEO4J_USERNAME || 'neo4j',
-      password: process.env.NEO4J_PASSWORD || 'IU5kk95TIhx56qPK7sSGfLR78ZozLjmd8dg-QYMGUlk',
-      database: process.env.NEO4J_DATABASE || 'neo4j'
+      uri: env.NEO4J_URI,
+      username: env.NEO4J_USERNAME,
+      password: env.NEO4J_PASSWORD,
+      database: env.NEO4J_DATABASE || 'neo4j',
     };
-    
+
     neo4jClient = new Neo4jClient(config);
   }
-  
+
   return neo4jClient;
 }
