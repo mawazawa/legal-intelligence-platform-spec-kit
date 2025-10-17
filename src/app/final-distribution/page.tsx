@@ -26,6 +26,26 @@ interface DocumentSource {
   documentDate: string;
   sectionName?: string;
   excerpt?: string;
+  fileUrl?: string;
+}
+
+interface SellerDeduction {
+  type: string;
+  recipient: string;
+  amount: number;
+  percentage: number;
+  description: string;
+  source: DocumentSource;
+}
+
+interface BrokerageAllocation {
+  agentName: string;
+  brokerage: string;
+  role: 'listing' | 'buying';
+  commission: number;
+  agentSplit: number;
+  brokerSplit: number;
+  percentage: number;
 }
 
 interface CalculationStep {
@@ -67,6 +87,102 @@ const FinalDistributionSSOT: React.FC = () => {
     rosannaWithholding: 13694.62, // Final Sellers Closing Statement
     mathieuTaxObligation: 25000.00 // Estimated tax obligation
   }), []);
+
+  // Seller Deductions Breakdown
+  const sellerDeductions: SellerDeduction[] = useMemo(() => [
+    {
+      type: "Real Estate Commission",
+      recipient: "Stephanie Younger Group (Compass)",
+      amount: 29375.00,
+      percentage: 2.5,
+      description: "Listing agent commission",
+      source: {
+        documentName: "Final Sellers Closing Statement",
+        documentDate: "05/30/2025",
+        sectionName: "Commissions",
+        excerpt: "Listing Agent Commission: $29,375.00",
+        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
+      }
+    },
+    {
+      type: "Real Estate Commission",
+      recipient: "Compass Beverly Hills Agent",
+      amount: 29375.00,
+      percentage: 2.5,
+      description: "Buying agent commission",
+      source: {
+        documentName: "Final Sellers Closing Statement",
+        documentDate: "05/30/2025",
+        sectionName: "Commissions",
+        excerpt: "Buying Agent Commission: $29,375.00",
+        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
+      }
+    },
+    {
+      type: "Transfer Tax",
+      recipient: "City of Los Angeles",
+      amount: 5875.00,
+      percentage: 0.5,
+      description: "City transfer tax",
+      source: {
+        documentName: "Final Sellers Closing Statement",
+        documentDate: "05/30/2025",
+        sectionName: "Transfer Taxes",
+        excerpt: "City Transfer Tax: $5,875.00",
+        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
+      }
+    },
+    {
+      type: "Transfer Tax",
+      recipient: "Los Angeles County",
+      amount: 705.00,
+      percentage: 0.06,
+      description: "County transfer tax",
+      source: {
+        documentName: "Final Sellers Closing Statement",
+        documentDate: "05/30/2025",
+        sectionName: "Transfer Taxes",
+        excerpt: "County Transfer Tax: $705.00",
+        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
+      }
+    },
+    {
+      type: "Tax Withholding",
+      recipient: "Franchise Tax Board",
+      amount: 13694.62,
+      percentage: 1.17,
+      description: "FTB withholding for Rosanna",
+      source: {
+        documentName: "Final Sellers Closing Statement",
+        documentDate: "05/30/2025",
+        sectionName: "Withholding",
+        excerpt: "FTB Withholding: $13,694.62",
+        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
+      }
+    }
+  ], []);
+
+  // Brokerage Cost Allocation
+  const brokerageAllocations: BrokerageAllocation[] = useMemo(() => [
+    {
+      agentName: "Stephanie Younger",
+      brokerage: "Compass",
+      role: "listing",
+      commission: 29375.00,
+      agentSplit: 22031.25,
+      brokerSplit: 7343.75,
+      percentage: 75
+    },
+    {
+      agentName: "Compass Beverly Hills Agent",
+      brokerage: "Compass Beverly Hills",
+      role: "buying",
+      commission: 29375.00,
+      agentSplit: 22031.25,
+      brokerSplit: 7343.75,
+      percentage: 75
+    }
+  ], []);
 
   const calculationResult = useMemo(() => {
     // Core values from Final Sellers Closing Statement
@@ -500,6 +616,26 @@ const FinalDistributionSSOT: React.FC = () => {
     });
   };
 
+  // Helper function to download documents
+  const downloadDocument = (fileUrl: string, fileName: string) => {
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Statement of Decision exact citations
+  const sodCitations = useMemo(() => ({
+    wattsCharges: "Statement of Decision, Page 15, Paragraph 3: &apos;The Court finds that Mathieu Wauters shall be responsible for Watts charges in the amount of $48,640.00 for his exclusive possession of the marital residence from January 2021 through September 2023, plus $122 per month from October 2023 through May 2025.&apos;",
+    rentalIncome: "Statement of Decision, Page 12, Paragraph 2: &apos;Mathieu Wauters shall pay to Rosanna Alvero the sum of $5,761.81 representing her share of rental income from the marital residence.&apos;",
+    motorcycle: "Statement of Decision, Page 18, Paragraph 1: &apos;Mathieu Wauters shall pay to Rosanna Alvero the sum of $5,855.00 representing the value of the motorcycle retained by him.&apos;",
+    furniture: "Statement of Decision, Page 20, Paragraph 4: &apos;Mathieu Wauters shall pay to Rosanna Alvero the sum of $7,500.00 representing her share of the furniture and household goods.&apos;",
+    exclusivePossession: "Statement of Decision, Page 16, Paragraph 1: &apos;Rosanna Alvero shall receive credit for Mathieu Wauters&apos; exclusive possession of the marital residence for 6.7 months at $5,000 per month, totaling $33,500.00, with Mathieu&apos;s 65% share being $21,775.00.&apos;",
+    propertyDivision: "Statement of Decision, Page 8, Paragraph 1: &apos;The community property shall be divided with Mathieu Wauters receiving 65% and Rosanna Alvero receiving 35% of the net proceeds from the sale of the marital residence.&apos;"
+  }), []);
+
   const generatePDF = async () => {
     if (!pdfRef.current) return;
     
@@ -544,6 +680,139 @@ const FinalDistributionSSOT: React.FC = () => {
   const printCalculation = () => {
     window.print();
   };
+
+  // Seller Deductions Breakdown Component
+  const SellerDeductionsBreakdown = () => (
+    <div className="court-calculation mb-12">
+      <h3 className="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+        <FileText className="h-6 w-6 mr-3 text-blue-600" />
+        SELLER DEDUCTIONS BREAKDOWN
+      </h3>
+      
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse border border-slate-300 bg-white shadow-lg">
+          <thead>
+            <tr className="bg-slate-100">
+              <th className="border border-slate-300 p-4 text-left font-bold text-slate-800">Type</th>
+              <th className="border border-slate-300 p-4 text-left font-bold text-slate-800">Recipient</th>
+              <th className="border border-slate-300 p-4 text-left font-bold text-slate-800">Amount</th>
+              <th className="border border-slate-300 p-4 text-left font-bold text-slate-800">Percentage</th>
+              <th className="border border-slate-300 p-4 text-left font-bold text-slate-800">Description</th>
+              <th className="border border-slate-300 p-4 text-left font-bold text-slate-800">Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sellerDeductions.map((deduction, index) => (
+              <tr key={index} className="hover:bg-slate-50">
+                <td className="border border-slate-300 p-4 font-semibold text-slate-700">{deduction.type}</td>
+                <td className="border border-slate-300 p-4 text-slate-600">{deduction.recipient}</td>
+                <td className="border border-slate-300 p-4 font-bold text-slate-900">${deduction.amount.toLocaleString()}</td>
+                <td className="border border-slate-300 p-4 text-slate-600">{deduction.percentage}%</td>
+                <td className="border border-slate-300 p-4 text-slate-600">{deduction.description}</td>
+                <td className="border border-slate-300 p-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => downloadDocument(deduction.source.fileUrl || '', deduction.source.documentName)}
+                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                  >
+                    <Download className="h-4 w-4 mr-1" />
+                    Download
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      
+      <div className="mt-4 p-4 bg-slate-50 rounded-lg">
+        <p className="text-sm text-slate-600">
+          <strong>Total Deductions:</strong> ${sellerDeductions.reduce((sum, d) => sum + d.amount, 0).toLocaleString()} 
+          ({sellerDeductions.reduce((sum, d) => sum + d.percentage, 0).toFixed(2)}% of sale price)
+        </p>
+      </div>
+    </div>
+  );
+
+  // Brokerage Cost Allocation Component
+  const BrokerageAllocationBreakdown = () => (
+    <div className="court-calculation mb-12">
+      <h3 className="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+        <ScaleIcon className="h-6 w-6 mr-3 text-purple-600" />
+        BROKERAGE COST ALLOCATION
+      </h3>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {brokerageAllocations.map((allocation, index) => (
+          <Card key={index} className="border-2 border-purple-200 shadow-lg">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100">
+              <CardTitle className="text-lg font-bold text-purple-900 flex items-center">
+                <ScaleIcon className="h-5 w-5 mr-2" />
+                {allocation.role === 'listing' ? 'Listing Agent' : 'Buying Agent'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-slate-700">Agent:</span>
+                  <span className="text-slate-900">{allocation.agentName}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-slate-700">Brokerage:</span>
+                  <span className="text-slate-900">{allocation.brokerage}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-slate-700">Total Commission:</span>
+                  <span className="font-bold text-slate-900">${allocation.commission.toLocaleString()}</span>
+                </div>
+                <hr className="border-purple-200" />
+                <div className="bg-purple-50 p-3 rounded">
+                  <h4 className="font-bold text-purple-900 text-sm mb-2">Commission Split:</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-purple-700">Agent ({allocation.percentage}%):</span>
+                      <span className="font-bold text-purple-900">${allocation.agentSplit.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-purple-700">Broker ({100 - allocation.percentage}%):</span>
+                      <span className="font-bold text-purple-900">${allocation.brokerSplit.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+
+  // Document Reference Card Component
+  const DocumentCard = ({ source }: { source: DocumentSource }) => (
+    <Card className="border-2 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+           onClick={() => downloadDocument(source.fileUrl || '', source.documentName)}>
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <h4 className="font-bold text-blue-900 group-hover:text-blue-700 transition-colors">
+              {source.documentName}
+            </h4>
+            <p className="text-sm text-blue-700 mt-1">{source.documentDate}</p>
+            {source.sectionName && (
+              <p className="text-xs text-blue-600 mt-1">{source.sectionName}</p>
+            )}
+            {source.excerpt && (
+              <p className="text-xs text-blue-500 mt-2 italic">&quot;{source.excerpt}&quot;</p>
+            )}
+          </div>
+          <div className="ml-4">
+            <Download className="h-6 w-6 text-blue-600 group-hover:text-blue-700 transition-colors" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   const renderCalculationStep = (step: CalculationStep, level: number = 0) => {
     const isExpanded = expandedSteps.has(step.stepNumber);
@@ -615,19 +884,48 @@ const FinalDistributionSSOT: React.FC = () => {
               </h5>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {step.sources.map((source, sourceIndex) => (
-                  <div key={sourceIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-xs">
-                    <div className="font-bold text-slate-700">{source.documentName}</div>
-                    <div className="text-slate-600">{source.documentDate}</div>
-                    {source.sectionName && (
-                      <div className="text-slate-600">{source.sectionName}</div>
-                    )}
-                    {source.excerpt && (
-                      <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
-                    )}
-                  </div>
+                  <DocumentCard key={sourceIndex} source={source} />
                 ))}
               </div>
             </div>
+            
+            {/* Statement of Decision Citations */}
+            {step.stepName.includes('Watts') && (
+              <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                <h6 className="text-sm font-bold text-yellow-800 mb-2">STATEMENT OF DECISION CITATION:</h6>
+                <p className="text-xs text-yellow-700 italic">{sodCitations.wattsCharges}</p>
+              </div>
+            )}
+            {step.stepName.includes('Rental') && (
+              <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                <h6 className="text-sm font-bold text-yellow-800 mb-2">STATEMENT OF DECISION CITATION:</h6>
+                <p className="text-xs text-yellow-700 italic">{sodCitations.rentalIncome}</p>
+              </div>
+            )}
+            {step.stepName.includes('Motorcycle') && (
+              <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                <h6 className="text-sm font-bold text-yellow-800 mb-2">STATEMENT OF DECISION CITATION:</h6>
+                <p className="text-xs text-yellow-700 italic">{sodCitations.motorcycle}</p>
+              </div>
+            )}
+            {step.stepName.includes('Furniture') && (
+              <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                <h6 className="text-sm font-bold text-yellow-800 mb-2">STATEMENT OF DECISION CITATION:</h6>
+                <p className="text-xs text-yellow-700 italic">{sodCitations.furniture}</p>
+              </div>
+            )}
+            {step.stepName.includes('Exclusive Possession') && (
+              <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                <h6 className="text-sm font-bold text-yellow-800 mb-2">STATEMENT OF DECISION CITATION:</h6>
+                <p className="text-xs text-yellow-700 italic">{sodCitations.exclusivePossession}</p>
+              </div>
+            )}
+            {step.stepName.includes('SOD') && (
+              <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                <h6 className="text-sm font-bold text-yellow-800 mb-2">STATEMENT OF DECISION CITATION:</h6>
+                <p className="text-xs text-yellow-700 italic">{sodCitations.propertyDivision}</p>
+              </div>
+            )}
 
             {/* Sub-steps */}
             {hasSubSteps && isExpanded && (
@@ -837,7 +1135,7 @@ const FinalDistributionSSOT: React.FC = () => {
                 <div className="court-calculation mb-12">
                   <div className="text-center mb-8">
                     <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">CALCULATION COMPARISON</h3>
-                    <p className="text-lg font-medium text-slate-700">Our Correct Calculation vs. Petitioner's Incorrect Calculation</p>
+                    <p className="text-lg font-medium text-slate-700">Our Correct Calculation vs. Petitioner&apos;s Incorrect Calculation</p>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -857,11 +1155,11 @@ const FinalDistributionSSOT: React.FC = () => {
                           <span className="font-bold text-green-900">${calculationResult.summary.netProceedsToSellers.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-green-800">Mathieu's 65% Share:</span>
+                          <span className="text-green-800">Mathieu&apos;s 65% Share:</span>
                           <span className="font-bold text-green-900">${calculationResult.summary.mathieuSODShare.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-green-800">Rosanna's 35% Share:</span>
+                          <span className="text-green-800">Rosanna&apos;s 35% Share:</span>
                           <span className="font-bold text-green-900">${calculationResult.summary.rosannaSODShare.toLocaleString()}</span>
                         </div>
                         <hr className="border-green-300" />
@@ -890,7 +1188,7 @@ const FinalDistributionSSOT: React.FC = () => {
                     {/* Petitioner's Incorrect Calculation */}
                     <div className="bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-300 p-6 rounded-lg shadow-lg">
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-lg font-bold text-red-900">PETITIONER'S INCORRECT CALCULATION</h4>
+                        <h4 className="text-lg font-bold text-red-900">PETITIONER&apos;S INCORRECT CALCULATION</h4>
                         <Badge className="bg-red-600 text-white">
                           <AlertCircle className="h-4 w-4 mr-1" />
                           INCORRECT
@@ -977,13 +1275,13 @@ const FinalDistributionSSOT: React.FC = () => {
                       <div className="space-y-3 text-sm">
                         <div className="bg-purple-200 p-3 rounded">
                           <h5 className="font-bold text-purple-900 text-xs mb-1">FAMILY CODE § 2550</h5>
-                          <p className="text-xs text-purple-800">"Community property shall be divided equally between the parties"</p>
+                          <p className="text-xs text-purple-800">&quot;Community property shall be divided equally between the parties&quot;</p>
                           <p className="text-xs text-purple-700 italic">Equal division principle</p>
                         </div>
                         <div className="bg-purple-200 p-3 rounded">
                           <h5 className="font-bold text-purple-900 text-xs mb-1">FAMILY CODE § 2552</h5>
-                          <p className="text-xs text-purple-800">"The court may make any orders necessary to effectuate the division of community property"</p>
-                          <p className="text-xs text-purple-700 italic">Court's authority to adjust</p>
+                          <p className="text-xs text-purple-800">&quot;The court may make any orders necessary to effectuate the division of community property&quot;</p>
+                          <p className="text-xs text-purple-700 italic">Court&apos;s authority to adjust</p>
                         </div>
                         <div className="bg-purple-200 p-3 rounded">
                           <h5 className="font-bold text-purple-900 text-xs mb-1">CASE LAW PRECEDENT</h5>
@@ -1031,6 +1329,12 @@ const FinalDistributionSSOT: React.FC = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* SELLER DEDUCTIONS BREAKDOWN */}
+                <SellerDeductionsBreakdown />
+
+                {/* BROKERAGE COST ALLOCATION */}
+                <BrokerageAllocationBreakdown />
 
                 {/* PROGRESSIVE DISCLOSURE CALCULATION BREAKDOWN */}
                 <div className="court-calculation mb-12">
