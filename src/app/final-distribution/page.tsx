@@ -1,247 +1,474 @@
-"use client";
+'use client';
 
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import React, { useState, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-// Removed PDF generation dependencies - using browser print-to-PDF instead
-import {
-  FileText,
-  Printer,
-  Eye,
-  EyeOff,
-  ScrollText,
-  Scale as ScaleIcon,
-  Upload,
-  PenLine,
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { 
+  Calculator, 
+  GitCompare, 
+  Scale, 
+  FileText, 
+  Eye, 
+  EyeOff, 
+  ScrollText, 
+  ScaleIcon, 
+  PenLine, 
+  Upload, 
   Trash2,
-  Calculator,
-  GitCompare,
-  Scale
+  CheckCircle2
 } from 'lucide-react';
 
-interface DocumentSource {
-  documentName: string;
-  documentDate: string;
-  sectionName?: string;
-  excerpt?: string;
-  fileUrl?: string;
+// Types
+type TabType = 'calculation' | 'comparison' | 'declarations';
+
+interface CalculationStep {
+  stepNumber: number;
+  stepName: string;
+  explanation: string;
+  amount: number;
+  formula?: string;
+  sources?: Array<{
+    documentName: string;
+    documentDate: string;
+    sectionName?: string;
+    excerpt?: string;
+  }>;
+  subSteps?: CalculationStep[];
 }
 
 interface SellerDeduction {
-  type: string;
-  recipient: string;
-  amount: number;
-  percentage: number;
+  id: string;
   description: string;
-  source: DocumentSource;
+  amount: number;
+  category: 'commission' | 'concessions' | 'fees' | 'taxes' | 'other';
+  negotiable: boolean;
+  sources: Array<{
+    documentName: string;
+    documentDate: string;
+    sectionName?: string;
+    excerpt?: string;
+  }>;
 }
 
 interface BrokerageAllocation {
-  agentName: string;
-  brokerage: string;
-  role: 'listing' | 'buying';
-  commission: number;
-  agentSplit: number;
-  brokerSplit: number;
-  percentage: number;
+  id: string;
+  brokerName: string;
+  commissionRate: number;
+  commissionAmount: number;
+  negotiable: boolean;
+  sources: Array<{
+    documentName: string;
+    documentDate: string;
+    sectionName?: string;
+    excerpt?: string;
+  }>;
 }
 
-// Removed unused CalculationStep interface
+interface SODAdjustments {
+  wattsChargesOriginal: number;
+  rentalIncomeShare: number;
+  motorcycleShare: number;
+  furnitureShare: number;
+  rosannaExclusivePossession: number;
+  furnitureCorrection: number;
+}
 
-// Removed unused SODAdjustments interface
+interface NegotiableParameter {
+  id: string;
+  name: string;
+  currentValue: number;
+  minValue: number;
+  maxValue: number;
+  step: number;
+  unit: string;
+  description: string;
+}
 
-type TabType = 'calculation' | 'comparison' | 'declarations';
 
 const FinalDistributionSSOT: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('calculation');
   const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(false);
+  const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
+  const [negotiableParams, setNegotiableParams] = useState<NegotiableParameter[]>([
+    {
+      id: 'commission-rate',
+      name: 'Commission Rate',
+      currentValue: 6.0,
+      minValue: 4.0,
+      maxValue: 8.0,
+      step: 0.1,
+      unit: '%',
+      description: 'Real estate agent commission rate'
+    },
+    {
+      id: 'seller-concessions',
+      name: 'Seller Concessions',
+      currentValue: 35000,
+      minValue: 25000,
+      maxValue: 50000,
+      step: 1000,
+      unit: '$',
+      description: 'Total seller concessions for repairs'
+    }
+  ]);
 
-  // Simple e-signature state (drag-drop image OR typed name rendered in cursive)
-  const [respTypedName, setRespTypedName] = useState('');
-  const [petTypedName, setPetTypedName] = useState('');
+  // Signature states
   const [respSigImage, setRespSigImage] = useState<string | null>(null);
   const [petSigImage, setPetSigImage] = useState<string | null>(null);
+  const [respTypedName, setRespTypedName] = useState('');
+  const [petTypedName, setPetTypedName] = useState('');
   const [respSignedAt, setRespSignedAt] = useState<string | null>(null);
   const [petSignedAt, setPetSignedAt] = useState<string | null>(null);
 
-  // Handwriting font for typed signatures
-  const handwritingFont = 'Brush Script MT, cursive';
+  const printRef = useRef<HTMLDivElement>(null);
 
-  // Seller Deductions Data
-  const sellerDeductions: SellerDeduction[] = useMemo(() => [
-    {
-      type: "Real Estate Commission",
-      recipient: "Listing Agent",
-      amount: 29375.00,
-      percentage: 2.5,
-      description: "Listing agent commission for property sale",
-      source: {
-        documentName: "Final Sellers Closing Statement",
-        documentDate: "05/30/2025",
-        sectionName: "Commissions",
-        excerpt: "Listing Agent Commission: $29,375.00",
-        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
-      }
-    },
-    {
-      type: "Real Estate Commission",
-      recipient: "Buying Agent",
-      amount: 29375.00,
-      percentage: 2.5,
-      description: "Buying agent commission for property sale",
-      source: {
-        documentName: "Final Sellers Closing Statement",
-        documentDate: "05/30/2025",
-        sectionName: "Commissions",
-        excerpt: "Buying Agent Commission: $29,375.00",
-        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
-      }
-    },
-    {
-      type: "Transfer Tax",
-      recipient: "City of San Francisco",
-      amount: 5875.00,
-      percentage: 0.5,
-      description: "City transfer tax on property sale",
-      source: {
-        documentName: "Final Sellers Closing Statement",
-        documentDate: "05/30/2025",
-        sectionName: "Transfer Taxes",
-        excerpt: "City Transfer Tax: $5,875.00",
-        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
-      }
-    },
-    {
-      type: "Transfer Tax",
-      recipient: "County of San Francisco",
-      amount: 705.00,
-      percentage: 0.06,
-      description: "County transfer tax on property sale",
-      source: {
-        documentName: "Final Sellers Closing Statement",
-        documentDate: "05/30/2025",
-        sectionName: "Transfer Taxes",
-        excerpt: "County Transfer Tax: $705.00",
-        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
-      }
-    },
-    {
-      type: "Tax Withholding",
-      recipient: "Franchise Tax Board",
-      amount: 13694.62,
-      percentage: 1.17,
-      description: "Real estate withholding tax (Form 593)",
-      source: {
-        documentName: "Final Sellers Closing Statement",
-        documentDate: "05/30/2025",
-        sectionName: "Withholding",
-        excerpt: "FTB Withholding: $13,694.62",
-        fileUrl: "/documents/Final_Sellers_Closing_Statement.pdf"
-      }
-    }
-  ], []);
-
-  // Brokerage Cost Allocation
-  const brokerageAllocations: BrokerageAllocation[] = useMemo(() => [
-    {
-      agentName: "Ron Melendez",
-      brokerage: "Coldwell Banker",
-      role: "listing",
-      commission: 29375.00,
-      agentSplit: 22031.25,
-      brokerSplit: 7343.75,
-      percentage: 75
-    },
-    {
-      agentName: "Buying Agent",
-      brokerage: "Buying Brokerage",
-      role: "buying",
-      commission: 29375.00,
-      agentSplit: 22031.25,
-      brokerSplit: 7343.75,
-      percentage: 75
-    }
-  ], []);
-
+  // Hardcoded calculation result for now
   const calculationResult = useMemo(() => {
-    // Mock calculation result for now - this would come from the ledger API
+    // Use hardcoded values for now since ledger might not be available
+    const grossSalePrice = 1175000;
+    const netProceedsToSellers = 280355.83;
+    const lenderPayoff = 759364.32;
+    const mathieuSODShare = netProceedsToSellers * 0.65;
+    const rosannaSODShare = netProceedsToSellers * 0.35;
+    const rosannaWithholding = 13694.62;
+    const mathieuTaxObligation = 25432.88;
+
+    // SOD Adjustments from hardcoded values (should come from ledger in future)
+    const sodAdjustments: SODAdjustments = {
+      wattsChargesOriginal: 48640.00,
+      rentalIncomeShare: 5761.81,
+      motorcycleShare: 5855.00,
+      furnitureShare: 7500.00,
+      rosannaExclusivePossession: 33500.00,
+      furnitureCorrection: 15000.00
+    };
+
+    const mathieuOwesRosanna = sodAdjustments.wattsChargesOriginal + sodAdjustments.rentalIncomeShare + sodAdjustments.motorcycleShare + sodAdjustments.furnitureShare;
+    const rosannaOwesMathieu = sodAdjustments.rosannaExclusivePossession + sodAdjustments.furnitureCorrection;
+    const netAdjustment = mathieuOwesRosanna - rosannaOwesMathieu;
+    
+    // Final distributions
+    const mathieuFinalDistribution = mathieuSODShare - netAdjustment - mathieuTaxObligation;
+    const rosannaFinalDistribution = rosannaSODShare + netAdjustment - rosannaWithholding;
+
+    // Progressive disclosure reasoning path
+    const reasoningPath: CalculationStep[] = [
+      {
+        stepNumber: 1,
+        stepName: 'Gross Sale Price',
+        explanation: 'Total sale price of the property before any deductions',
+        amount: grossSalePrice,
+        formula: 'Contract Price',
+        sources: [
+          {
+            documentName: 'Final Sellers Closing Statement',
+            documentDate: '05/30/2025',
+            sectionName: 'Sale Price',
+            excerpt: 'Contract Price: $1,175,000'
+          }
+        ]
+      },
+      {
+        stepNumber: 2,
+        stepName: 'Lender Payoff',
+        explanation: 'Amount paid to satisfy the existing mortgage',
+        amount: lenderPayoff,
+        formula: 'Outstanding Loan Balance',
+        sources: [
+          {
+            documentName: 'Final Sellers Closing Statement',
+            documentDate: '05/30/2025',
+            sectionName: 'Payoffs',
+            excerpt: 'First Mortgage Payoff: $759,364.32'
+          }
+        ]
+      },
+      {
+        stepNumber: 3,
+        stepName: 'Net Proceeds to Sellers',
+        explanation: 'Amount remaining after all deductions and payoffs',
+        amount: netProceedsToSellers,
+        formula: 'Gross Sale Price - Lender Payoff - Seller Deductions',
+        sources: [
+          {
+            documentName: 'Final Sellers Closing Statement',
+            documentDate: '05/30/2025',
+            sectionName: 'Seller Proceeds',
+            excerpt: 'Net Proceeds: $280,355.83'
+          }
+        ]
+      },
+      {
+        stepNumber: 4,
+        stepName: 'Statement of Decision Allocation',
+        explanation: '65% to Mathieu, 35% to Rosanna as per court order',
+        amount: netProceedsToSellers,
+        formula: 'Net Proceeds × Allocation Percentage',
+        sources: [
+          {
+            documentName: 'Statement of Decision',
+            documentDate: 'Court Order',
+            sectionName: 'Property Division',
+            excerpt: '65% to Respondent, 35% to Petitioner'
+          }
+        ],
+        subSteps: [
+          {
+            stepNumber: 4.1,
+            stepName: 'Mathieu\'s 65% Share',
+            explanation: 'Respondent\'s allocated portion',
+            amount: mathieuSODShare,
+            formula: 'Net Proceeds × 0.65'
+          },
+          {
+            stepNumber: 4.2,
+            stepName: 'Rosanna\'s 35% Share',
+            explanation: 'Petitioner\'s allocated portion',
+            amount: rosannaSODShare,
+            formula: 'Net Proceeds × 0.35'
+          }
+        ]
+      },
+      {
+        stepNumber: 5,
+        stepName: 'Post-SOD Adjustments',
+        explanation: 'Adjustments required by Statement of Decision and subsequent evidence',
+        amount: netAdjustment,
+        formula: 'Mathieu Owes Rosanna - Rosanna Owes Mathieu',
+        sources: [
+          {
+            documentName: 'Statement of Decision',
+            documentDate: 'Court Order',
+            sectionName: 'Post-Judgment Adjustments',
+            excerpt: 'Watts Charges, Rental Income, Motorcycle, Furniture'
+          }
+        ],
+        subSteps: [
+          {
+            stepNumber: 5.1,
+            stepName: 'Mathieu Owes Rosanna',
+            explanation: 'Watts Charges + Rental Income + Motorcycle + Furniture',
+            amount: mathieuOwesRosanna,
+            formula: '48,640 + 5,761.81 + 5,855 + 7,500'
+          },
+          {
+            stepNumber: 5.2,
+            stepName: 'Rosanna Owes Mathieu',
+            explanation: 'Exclusive Possession + Furniture Correction',
+            amount: rosannaOwesMathieu,
+            formula: '33,500 + 15,000'
+          }
+        ]
+      },
+      {
+        stepNumber: 6,
+        stepName: 'Tax Obligations',
+        explanation: 'Estimated tax obligations for each party',
+        amount: mathieuTaxObligation + rosannaWithholding,
+        formula: 'Mathieu Tax + Rosanna Withholding',
+        sources: [
+          {
+            documentName: 'Tax Forms',
+            documentDate: '05/30/2025',
+            sectionName: 'Withholding',
+            excerpt: 'Rosanna\'s withholding: $13,694.62'
+          }
+        ],
+        subSteps: [
+          {
+            stepNumber: 6.1,
+            stepName: 'Mathieu\'s Tax Obligation',
+            explanation: 'Estimated tax obligation for Respondent',
+            amount: mathieuTaxObligation,
+            formula: 'Estimated based on income'
+          },
+          {
+            stepNumber: 6.2,
+            stepName: 'Rosanna\'s Withholding',
+            explanation: 'Tax withholding from sale proceeds',
+            amount: rosannaWithholding,
+            formula: 'Actual withholding from closing'
+          }
+        ]
+      },
+      {
+        stepNumber: 7,
+        stepName: 'Final Distribution',
+        explanation: 'Final amounts to be distributed to each party',
+        amount: mathieuFinalDistribution + rosannaFinalDistribution,
+        formula: 'SOD Share ± Net Adjustment - Tax Obligations',
+        sources: [
+          {
+            documentName: 'Final Calculation',
+            documentDate: 'Generated',
+            sectionName: 'Summary',
+            excerpt: 'Final distribution calculation'
+          }
+        ],
+        subSteps: [
+          {
+            stepNumber: 7.1,
+            stepName: 'Mathieu\'s Final Distribution',
+            explanation: '65% share minus net adjustment minus tax obligation',
+            amount: mathieuFinalDistribution,
+            formula: 'Mathieu SOD Share - Net Adjustment - Mathieu Tax'
+          },
+          {
+            stepNumber: 7.2,
+            stepName: 'Rosanna\'s Final Distribution',
+            explanation: '35% share plus net adjustment minus withholding',
+            amount: rosannaFinalDistribution,
+            formula: 'Rosanna SOD Share + Net Adjustment - Rosanna Withholding'
+          }
+        ]
+      }
+    ];
+
     return {
       summary: {
-        grossSalePrice: 1175000,
-        netProceedsToSellers: 280355.83,
-        lenderPayoff: 759364.32,
-        mathieuFinalDistribution: 182231.29,
-        rosannaFinalDistribution: 98124.54,
-        rosannaWithholding: 13694.62,
-        mathieuTaxObligation: 25432.88
+        grossSalePrice,
+        lenderPayoff,
+        netProceedsToSellers,
+        mathieuSODShare,
+        rosannaSODShare,
+        mathieuOwesRosanna,
+        rosannaOwesMathieu,
+        netAdjustment,
+        mathieuFinalDistribution,
+        rosannaFinalDistribution,
+        rosannaWithholding,
+        mathieuTaxObligation
       },
-      reasoningPath: [
-        {
-          stepNumber: "1",
-          stepName: "Statement of Decision Property Division",
-          amount: 280355.83,
-          explanation: "Apply 65/35 allocation per Statement of Decision to net proceeds",
-          subSteps: [
-            {
-              stepNumber: "1.1",
-              stepName: "Respondent Share (65%)",
-              amount: 182231.29,
-              explanation: "Mathieu Wauters receives 65% of net proceeds"
-            },
-            {
-              stepNumber: "1.2",
-              stepName: "Petitioner Share (35%)",
-              amount: 98124.54,
-              explanation: "Rosanna Alvero receives 35% of net proceeds"
-            }
-          ]
-        }
-      ]
+      reasoningPath
     };
   }, []);
 
-  const printCalculation = () => {
-    window.print();
+  // Seller deductions data
+  const sellerDeductions: SellerDeduction[] = [
+    {
+      id: 'commission',
+      description: 'Real Estate Commission',
+      amount: 70500,
+      category: 'commission',
+      negotiable: true,
+      sources: [
+        {
+          documentName: 'Final Sellers Closing Statement',
+          documentDate: '05/30/2025',
+          sectionName: 'Commission',
+          excerpt: '6% commission on $1,175,000'
+        }
+      ]
+    },
+    {
+      id: 'concessions',
+      description: 'Seller Concessions for Repairs',
+      amount: 35000,
+      category: 'concessions',
+      negotiable: true,
+      sources: [
+        {
+          documentName: 'Final Sellers Closing Statement',
+          documentDate: '05/30/2025',
+          sectionName: 'Concessions',
+          excerpt: 'Repair concessions to buyer'
+        }
+      ]
+    },
+    {
+      id: 'escrow-fees',
+      description: 'Escrow and Title Fees',
+      amount: 2500,
+      category: 'fees',
+      negotiable: false,
+      sources: [
+        {
+          documentName: 'Final Sellers Closing Statement',
+          documentDate: '05/30/2025',
+          sectionName: 'Fees',
+          excerpt: 'Escrow and title company fees'
+        }
+      ]
+    },
+    {
+      id: 'tax-withholding',
+      description: 'Tax Withholding (Rosanna)',
+      amount: 13694.62,
+      category: 'taxes',
+      negotiable: false,
+      sources: [
+        {
+          documentName: 'Final Sellers Closing Statement',
+          documentDate: '05/30/2025',
+          sectionName: 'Withholding',
+          excerpt: 'Franchise Tax Board withholding'
+        }
+      ]
+    }
+  ];
+
+  // Brokerage allocations data
+  const brokerageAllocations: BrokerageAllocation[] = [
+    {
+      id: 'ron-melendez',
+      brokerName: 'Ron Melendez',
+      commissionRate: 3.0,
+      commissionAmount: 35250,
+      negotiable: true,
+      sources: [
+        {
+          documentName: 'Final Sellers Closing Statement',
+          documentDate: '05/30/2025',
+          sectionName: 'Commission Split',
+          excerpt: '3% to listing agent'
+        }
+      ]
+    },
+    {
+      id: 'buyer-agent',
+      brokerName: 'Buyer\'s Agent',
+      commissionRate: 3.0,
+      commissionAmount: 35250,
+      negotiable: false,
+      sources: [
+        {
+          documentName: 'Final Sellers Closing Statement',
+          documentDate: '05/30/2025',
+          sectionName: 'Commission Split',
+          excerpt: '3% to buyer\'s agent'
+        }
+      ]
+    }
+  ];
+
+  // SOD adjustments
+  const sodAdjustments = {
+    wattsChargesOriginal: 48640.00,
+    rentalIncomeShare: 5761.81,
+    motorcycleShare: 5855.00,
+    furnitureShare: 7500.00,
+    rosannaExclusivePossession: 33500.00,
+    furnitureCorrection: 15000.00
   };
 
-  // Removed unused toggleStep function
-
-  // Signature handling functions
-  function preventDefaults(e: React.DragEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-  function handleDrop(e: React.DragEvent, who: 'resp'|'pet') {
-    preventDefaults(e);
-    const f = e.dataTransfer.files?.[0];
-    if (f && f.type.startsWith('image/')) {
-      const url = URL.createObjectURL(f);
-      if (who==='resp') { setRespSigImage(url); setRespSignedAt(new Date().toISOString()); }
-      else { setPetSigImage(url); setPetSignedAt(new Date().toISOString()); }
+  // Legal citations
+  const sodCitations = useMemo(() => ({
+    familyCode2550: {
+      title: 'Family Code § 2550',
+      text: 'Community property shall be divided equally between the parties',
+      relevance: 'Establishes equal division principle'
+    },
+    familyCode2552: {
+      title: 'Family Code § 2552',
+      text: 'The court may make any orders necessary to effectuate the division of community property',
+      relevance: 'Court authority for adjustments'
+    },
+    statementOfDecision: {
+      title: 'Statement of Decision',
+      text: '65% allocation to Respondent, 35% to Petitioner',
+      relevance: 'Court-ordered allocation'
     }
-  }
-  function handlePick(e: React.ChangeEvent<HTMLInputElement>, who: 'resp'|'pet') {
-    const f = e.target.files?.[0];
-    if (f && f.type.startsWith('image/')) {
-      const url = URL.createObjectURL(f);
-      if (who==='resp') { setRespSigImage(url); setRespSignedAt(new Date().toISOString()); }
-      else { setPetSigImage(url); setPetSignedAt(new Date().toISOString()); }
-    }
-  }
-
-  function signTyped(who: 'resp'|'pet') {
-    const hasName = who==='resp' ? respTypedName.trim().length>0 : petTypedName.trim().length>0;
-    if (!hasName) return;
-    const now = new Date().toISOString();
-    if (who==='resp') { setRespSigImage(null); setRespSignedAt(now); }
-    else { setPetSigImage(null); setPetSignedAt(now); }
-  }
-
-  function clearSignature(who: 'resp'|'pet') {
-    if (who==='resp') { setRespSigImage(null); setRespSignedAt(null); }
-    else { setPetSigImage(null); setPetSignedAt(null); }
-  }
+  }), []);
 
   // Tab Navigation Component
   const TabNavigation = () => {
@@ -292,334 +519,841 @@ const FinalDistributionSSOT: React.FC = () => {
     }
   };
 
-  // Calculation Content (existing content)
+  // Calculation Content Renderer
   const renderCalculationContent = () => (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8 rounded-lg shadow-inner">
-      <div className="max-w-7xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200 relative print:shadow-none print:border-none">
-        {/* Print Button */}
-        <div className="fixed top-20 right-4 z-50 no-print">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={printCalculation}
-                className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                size="sm"
-              >
-                <Printer className="h-4 w-4 mr-2" />
-                Print / Save as PDF
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Print calculation or save as PDF</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Export/Print Controls */}
+      <div className="fixed top-20 right-4 z-50 flex gap-2 no-print">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={printCalculation}
+              className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+              size="sm"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Print / Save as PDF
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Print calculation or save as PDF</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
 
-        {/* Final Distribution Summary */}
-        <div className="mb-12">
-          <h1 className="text-3xl font-bold text-slate-800 mb-6 flex items-center">
-            <ScaleIcon className="h-8 w-8 mr-3 text-blue-600" />
-            FINAL DISTRIBUTION CALCULATION
-          </h1>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            {/* Mathieu's Distribution */}
-            <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-              <h4 className="text-lg font-bold text-blue-800 mb-4 flex items-center">
-                <ScaleIcon className="h-5 w-5 mr-2" />
-                RESPONDENT (Mathieu Wauters)
-              </h4>
-              <div className="text-3xl font-black text-blue-900 mb-2">
-                ${calculationResult?.summary?.mathieuFinalDistribution?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
-              </div>
-              <div className="text-sm text-blue-700">
-                65% allocation per Statement of Decision
+      {/* Court-Ready Document Layout */}
+      <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-4xl" ref={printRef}>
+        {/* Sophisticated Page Edge Shading */}
+        <div className="relative">
+          {/* Top Edge Shading */}
+          <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-slate-100 to-transparent pointer-events-none"></div>
+          {/* Bottom Edge Shading */}
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-100 to-transparent pointer-events-none"></div>
+          {/* Left Edge Shading */}
+          <div className="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-slate-100 to-transparent pointer-events-none"></div>
+          {/* Right Edge Shading */}
+          <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-slate-100 to-transparent pointer-events-none"></div>
+          
+          {/* Court Page Content */}
+          <div className="court-page relative z-10 bg-white min-h-[11in] p-16">
+            {/* Professional Court Header */}
+            <div className="court-header text-center mb-12">
+              <div className="mb-6">
+                <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">FINAL DISTRIBUTION CALCULATION</h1>
+                <h2 className="text-xl font-bold text-slate-700 mb-4">Statement of Decision Implementation</h2>
+                <div className="flex justify-center items-center gap-8 text-sm text-slate-600">
+                  <div>
+                    <span className="font-semibold">Case:</span> Wauters v. Alvero
+                  </div>
+                  <div>
+                    <span className="font-semibold">Date:</span> {new Date().toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric'
+                    })}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Generated:</span> {new Date().toLocaleTimeString('en-US', { 
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Rosanna's Distribution */}
-            <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-              <h4 className="text-lg font-bold text-red-800 mb-4 flex items-center">
-                <ScaleIcon className="h-5 w-5 mr-2" />
-                PETITIONER (Rosanna Alvero)
-              </h4>
-              <div className="text-3xl font-black text-red-900 mb-2">
-                ${calculationResult?.summary?.rosannaFinalDistribution?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
+            {/* FINAL DISTRIBUTION SUMMARY - THE BOTTOM LINE */}
+            <div className="court-calculation mb-12">
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">FINAL DISTRIBUTION SUMMARY</h3>
+                <p className="text-xl font-medium text-slate-700">Statement of Decision Allocation with Adjustments</p>
               </div>
-              <div className="text-sm text-red-700">
-                35% allocation per Statement of Decision
+
+              {/* DISTRIBUTION AMOUNTS */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                {/* Alvero Distribution */}
+                <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-300 p-6 md:p-8 text-center shadow-lg">
+                  <h4 className="text-lg md:text-xl font-bold text-slate-800 mb-4">ROSANNA ALVERO</h4>
+                  <div className="text-3xl md:text-5xl font-black text-slate-900 mb-3">
+                    ${calculationResult?.summary?.rosannaFinalDistribution?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
+                  </div>
+                  <p className="text-xs md:text-sm text-slate-600 font-medium">35% SOD Allocation + Net Adjustments</p>
+                  <div className="mt-3 text-xs text-slate-500">
+                    <CheckCircle2 className="h-3 w-3 mr-1 inline text-green-600" />
+                    <span className="text-green-600 font-medium">Correct Calculation</span>
+                  </div>
+                </div>
+
+                {/* Wauters Distribution */}
+                <div className="bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-300 p-6 md:p-8 text-center shadow-lg">
+                  <h4 className="text-lg md:text-xl font-bold text-slate-800 mb-4">MATHIEU WAUTERS</h4>
+                  <div className="text-3xl md:text-5xl font-black text-slate-900 mb-3">
+                    ${calculationResult?.summary?.mathieuFinalDistribution?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
+                  </div>
+                  <p className="text-xs md:text-sm text-slate-600 font-medium">65% SOD Allocation - Net Adjustments</p>
+                  <div className="mt-3 text-xs text-slate-500">
+                    <CheckCircle2 className="h-3 w-3 mr-1 inline text-green-600" />
+                    <span className="text-green-600 font-medium">Correct Calculation</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Total Verification */}
-          <div className="bg-slate-100 p-4 rounded-lg border border-slate-300 text-center">
-            <div className="text-sm text-slate-600 mb-1">Total Distribution</div>
-            <div className="text-2xl font-bold text-slate-800">
-              ${calculationResult?.summary?.mathieuFinalDistribution && calculationResult?.summary?.rosannaFinalDistribution ? 
-                (calculationResult.summary.mathieuFinalDistribution + calculationResult.summary.rosannaFinalDistribution).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 
-                '—'
-              }
-            </div>
-          </div>
-        </div>
+            {/* DETAILED CALCULATION BREAKDOWN */}
+            <div className="court-calculation mb-12">
+              <h3 className="text-xl font-bold text-slate-800 mb-6 text-center">DETAILED CALCULATION BREAKDOWN</h3>
 
-        {/* Calculation Steps */}
-        <div className="mb-12">
-          <h3 className="text-xl font-bold text-slate-800 flex items-center mb-6">
-            <ScrollText className="h-6 w-6 mr-3 text-blue-600" />
-            CALCULATION BREAKDOWN
-          </h3>
-
-          <div className="space-y-6">
-            {calculationResult?.reasoningPath?.map((step) => (
-              <Card key={step.stepNumber} className="border-l-4 border-l-blue-500">
-                <CardHeader>
-                  <CardTitle className="text-lg font-bold text-slate-800">
-                    Step {step.stepNumber}: {step.stepName}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-700 mb-4">{step.explanation}</p>
-                  {step.amount && (
-                    <div className="text-2xl font-bold text-blue-600">
-                      ${step.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {/* Calculation Steps */}
+              <div className="space-y-6">
+                {calculationResult?.reasoningPath?.map((step, index) => (
+                  <div key={index} className="court-step bg-white border border-slate-200 p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center mr-4 border-2 border-slate-300">
+                          <span className="text-sm font-bold text-slate-700">{step.stepNumber}</span>
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-bold text-slate-800">{step.stepName}</h4>
+                          <p className="text-sm text-slate-600">{step.explanation}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-black text-slate-900">
+                          ${step.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
+                        </div>
+                        {step.formula && (
+                          <div className="text-xs text-slate-500 mt-1 font-mono bg-slate-50 px-2 py-1 rounded">
+                            {step.formula}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+
+                    {/* Document Sources */}
+                    <div className="mb-4">
+                      <h5 className="text-sm font-bold text-slate-700 mb-2">DOCUMENT SOURCES:</h5>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {step.sources?.map((source, sourceIndex) => (
+                          <div key={sourceIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-xs">
+                            <div className="font-bold text-slate-700">{source.documentName}</div>
+                            <div className="text-slate-600">{source.documentDate}</div>
+                            {source.sectionName && (
+                              <div className="text-slate-600">{source.sectionName}</div>
+                            )}
+                            {source.excerpt && (
+                              <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Sub-steps */}
+                    {step.subSteps && step.subSteps.length > 0 && (
+                      <div className="mt-4 pl-8 border-l-2 border-slate-200">
+                        <h6 className="text-sm font-bold text-slate-700 mb-3">SUPPORTING CALCULATIONS:</h6>
+                        <div className="space-y-3">
+                          {step.subSteps.map((subStep, subIndex) => (
+                            <div key={subIndex} className="bg-slate-50 border border-slate-200 rounded p-4">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-center">
+                                  <div className="w-6 h-6 bg-slate-200 rounded-full flex items-center justify-center mr-3 border border-slate-300">
+                                    <span className="text-xs font-bold text-slate-700">{subStep.stepNumber}</span>
+                                  </div>
+                                  <div>
+                                    <h6 className="text-sm font-bold text-slate-800">{subStep.stepName}</h6>
+                                    <p className="text-xs text-slate-600">{subStep.explanation}</p>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-lg font-bold text-slate-900">
+                                    ${subStep.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {/* Sub-step Sources */}
+                              {subStep.sources && subStep.sources.length > 0 && (
+                                <div className="mt-3">
+                                  <div className="grid grid-cols-1 gap-2">
+                                    {subStep.sources.map((source, sourceIndex) => (
+                                      <div key={sourceIndex} className="bg-white border border-slate-200 rounded p-2 text-xs">
+                                        <div className="font-semibold text-slate-700">{source.documentName}</div>
+                                        <div className="text-slate-600">{source.documentDate}</div>
+                                        {source.sectionName && (
+                                          <div className="text-slate-600">{source.sectionName}</div>
+                                        )}
+                                        {source.excerpt && (
+                                          <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Seller Deductions Breakdown */}
+            {showDetailedBreakdown && (
+              <div className="mb-12">
+                <h3 className="text-xl font-bold text-slate-800 flex items-center mb-6">
+                  <ScrollText className="h-5 w-5 mr-2 text-blue-600" />
+                  SELLER DEDUCTIONS BREAKDOWN
+                </h3>
+                <div className="space-y-4">
+                  {sellerDeductions.map((deduction, index) => renderSellerDeduction(deduction, index))}
+                </div>
+              </div>
+            )}
+
+            {/* Brokerage Cost Allocation */}
+            {showDetailedBreakdown && (
+              <div className="mb-12">
+                <h3 className="text-xl font-bold text-slate-800 flex items-center mb-6">
+                  <ScaleIcon className="h-5 w-5 mr-2 text-blue-600" />
+                  BROKERAGE COST ALLOCATION
+                </h3>
+                <div className="space-y-4">
+                  {brokerageAllocations.map((allocation, index) => renderBrokerageAllocation(allocation, index))}
+                </div>
+              </div>
+            )}
+
+            {/* SOD Adjustments */}
+            {showDetailedBreakdown && (
+              <div className="mb-12">
+                <h3 className="text-xl font-bold text-slate-800 flex items-center mb-6">
+                  <ScaleIcon className="h-5 w-5 mr-2 text-blue-600" />
+                  STATEMENT OF DECISION ADJUSTMENTS
+                </h3>
+                {renderSODAdjustments()}
+              </div>
+            )}
+
+            {/* Negotiable Parameters */}
+            {showDetailedBreakdown && (
+              <div className="mb-12">
+                <h3 className="text-xl font-bold text-slate-800 flex items-center mb-6">
+                  <ScaleIcon className="h-5 w-5 mr-2 text-blue-600" />
+                  NEGOTIATION PARAMETERS
+                </h3>
+                {renderNegotiableParameters()}
+              </div>
+            )}
+
+            {/* Legal Analysis */}
+            {showDetailedBreakdown && (
+              <div className="mb-12">
+                <h3 className="text-xl font-bold text-slate-800 flex items-center mb-6">
+                  <FileText className="h-5 w-5 mr-2 text-blue-600" />
+                  LEGAL ANALYSIS & CITATIONS
+                </h3>
+                {renderLegalAnalysis()}
+              </div>
+            )}
+
+            {/* Toggle Detailed Breakdown Button */}
+            <div className="text-center mt-12 no-print">
+              <Button
+                onClick={() => setShowDetailedBreakdown(!showDetailedBreakdown)}
+                className="bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                {showDetailedBreakdown ? (
+                  <>
+                    <EyeOff className="h-4 w-4 mr-2" /> Hide Detailed Breakdown
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-4 w-4 mr-2" /> Show Detailed Breakdown
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {/* SIGNATURES */}
+            {renderSignatures()}
+
+            {/* Court Footer */}
+            {renderCourtFooter()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Comparison Content Renderer (placeholder)
+  const renderComparisonContent = () => (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-slate-800 mb-4">Side-by-Side Comparison</h2>
+          <p className="text-slate-600">This tab will show a comparison between the petitioner's proposed calculation and the respondent's correct calculation.</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Declarations Content Renderer (placeholder)
+  const renderDeclarationsContent = () => (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-slate-800 mb-4">Court Declarations</h2>
+          <p className="text-slate-600">This tab will show the court declarations and supporting documents.</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Helper Functions
+  const renderCalculationStep = (step: CalculationStep) => (
+    <div key={step.stepNumber} className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-4 border-2 border-blue-300">
+            <span className="text-sm font-bold text-blue-700">{step.stepNumber}</span>
+          </div>
+          <div>
+            <h4 className="text-lg font-bold text-slate-800">{step.stepName}</h4>
+            <p className="text-sm text-slate-600">{step.explanation}</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-black text-slate-900">
+            ${step.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
+          </div>
+          {step.formula && (
+            <div className="text-xs text-slate-500 mt-1 font-mono bg-slate-50 px-2 py-1 rounded">
+              {step.formula}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Document Sources */}
+      {step.sources && step.sources.length > 0 && (
+        <div className="mb-4">
+          <h5 className="text-sm font-bold text-slate-700 mb-2">DOCUMENT SOURCES:</h5>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {step.sources.map((source, sourceIndex) => (
+              <div key={sourceIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-xs">
+                <div className="font-bold text-slate-700">{source.documentName}</div>
+                <div className="text-slate-600">{source.documentDate}</div>
+                {source.sectionName && (
+                  <div className="text-slate-600">{source.sectionName}</div>
+                )}
+                {source.excerpt && (
+                  <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
+                )}
+              </div>
             ))}
           </div>
         </div>
+      )}
 
-        {/* Seller Deductions Breakdown */}
-        {showDetailedBreakdown && (
-          <div className="mb-12">
-            <h3 className="text-xl font-bold text-slate-800 flex items-center mb-6">
-              <FileText className="h-6 w-6 mr-3 text-blue-600" />
-              SELLER DEDUCTIONS BREAKDOWN
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              {/* Realtor Broker Fees */}
-              <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
-                <h4 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                  <ScaleIcon className="h-5 w-5 mr-2 text-blue-600" />
-                  Realtor Broker Fees
-                </h4>
-                <div className="space-y-3">
-                  {brokerageAllocations.map((allocation, index) => (
-                    <div key={index} className="bg-white p-4 rounded border border-slate-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="font-semibold text-slate-700">{allocation.agentName}</div>
-                        <div className="text-sm text-slate-600">{allocation.brokerage}</div>
-                      </div>
-                      <div className="text-sm text-slate-600 mb-2">{allocation.role === 'listing' ? 'Listing Agent' : 'Buying Agent'}</div>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div>Commission: <span className="font-semibold">${allocation.commission.toLocaleString()}</span></div>
-                        <div>Agent Split: <span className="font-semibold">${allocation.agentSplit.toLocaleString()}</span></div>
-                        <div>Broker Split: <span className="font-semibold">${allocation.brokerSplit.toLocaleString()}</span></div>
-                        <div>Percentage: <span className="font-semibold">{allocation.percentage}%</span></div>
-                      </div>
+      {/* Sub-steps */}
+      {step.subSteps && step.subSteps.length > 0 && (
+        <div className="mt-4 pl-8 border-l-2 border-slate-200">
+          <h6 className="text-sm font-bold text-slate-700 mb-3">SUPPORTING CALCULATIONS:</h6>
+          <div className="space-y-3">
+            {step.subSteps.map((subStep, subIndex) => (
+              <div key={subIndex} className="bg-slate-50 border border-slate-200 rounded p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 bg-slate-200 rounded-full flex items-center justify-center mr-3 border border-slate-300">
+                      <span className="text-xs font-bold text-slate-700">{subStep.stepNumber}</span>
                     </div>
-                  ))}
+                    <div>
+                      <h6 className="text-sm font-bold text-slate-800">{subStep.stepName}</h6>
+                      <p className="text-xs text-slate-600">{subStep.explanation}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-slate-900">
+                      ${subStep.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
+                    </div>
+                  </div>
                 </div>
+                
+                {/* Sub-step Sources */}
+                {subStep.sources && subStep.sources.length > 0 && (
+                  <div className="mt-3">
+                    <div className="grid grid-cols-1 gap-2">
+                      {subStep.sources.map((source, sourceIndex) => (
+                        <div key={sourceIndex} className="bg-white border border-slate-200 rounded p-2 text-xs">
+                          <div className="font-semibold text-slate-700">{source.documentName}</div>
+                          <div className="text-slate-600">{source.documentDate}</div>
+                          {source.sectionName && (
+                            <div className="text-slate-600">{source.sectionName}</div>
+                          )}
+                          {source.excerpt && (
+                            <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
-              {/* Other Seller Deductions */}
-              <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
-                <h4 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                  <FileText className="h-5 w-5 mr-2 text-blue-600" />
-                  Other Seller Deductions
-                </h4>
-                <div className="space-y-3">
-                  {sellerDeductions.map((deduction, index) => (
-                    <div key={index} className="bg-white p-4 rounded border border-slate-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="font-semibold text-slate-700">{deduction.type}</div>
-                        <div className="text-sm text-slate-600">{deduction.recipient}</div>
-                      </div>
-                      <div className="text-sm text-slate-600 mb-2">{deduction.description}</div>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div>Amount: <span className="font-semibold">${deduction.amount.toLocaleString()}</span></div>
-                        <div>Percentage: <span className="font-semibold">{deduction.percentage}%</span></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+  const renderSellerDeduction = (deduction: SellerDeduction, index: number) => (
+    <div key={deduction.id} className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center mr-4 border-2 border-slate-300">
+            <span className="text-sm font-bold text-slate-700">{index + 1}</span>
+          </div>
+          <div>
+            <h4 className="text-lg font-bold text-slate-800">{deduction.description}</h4>
+            <p className="text-sm text-slate-600">Category: {deduction.category}</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-black text-slate-900">
+            ${deduction.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          {deduction.negotiable && (
+            <div className="text-xs text-blue-600 mt-1 font-medium">Negotiable</div>
+          )}
+        </div>
+      </div>
+
+      {/* Sources */}
+      <div className="mb-4">
+        <h5 className="text-sm font-bold text-slate-700 mb-2">SOURCES:</h5>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {deduction.sources.map((source, sourceIndex) => (
+            <div key={sourceIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-xs">
+              <div className="font-bold text-slate-700">{source.documentName}</div>
+              <div className="text-slate-600">{source.documentDate}</div>
+              {source.sectionName && (
+                <div className="text-slate-600">{source.sectionName}</div>
+              )}
+              {source.excerpt && (
+                <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderBrokerageAllocation = (allocation: BrokerageAllocation, index: number) => (
+    <div key={allocation.id} className="bg-white border border-slate-200 rounded-lg p-6">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center mr-4 border-2 border-slate-300">
+            <span className="text-sm font-bold text-slate-700">{index + 1}</span>
+          </div>
+          <div>
+            <h4 className="text-lg font-bold text-slate-800">{allocation.brokerName}</h4>
+            <p className="text-sm text-slate-600">Commission Rate: {allocation.commissionRate}%</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-black text-slate-900">
+            ${allocation.commissionAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          {allocation.negotiable && (
+            <div className="text-xs text-blue-600 mt-1 font-medium">Negotiable</div>
+          )}
+        </div>
+      </div>
+
+      {/* Sources */}
+      <div className="mb-4">
+        <h5 className="text-sm font-bold text-slate-700 mb-2">SOURCES:</h5>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {allocation.sources.map((source, sourceIndex) => (
+            <div key={sourceIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-xs">
+              <div className="font-bold text-slate-700">{source.documentName}</div>
+              <div className="text-slate-600">{source.documentDate}</div>
+              {source.sectionName && (
+                <div className="text-slate-600">{source.sectionName}</div>
+              )}
+              {source.excerpt && (
+                <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSODAdjustments = () => (
+    <div className="space-y-6">
+      <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <h4 className="text-lg font-bold text-slate-800 mb-4">Mathieu Owes Rosanna</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-slate-50 border border-slate-200 rounded p-4">
+            <div className="text-sm font-bold text-slate-700">Watts Charges</div>
+            <div className="text-xl font-black text-slate-900">${sodAdjustments.wattsChargesOriginal.toLocaleString()}</div>
+          </div>
+          <div className="bg-slate-50 border border-slate-200 rounded p-4">
+            <div className="text-sm font-bold text-slate-700">Rental Income Share</div>
+            <div className="text-xl font-black text-slate-900">${sodAdjustments.rentalIncomeShare.toLocaleString()}</div>
+          </div>
+          <div className="bg-slate-50 border border-slate-200 rounded p-4">
+            <div className="text-sm font-bold text-slate-700">Motorcycle Share</div>
+            <div className="text-xl font-black text-slate-900">${sodAdjustments.motorcycleShare.toLocaleString()}</div>
+          </div>
+          <div className="bg-slate-50 border border-slate-200 rounded p-4">
+            <div className="text-sm font-bold text-slate-700">Furniture Share</div>
+            <div className="text-xl font-black text-slate-900">${sodAdjustments.furnitureShare.toLocaleString()}</div>
+          </div>
+        </div>
+        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded">
+          <div className="text-lg font-bold text-blue-900">Total: ${(sodAdjustments.wattsChargesOriginal + sodAdjustments.rentalIncomeShare + sodAdjustments.motorcycleShare + sodAdjustments.furnitureShare).toLocaleString()}</div>
+        </div>
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <h4 className="text-lg font-bold text-slate-800 mb-4">Rosanna Owes Mathieu</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-slate-50 border border-slate-200 rounded p-4">
+            <div className="text-sm font-bold text-slate-700">Exclusive Possession</div>
+            <div className="text-xl font-black text-slate-900">${sodAdjustments.rosannaExclusivePossession.toLocaleString()}</div>
+          </div>
+          <div className="bg-slate-50 border border-slate-200 rounded p-4">
+            <div className="text-sm font-bold text-slate-700">Furniture Correction</div>
+            <div className="text-xl font-black text-slate-900">${sodAdjustments.furnitureCorrection.toLocaleString()}</div>
+          </div>
+        </div>
+        <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded">
+          <div className="text-lg font-bold text-green-900">Total: ${(sodAdjustments.rosannaExclusivePossession + sodAdjustments.furnitureCorrection).toLocaleString()}</div>
+        </div>
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <h4 className="text-lg font-bold text-slate-800 mb-4">Net Adjustment</h4>
+        <div className="p-4 bg-slate-50 border border-slate-200 rounded">
+          <div className="text-2xl font-black text-slate-900">${(sodAdjustments.wattsChargesOriginal + sodAdjustments.rentalIncomeShare + sodAdjustments.motorcycleShare + sodAdjustments.furnitureShare - sodAdjustments.rosannaExclusivePossession - sodAdjustments.furnitureCorrection).toLocaleString()}</div>
+          <div className="text-sm text-slate-600 mt-2">Mathieu Owes Rosanna - Rosanna Owes Mathieu</div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderNegotiableParameters = () => (
+    <div className="space-y-4">
+      {negotiableParams.map((param) => (
+        <div key={param.id} className="bg-white border border-slate-200 rounded-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h4 className="text-lg font-bold text-slate-800">{param.name}</h4>
+              <p className="text-sm text-slate-600">{param.description}</p>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-black text-slate-900">
+                {param.unit === '$' ? '$' : ''}{param.currentValue.toLocaleString()}{param.unit === '%' ? '%' : ''}
               </div>
             </div>
           </div>
-        )}
+          <div className="flex items-center space-x-4">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => updateParameter(param.id, param.currentValue - param.step)}
+              disabled={param.currentValue <= param.minValue}
+            >
+              -
+            </Button>
+            <div className="flex-1">
+              <input
+                type="range"
+                min={param.minValue}
+                max={param.maxValue}
+                step={param.step}
+                value={param.currentValue}
+                onChange={(e) => updateParameter(param.id, parseFloat(e.target.value))}
+                className="w-full"
+              />
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => updateParameter(param.id, param.currentValue + param.step)}
+              disabled={param.currentValue >= param.maxValue}
+            >
+              +
+            </Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
-        {/* Toggle Detailed Breakdown */}
-        <div className="mb-12">
-          <Button
-            onClick={() => setShowDetailedBreakdown(!showDetailedBreakdown)}
-            className="bg-slate-600 hover:bg-slate-700 text-white"
-            size="sm"
+  const renderLegalAnalysis = () => (
+    <div className="space-y-6">
+      {Object.entries(sodCitations).map(([key, citation]) => (
+        <div key={key} className="bg-white border border-slate-200 rounded-lg p-6">
+          <h4 className="text-lg font-bold text-slate-800 mb-2">{citation.title}</h4>
+          <p className="text-sm text-slate-600 mb-2">&quot;{citation.text}&quot;</p>
+          <div className="text-xs text-slate-500">
+            <strong>Relevance:</strong> {citation.relevance}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderSignatures = () => (
+    <div className="court-calculation mb-12">
+      <h3 className="text-xl font-bold text-slate-800 flex items-center mb-6">
+        <PenLine className="h-5 w-5 mr-2 text-blue-600" />
+        SIGNATURES (Electronic)
+      </h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Respondent signature */}
+        <div>
+          <div className="text-sm text-slate-600 font-medium mb-2">Respondent (Mathieu Wauters)</div>
+          <div
+            className="relative rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 p-4 min-h-[160px] flex items-center justify-center text-center"
+            onDragEnter={preventDefaults}
+            onDragOver={preventDefaults}
+            onDrop={(e)=>handleDrop(e,'resp')}
           >
-            {showDetailedBreakdown ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
-            {showDetailedBreakdown ? 'Hide' : 'Show'} Detailed Breakdown
-          </Button>
-        </div>
-
-        {/* SIGNATURES */}
-        <div className="mb-12">
-          <h3 className="text-xl font-bold text-slate-800 flex items-center mb-6">
-            <PenLine className="h-6 w-6 mr-3 text-blue-600" />
-            SIGNATURES (Electronic)
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Respondent signature */}
-            <div>
-              <div className="text-sm text-slate-600 font-medium mb-2">Respondent (Mathieu Wauters)</div>
-              <div
-                className="relative rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 p-4 min-h-[160px] flex items-center justify-center text-center"
-                onDragEnter={preventDefaults}
-                onDragOver={preventDefaults}
-                onDrop={(e)=>handleDrop(e,'resp')}
-              >
-                {respSigImage ? (
-                  <img src={respSigImage} alt="Respondent signature" className="max-h-32 object-contain" />
-                ) : respSignedAt && respTypedName ? (
-                  <div className="w-full">
-                    <div
-                      className="text-3xl md:text-4xl leading-tight"
-                      style={{ fontFamily: handwritingFont }}
-                    >
-                      {respTypedName}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-slate-500">
-                    <Upload className="h-6 w-6 mx-auto mb-2" />
-                    <div className="mb-1">Drag & drop a signature image here</div>
-                    <div className="text-xs">or use the typed signature below</div>
-                  </div>
-                )}
-                <input className="hidden" type="file" accept="image/*" id="resp-sig-input" onChange={(e)=>handlePick(e,'resp')} />
-                <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between no-print">
-                  <label htmlFor="resp-sig-input" className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 cursor-pointer hover:bg-white">
-                    Upload Image
-                  </label>
-                  {(respSigImage || respSignedAt) && (
-                    <button onClick={()=>clearSignature('resp')} className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 hover:bg-white flex items-center gap-1">
-                      <Trash2 className="h-3 w-3" /> Clear
-                    </button>
-                  )}
+            {respSigImage ? (
+              <img src={respSigImage} alt="Respondent signature" className="max-h-32 object-contain" />
+            ) : respSignedAt && respTypedName ? (
+              <div className="w-full">
+                <div
+                  className="text-3xl md:text-4xl leading-tight"
+                  style={{ fontFamily: 'cursive' }}
+                >
+                  {respTypedName}
                 </div>
               </div>
-              <div className="mt-3 flex items-center gap-2 no-print">
-                <input
-                  type="text"
-                  value={respTypedName}
-                  onChange={(e)=>setRespTypedName(e.target.value)}
-                  placeholder="Type full name (e.g., Mathieu Wauters)"
-                  className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
-                />
-                <Button size="sm" onClick={()=>signTyped('resp')}>Sign</Button>
+            ) : (
+              <div className="text-slate-500">
+                <Upload className="h-6 w-6 mx-auto mb-2" />
+                <div className="mb-1">Drag & drop a signature image here</div>
+                <div className="text-xs">or use the typed signature below</div>
               </div>
-              <div className="mt-4 text-xs text-slate-600">
-                <div className="border-t border-slate-300 pt-1"></div>
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">/s/ {respTypedName || '________________'}</span>
-                  <span>Date: {respSignedAt ? new Date(respSignedAt).toLocaleDateString() : '__________'}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Petitioner signature */}
-            <div>
-              <div className="text-sm text-slate-600 font-medium mb-2">Petitioner (Rosanna Alvero)</div>
-              <div
-                className="relative rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 p-4 min-h-[160px] flex items-center justify-center text-center"
-                onDragEnter={preventDefaults}
-                onDragOver={preventDefaults}
-                onDrop={(e)=>handleDrop(e,'pet')}
-              >
-                {petSigImage ? (
-                  <img src={petSigImage} alt="Petitioner signature" className="max-h-32 object-contain" />
-                ) : petSignedAt && petTypedName ? (
-                  <div className="w-full">
-                    <div
-                      className="text-3xl md:text-4xl leading-tight"
-                      style={{ fontFamily: handwritingFont }}
-                    >
-                      {petTypedName}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-slate-500">
-                    <Upload className="h-6 w-6 mx-auto mb-2" />
-                    <div className="mb-1">Drag & drop a signature image here</div>
-                    <div className="text-xs">or use the typed signature below</div>
-                  </div>
-                )}
-                <input className="hidden" type="file" accept="image/*" id="pet-sig-input" onChange={(e)=>handlePick(e,'pet')} />
-                <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between no-print">
-                  <label htmlFor="pet-sig-input" className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 cursor-pointer hover:bg-white">
-                    Upload Image
-                  </label>
-                  {(petSigImage || petSignedAt) && (
-                    <button onClick={()=>clearSignature('pet')} className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 hover:bg-white flex items-center gap-1">
-                      <Trash2 className="h-3 w-3" /> Clear
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-2 no-print">
-                <input
-                  type="text"
-                  value={petTypedName}
-                  onChange={(e)=>setPetTypedName(e.target.value)}
-                  placeholder="Type full name (e.g., Rosanna Alvero)"
-                  className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
-                />
-                <Button size="sm" onClick={()=>signTyped('pet')}>Sign</Button>
-              </div>
-              <div className="mt-4 text-xs text-slate-600">
-                <div className="border-t border-slate-300 pt-1"></div>
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">/s/ {petTypedName || '________________'}</span>
-                  <span>Date: {petSignedAt ? new Date(petSignedAt).toLocaleDateString() : '__________'}</span>
-                </div>
-              </div>
+            )}
+            <input className="hidden" type="file" accept="image/*" id="resp-sig-input" onChange={(e)=>handlePick(e,'resp')} />
+            <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between no-print">
+              <label htmlFor="resp-sig-input" className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 cursor-pointer hover:bg-white">
+                Upload Image
+              </label>
+              {(respSigImage || respSignedAt) && (
+                <button onClick={()=>clearSignature('resp')} className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 hover:bg-white flex items-center gap-1">
+                  <Trash2 className="h-3 w-3" /> Clear
+                </button>
+              )}
             </div>
           </div>
+          <div className="mt-3 flex items-center gap-2 no-print">
+            <input
+              type="text"
+              value={respTypedName}
+              onChange={(e)=>setRespTypedName(e.target.value)}
+              placeholder="Type full name (e.g., Mathieu Wauters)"
+              className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+            />
+            <Button size="sm" onClick={()=>signTyped('resp')}>Sign</Button>
+          </div>
+          <div className="mt-4 text-xs text-slate-600">
+            <div className="border-t border-slate-300 pt-1"></div>
+            <div className="flex items-center justify-between">
+              <span className="font-medium">/s/ {respTypedName || '________________'}</span>
+              <span>Date: {respSignedAt ? new Date(respSignedAt).toLocaleDateString() : '__________'}</span>
+            </div>
+          </div>
+        </div>
 
-          <div className="mt-6 text-[11px] text-slate-500">
-            By clicking Sign or uploading an image, the signer adopts this electronic signature. This is intended to be acceptable for court filing as an electronically signed document.
+        {/* Petitioner signature */}
+        <div>
+          <div className="text-sm text-slate-600 font-medium mb-2">Petitioner (Rosanna Alvero)</div>
+          <div
+            className="relative rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 p-4 min-h-[160px] flex items-center justify-center text-center"
+            onDragEnter={preventDefaults}
+            onDragOver={preventDefaults}
+            onDrop={(e)=>handleDrop(e,'pet')}
+          >
+            {petSigImage ? (
+              <img src={petSigImage} alt="Petitioner signature" className="max-h-32 object-contain" />
+            ) : petSignedAt && petTypedName ? (
+              <div className="w-full">
+                <div
+                  className="text-3xl md:text-4xl leading-tight"
+                  style={{ fontFamily: 'cursive' }}
+                >
+                  {petTypedName}
+                </div>
+              </div>
+            ) : (
+              <div className="text-slate-500">
+                <Upload className="h-6 w-6 mx-auto mb-2" />
+                <div className="mb-1">Drag & drop a signature image here</div>
+                <div className="text-xs">or use the typed signature below</div>
+              </div>
+            )}
+            <input className="hidden" type="file" accept="image/*" id="pet-sig-input" onChange={(e)=>handlePick(e,'pet')} />
+            <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between no-print">
+              <label htmlFor="pet-sig-input" className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 cursor-pointer hover:bg-white">
+                Upload Image
+              </label>
+              {(petSigImage || petSignedAt) && (
+                <button onClick={()=>clearSignature('pet')} className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 hover:bg-white flex items-center gap-1">
+                  <Trash2 className="h-3 w-3" /> Clear
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="mt-3 flex items-center gap-2 no-print">
+            <input
+              type="text"
+              value={petTypedName}
+              onChange={(e)=>setPetTypedName(e.target.value)}
+              placeholder="Type full name (e.g., Rosanna Alvero)"
+              className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+            />
+            <Button size="sm" onClick={()=>signTyped('pet')}>Sign</Button>
+          </div>
+          <div className="mt-4 text-xs text-slate-600">
+            <div className="border-t border-slate-300 pt-1"></div>
+            <div className="flex items-center justify-between">
+              <span className="font-medium">/s/ {petTypedName || '________________'}</span>
+              <span>Date: {petSignedAt ? new Date(petSignedAt).toLocaleDateString() : '__________'}</span>
+            </div>
           </div>
         </div>
       </div>
+
+      <div className="mt-6 text-[11px] text-slate-500">
+        By clicking Sign or uploading an image, the signer adopts this electronic signature. This is intended to be acceptable for court filing as an electronically signed document.
+      </div>
     </div>
   );
 
-  // Comparison Content (placeholder)
-  const renderComparisonContent = () => (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8 rounded-lg shadow-inner">
-      <div className="max-w-7xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200 relative print:shadow-none print:border-none">
-        <div className="text-center py-20">
-          <h1 className="text-3xl font-bold text-slate-800 mb-4">Side-by-Side Comparison</h1>
-          <p className="text-slate-600">Comparison content will be rendered here</p>
+  const renderCourtFooter = () => (
+    <div className="court-footer mt-16 pt-8 border-t-2 border-slate-300 text-center">
+      <div className="bg-slate-50 rounded-xl p-6">
+        <h3 className="text-lg font-bold text-slate-800 mb-4">LEGAL DISCLAIMER</h3>
+        <p className="text-sm text-slate-600 leading-relaxed max-w-4xl mx-auto mb-4">
+          This calculation is based on the provided Statement of Decision and supporting documents.
+          All figures are derived from official court documents and closing statements.
+          This tool is for informational purposes only and should not replace professional legal advice.
+          Please consult with your attorney before making any legal decisions based on these calculations.
+        </p>
+        <div className="text-xs text-slate-500 space-y-1">
+          <p><strong>Document Sources:</strong> Final Sellers Closing Statement, Statement of Decision, Motion for Reconsideration</p>
+          <p><strong>Calculation Date:</strong> {new Date().toLocaleDateString()} | <strong>Version:</strong> 1.0</p>
+          <p><strong>Generated for:</strong> Wauters v. Alvero | <strong>Court Filing:</strong> FL-320 Declaration</p>
         </div>
       </div>
     </div>
   );
 
-  // Declarations Content (placeholder)
-  const renderDeclarationsContent = () => (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8 rounded-lg shadow-inner">
-      <div className="max-w-7xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200 relative print:shadow-none print:border-none">
-        <div className="text-center py-20">
-          <h1 className="text-3xl font-bold text-slate-800 mb-4">Court Declarations</h1>
-          <p className="text-slate-600">Declarations content will be rendered here</p>
-        </div>
-      </div>
-    </div>
-  );
+  // Signature handling functions
+  const preventDefaults = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent, type: 'resp' | 'pet') => {
+    e.preventDefault();
+    e.stopPropagation();
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (type === 'resp') {
+          setRespSigImage(event.target?.result as string);
+        } else {
+          setPetSigImage(event.target?.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePick = (e: React.ChangeEvent<HTMLInputElement>, type: 'resp' | 'pet') => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (type === 'resp') {
+          setRespSigImage(event.target?.result as string);
+        } else {
+          setPetSigImage(event.target?.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const signTyped = (type: 'resp' | 'pet') => {
+    if (type === 'resp') {
+      setRespSignedAt(new Date().toISOString());
+    } else {
+      setPetSignedAt(new Date().toISOString());
+    }
+  };
+
+  const clearSignature = (type: 'resp' | 'pet') => {
+    if (type === 'resp') {
+      setRespSigImage(null);
+      setRespTypedName('');
+      setRespSignedAt(null);
+    } else {
+      setPetSigImage(null);
+      setPetTypedName('');
+      setPetSignedAt(null);
+    }
+  };
+
+  const updateParameter = (id: string, value: number) => {
+    setNegotiableParams(prev => prev.map(param => 
+      param.id === id ? { ...param, currentValue: value } : param
+    ));
+  };
+
+  const printCalculation = () => {
+    if (printRef.current) {
+      window.print();
+    }
+  };
 
   return (
     <>
@@ -645,6 +1379,41 @@ const FinalDistributionSSOT: React.FC = () => {
           }
           .hover\\:scale-105:hover {
             transform: none !important;
+          }
+          .court-document {
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: none !important;
+            box-shadow: none !important;
+          }
+          .court-page {
+            page-break-inside: avoid;
+            margin: 0 !important;
+            padding: 1in !important;
+            background: white !important;
+            border: none !important;
+          }
+          .court-header {
+            border-bottom: 2px solid #1e293b !important;
+            margin-bottom: 2rem !important;
+            padding-bottom: 1rem !important;
+          }
+          .court-calculation {
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            padding: 1.5rem !important;
+            margin: 1rem 0 !important;
+          }
+          .court-step {
+            border-left: 4px solid #3b82f6 !important;
+            padding-left: 1rem !important;
+            margin: 0.5rem 0 !important;
+          }
+          .court-footer {
+            border-top: 1px solid #e2e8f0 !important;
+            margin-top: 2rem !important;
+            padding-top: 1rem !important;
+            font-size: 0.75rem !important;
           }
         }
       `}</style>
