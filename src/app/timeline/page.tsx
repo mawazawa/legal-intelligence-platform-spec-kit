@@ -6,9 +6,7 @@ import {
   Building,
   FileText,
   AlertTriangle,
-  Users,
   CheckCircle,
-  XCircle,
   Home,
   Gavel
 } from 'lucide-react';

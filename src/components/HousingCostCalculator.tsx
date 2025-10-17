@@ -18,7 +18,6 @@ import {
   CheckCircle,
   ChevronDown,
   ChevronRight,
-  Info,
   Scale,
   Receipt,
   TrendingUp,
@@ -35,11 +34,8 @@ import {
   ArrowUp,
   ArrowDown,
   Calendar,
-  Key,
-  CircleQuestionMark,
   Download,
-  Printer,
-  FileDown
+  Printer
 } from 'lucide-react';
 
 interface ClosingData {
