@@ -18,6 +18,13 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
+// Dynamic imports for heavy components
+const RechartsComponents = React.lazy(() => import('recharts').then(module => ({
+  default: () => null // Placeholder for now
+})));
+
+// Removed unused chart components following YAGNI principles
+
 // Types
 type TabType = 'calculation' | 'comparison' | 'declarations';
 
@@ -617,7 +624,7 @@ const FinalDistributionSSOT: React.FC = () => {
           <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-slate-100 to-transparent pointer-events-none"></div>
           
           {/* Court Page Content */}
-          <div className="court-page relative z-10 bg-white min-h-[11in] p-16 print-pleading">
+          <div className="court-page relative z-10 bg-white min-h-[11in] p-16 calculation">
             {/* Professional Court Header */}
             <div className="court-header text-center mb-12">
               <div className="mb-6">

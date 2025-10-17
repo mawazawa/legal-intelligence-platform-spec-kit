@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Printer } from 'lucide-react';
@@ -35,14 +35,27 @@ const RFOComparisonPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>('petitioner');
   const [ledger, setLedger] = useState<Record<string, unknown> | null>(null);
+  // Components are statically imported and mounted once; we toggle visibility for instant switching
 
-  // Load documents
+  // Load documents with parallel fetching
   useEffect(() => {
     const loadDocuments = async () => {
       try {
-        const rfoResponse = await fetch('/api/case-financials/source?file=petitioner_rfo');
-        if (rfoResponse.ok) {
-          const rfoData = await rfoResponse.json();
+        // Parallel fetch for better performance
+        const [rfoResponse, fl320Response, ledgerResponse] = await Promise.all([
+          fetch('/api/case-financials/source?file=petitioner_rfo'),
+          fetch('/api/case-financials/source?file=respondent_fl320'),
+          fetch('/api/case-financials/ledger', { cache: 'no-store' })
+        ]);
+
+        // Process responses in parallel
+        const [rfoData, fl320Data, ledgerData] = await Promise.all([
+          rfoResponse.ok ? rfoResponse.json() : null,
+          fl320Response.ok ? fl320Response.json() : null,
+          ledgerResponse.ok ? ledgerResponse.json() : null,
+        ]);
+
+        if (rfoData) {
           setPetitionerRFO({
             text: rfoData.text,
             meta: rfoData.meta,
@@ -50,9 +63,7 @@ const RFOComparisonPage: React.FC = () => {
           });
         }
 
-        const fl320Response = await fetch('/api/case-financials/source?file=respondent_fl320');
-        if (fl320Response.ok) {
-          const fl320Data = await fl320Response.json();
+        if (fl320Data) {
           setRespondentFL320({
             text: fl320Data.text,
             meta: fl320Data.meta,
@@ -60,8 +71,9 @@ const RFOComparisonPage: React.FC = () => {
           });
         }
 
-        const lr = await fetch('/api/case-financials/ledger', { cache: 'no-store' })
-        if (lr.ok) setLedger(await lr.json())
+        if (ledgerData) {
+          setLedger(ledgerData);
+        }
       } catch (error) {
         console.error('Error loading documents:', error);
       } finally {
@@ -76,7 +88,8 @@ const RFOComparisonPage: React.FC = () => {
     window.print();
   };
 
-  const comparisonPoints: ComparisonPoint[] = [
+  // Memoize comparison points to prevent recreation on every render
+  const comparisonPoints: ComparisonPoint[] = useMemo(() => [
     {
       id: 'net_proceeds_calculation',
       title: 'Net Proceeds Calculation',
@@ -130,18 +143,7 @@ const RFOComparisonPage: React.FC = () => {
     }
   ];
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'petitioner':
-        return <PetitionerView rfoContent={petitionerRFO} />;
-      case 'respondent':
-        return <RespondentView fl320Content={respondentFL320} ledger={ledger} />;
-      case 'comparison':
-        return <ComparisonView comparisonPoints={comparisonPoints} />;
-      default:
-        return null;
-    }
-  };
+  const isActive = (tab: TabType) => activeTab === tab;
 
   if (loading) {
     return (
@@ -229,8 +231,16 @@ const RFOComparisonPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* Tab Content */}
-              {renderTabContent()}
+              {/* Tab Content: keep all mounted; toggle visibility for instant switching */}
+              <div style={{ display: isActive('petitioner') ? 'block' : 'none' }}>
+                <PetitionerView rfoContent={petitionerRFO} />
+              </div>
+              <div style={{ display: isActive('respondent') ? 'block' : 'none' }}>
+                <RespondentView fl320Content={respondentFL320} ledger={ledger} />
+              </div>
+              <div style={{ display: isActive('comparison') ? 'block' : 'none' }}>
+                <ComparisonView comparisonPoints={comparisonPoints} />
+              </div>
             </div>
           </div>
         </div>

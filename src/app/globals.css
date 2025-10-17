@@ -30,9 +30,48 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Soft elevation */
+/* Enhanced elevation system */
 .soft-shadow {
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 1px rgba(15, 23, 42, 0.04);
+}
+
+.medium-shadow {
+  box-shadow: 0 4px 6px rgba(15, 23, 42, 0.07), 0 2px 4px rgba(15, 23, 42, 0.06);
+}
+
+.large-shadow {
+  box-shadow: 0 10px 15px rgba(15, 23, 42, 0.1), 0 4px 6px rgba(15, 23, 42, 0.05);
+}
+
+/* Apple-inspired glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced typography */
+.text-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Smooth animations */
+.smooth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.15);
 }
 
 /* Print layout helpers */
@@ -56,7 +95,7 @@ body {
     color: #000 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    font-family: "Times New Roman", Times, serif !important;
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
     font-size: 12pt;
   }
   .paper { box-shadow: none; border: none; padding: 0.6in; }
@@ -66,6 +105,28 @@ body {
   .avoid-break { break-inside: avoid; }
   a, a:visited { color: inherit; text-decoration: none; }
   a[href]::after { content: '' !important; }
+  
+  /* Legal documents only use Times New Roman */
+  .legal-document, .pleading-paper, .declaration {
+    font-family: "Times New Roman", Times, serif !important;
+  }
+  /* Pleading paper layout helpers */
+  .pleading-paper .pleading-gutter {
+    position: fixed;
+    top: 1in;
+    bottom: 1in;
+    left: 0.5in;
+    width: 0.6in;
+    color: #555;
+  }
+  .pleading-paper .pleading-gutter ol { list-style: none; margin: 0; padding: 0; font-size: 10pt; line-height: 1.2; }
+  .pleading-paper .pleading-gutter li { height: calc((100% - 0px) / 28); border-right: 1px solid #888; padding-right: 6px; text-align: right; }
+  .pleading-paper .pleading-body { margin-left: 1.3in; }
+  
+  /* Exhibits and cost breakdowns use modern sans-serif */
+  .exhibit, .cost-breakdown, .calculation {
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
+  }
 }
 
 /* Pleading/declaration screen preview font */

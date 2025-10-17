@@ -15,8 +15,6 @@ import {
   DollarSign,
   AlertTriangle,
   CheckCircle,
-  ChevronDown,
-  ChevronRight,
   Scale,
   Receipt,
   TrendingUp,
@@ -209,24 +207,6 @@ const HousingCostCalculator: React.FC = () => {
     // Other adjustments
     rosannaWithholding: 13694.62, // $13,694.62 FTB withholding
     mathieuTaxObligation: 25000.00, // Estimated $25,000
-  });
-
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    finalDistribution: false,
-    detailedBreakdown: false,
-    closingData: true,
-    mortgageBreakdown: true,
-    costAllocations: false,
-    legalAnalysis: false
-  });
-
-  const [negotiableParams, setNegotiableParams] = useState<NegotiableParameters>({
-    totalCommissionRate: 0.05, // 5% of sale price
-    listingAgentSplit: 0.5, // 50% of total commission
-    buyerAgentSplit: 0.5, // 50% of total commission
-    agentBrokerSplit: 0.7, // 70% agent, 30% brokerage
-    wattsChargesRate: 5000, // $5,000 per month
-    exclusivePossessionMonths: 6.7 // months for exclusive possession credit
   });
 
   const [realtorInfo] = useState<RealtorInfo[]>([
@@ -673,47 +653,7 @@ const HousingCostCalculator: React.FC = () => {
     };
   }, [closingData, mortgageBreakdown, sodAdjustments]);
 
-  const handleClosingDataChange = (field: keyof ClosingData, value: number) => {
-    setClosingData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleMortgageBreakdownChange = (field: keyof MortgageBreakdown, value: number) => {
-    setMortgageBreakdown(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleSODAdjustmentsChange = (field: keyof SODAdjustments, value: number) => {
-    setSodAdjustments(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const toggleSection = (section: string) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
-
-  const updateNegotiableParam = (param: keyof NegotiableParameters, value: number) => {
-    setNegotiableParams(prev => ({
-      ...prev,
-      [param]: value
-    }));
-  };
-
-  const adjustParam = (param: keyof NegotiableParameters, delta: number) => {
-    setNegotiableParams(prev => ({
-      ...prev,
-      [param]: Math.max(0, prev[param] + delta)
-    }));
-  };
+  // Removed unused handler functions following YAGNI principles
 
   const printCalculation = () => {
     window.print();
@@ -796,7 +736,7 @@ const HousingCostCalculator: React.FC = () => {
             <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-slate-100 to-transparent pointer-events-none"></div>
             
             {/* Court Page Content */}
-            <div className="court-page relative z-10 bg-white min-h-[11in] p-16">
+            <div className="court-page cost-breakdown relative z-10 bg-white min-h-[11in] p-16">
               {/* Professional Court Header */}
               <div className="court-header text-center mb-12">
                 <div className="mb-6">

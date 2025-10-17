@@ -15,9 +15,14 @@ const RotertDeclaration: React.FC = () => {
     console.log('Exporting declaration to PDF...');
   };
 
+  const lines = Array.from({ length: 28 }).map((_, i) => i + 1);
   return (
-    <div className="min-h-screen bg-white p-8 print:p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-white p-8 print:p-4 pleading-paper legal-document">
+      {/* Pleading gutter with line numbers (print) */}
+      <div className="pleading-gutter hidden print:block">
+        <ol>{lines.map(n => (<li key={n}>{n}</li>))}</ol>
+      </div>
+      <div className="max-w-4xl mx-auto pleading-body">
         {/* Header */}
         <div className="text-center mb-8 print:mb-4">
           <h1 className="text-2xl font-bold text-slate-900 mb-4">THOMAS J. ROTERT DECLARATION</h1>

@@ -26,17 +26,22 @@ import {
 } from 'lucide-react';
 
 // Lazy load chart components to reduce initial bundle size
-const ResponsiveContainer = lazy(() => import('recharts').then(mod => ({ default: mod.ResponsiveContainer })));
-const BarChart = lazy(() => import('recharts').then(mod => ({ default: mod.BarChart })));
-const Bar = lazy(() => import('recharts').then(mod => ({ default: mod.Bar })));
-const XAxis = lazy(() => import('recharts').then(mod => ({ default: mod.XAxis })));
-const YAxis = lazy(() => import('recharts').then(mod => ({ default: mod.YAxis })));
-const Tooltip = lazy(() => import('recharts').then(mod => ({ default: mod.Tooltip })));
-const Legend = lazy(() => import('recharts').then(mod => ({ default: mod.Legend })));
-const PieChart = lazy(() => import('recharts').then(mod => ({ default: mod.PieChart })));
-const Pie = lazy(() => import('recharts').then(mod => ({ default: mod.Pie })));
-const Cell = lazy(() => import('recharts').then(mod => ({ default: mod.Cell })));
-const CartesianGrid = lazy(() => import('recharts').then(mod => ({ default: mod.CartesianGrid })));
+const RechartsModule = lazy(() => import('recharts'));
+
+// Create a wrapper component for charts
+const ChartWrapper = ({ children, ...props }: any) => {
+  const [ChartComponents, setChartComponents] = useState<any>(null);
+  
+  useEffect(() => {
+    import('recharts').then(setChartComponents);
+  }, []);
+  
+  if (!ChartComponents) {
+    return <ChartSkeleton />;
+  }
+  
+  return React.cloneElement(children, { ...props, components: ChartComponents });
+};
 
 interface SourceCitation {
   document: string;
