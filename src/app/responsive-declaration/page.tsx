@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { PrintButton } from '@/components/case/PrintButton';
 import { buildCitations } from '@/lib/citations';
+import { parseAllEmails } from '@/lib/ingestion/email-parser';
 
 async function readDeclaration(): Promise<{ content: string; source: string } | null> {
   const candidates = [
@@ -39,6 +40,12 @@ export default async function ResponsiveDeclarationPage() {
   const decl = await readDeclaration();
   const exhibits = await readExhibits();
   const { emailCitations, graphCitations } = await buildCitations();
+  const allEmails = await parseAllEmails();
+  const continuanceCount = allEmails.filter((e) => /continuance|postpone|reschedule|adjourn/i.test(`${e.description} ${e.snippet}`)).length;
+  const byActor: Record<string, number> = {};
+  for (const e of allEmails) {
+    byActor[e.actor] = (byActor[e.actor] || 0) + 1;
+  }
 
   return (
     <DashboardLayout>
@@ -63,6 +70,22 @@ export default async function ResponsiveDeclarationPage() {
           </section>
 
           <aside className="lg:col-span-1 space-y-6">
+            <div className="rounded-lg border bg-white">
+              <div className="p-4 border-b font-medium">Verified Facts (from email corpus)</div>
+              <div className="p-4 text-sm">
+                <div className="mb-2">Total emails parsed: <span className="font-semibold">{allEmails.length}</span></div>
+                <div className="mb-2">Continuance-related emails: <span className="font-semibold">{continuanceCount}</span></div>
+                <div className="mt-3 text-slate-600">By actor</div>
+                <div className="mt-1 space-y-1">
+                  {Object.entries(byActor).map(([actor, count]) => (
+                    <div key={actor} className="flex justify-between">
+                      <span className="capitalize text-slate-600">{actor}</span>
+                      <span className="font-medium">{count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
             <div className="rounded-lg border bg-white">
               <div className="p-4 border-b font-medium">Exhibit Index</div>
               <div className="max-h-[50vh] overflow-auto">
@@ -127,4 +150,3 @@ export default async function ResponsiveDeclarationPage() {
     </DashboardLayout>
   );
 }
-
