@@ -827,1041 +827,171 @@ const HousingCostCalculator: React.FC = () => {
           </Tooltip>
         </div>
 
-        <div className="container mx-auto px-6 py-8 max-w-7xl" ref={pdfRef}>
-          {/* PDF Header */}
-          <div className="text-center mb-8 border-b-2 border-slate-300 pb-6">
-            <h1 className="text-4xl font-black text-slate-900 mb-2">Housing Cost Distribution Calculator</h1>
-            <p className="text-lg text-slate-600 mb-2">Statement of Decision Implementation</p>
-            <p className="text-sm text-slate-500">Generated on {new Date().toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })}</p>
-          </div>
-
-          {/* PRIMARY HEADER - FINAL DISTRIBUTION */}
-          <div className="text-center mb-16">
-            <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-16 shadow-2xl border border-slate-200 animate-in fade-in-0 slide-in-from-top-4 duration-700">
-              <div className="mb-12">
-                <h1 className="text-6xl font-black text-slate-900 mb-6 tracking-tight">Final Distribution</h1>
-                <p className="text-2xl font-medium text-slate-700 leading-relaxed">Statement of Decision Allocation with Adjustments</p>
-              </div>
-
-              {/* THE TWO BIG NUMBERS - IMMEDIATE VISUAL IMPACT */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-                {/* Alvero's Cut */}
-                <div className="bg-gradient-to-br from-purple-50 via-purple-100 to-purple-200 rounded-3xl p-10 border-2 border-purple-300 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-in fade-in-0 slide-in-from-left-4 duration-500 delay-200">
-                  <div className="text-center">
-                    <h2 className="text-3xl font-black text-purple-900 mb-6 tracking-wide">Alvero</h2>
-                    <div className="text-8xl font-black text-purple-900 mb-4 tracking-tight drop-shadow-sm">
-                      ${calculationResult.summary.rosannaFinalDistribution.toLocaleString()}
+        {/* Court-Ready Document Layout */}
+        <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-4xl" ref={pdfRef}>
+          {/* Sophisticated Page Edge Shading */}
+          <div className="relative">
+            {/* Top Edge Shading */}
+            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-slate-100 to-transparent pointer-events-none"></div>
+            {/* Bottom Edge Shading */}
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-100 to-transparent pointer-events-none"></div>
+            {/* Left Edge Shading */}
+            <div className="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-slate-100 to-transparent pointer-events-none"></div>
+            {/* Right Edge Shading */}
+            <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-slate-100 to-transparent pointer-events-none"></div>
+            
+            {/* Court Page Content */}
+            <div className="court-page relative z-10 bg-white min-h-[11in] p-16">
+              {/* Professional Court Header */}
+              <div className="court-header text-center mb-12">
+                <div className="mb-6">
+                  <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">HOUSING COST DISTRIBUTION CALCULATION</h1>
+                  <h2 className="text-xl font-bold text-slate-700 mb-4">Statement of Decision Implementation</h2>
+                  <div className="flex justify-center items-center gap-8 text-sm text-slate-600">
+                    <div>
+                      <span className="font-semibold">Case:</span> Wauters v. Alvero
                     </div>
-                    <p className="text-xl text-purple-800 font-bold tracking-wide">35% SOD + Adjustments</p>
-                  </div>
-                </div>
-
-                {/* Wauters' Cut */}
-                <div className="bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 rounded-3xl p-10 border-2 border-blue-300 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-in fade-in-0 slide-in-from-right-4 duration-500 delay-300">
-                  <div className="text-center">
-                    <h2 className="text-3xl font-black text-blue-900 mb-6 tracking-wide">Wauters</h2>
-                    <div className="text-8xl font-black text-blue-900 mb-4 tracking-tight drop-shadow-sm">
-                      ${calculationResult.summary.mathieuFinalDistribution.toLocaleString()}
+                    <div>
+                      <span className="font-semibold">Date:</span> {new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric'
+                      })}
                     </div>
-                    <p className="text-xl text-blue-800 font-bold tracking-wide">65% SOD + Adjustments</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Click to Expand Reasoning */}
-              <div
-                className="cursor-pointer transition-all duration-300 hover:scale-105 bg-gradient-to-r from-slate-100 to-slate-200 rounded-2xl p-8 border-2 border-slate-400 shadow-md hover:shadow-lg"
-                onClick={() => toggleSection('finalDistribution')}
-              >
-                <div className="flex items-center justify-center gap-4 text-xl text-slate-800">
-                  <span className="font-bold tracking-wide">View Calculation Breakdown</span>
-                  {expandedSections.finalDistribution ?
-                    <ChevronDown className="h-7 w-7" /> :
-                    <ChevronRight className="h-7 w-7" />
-                  }
-                </div>
-                <p className="text-base text-slate-600 mt-3 font-medium">Click to see step-by-step reasoning with document sources</p>
-              </div>
-
-              {/* Expanded Reasoning Path */}
-              {expandedSections.finalDistribution && (
-                <div className="mt-8 p-8 bg-slate-50 rounded-2xl border border-slate-200">
-                  <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center">Step-by-Step Calculation</h3>
-                  
-                  {/* Reasoning Path Steps */}
-                  <div className="space-y-4">
-                    {calculationResult.reasoningPath.map((step, index) => (
-                      <div key={index} className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center">
-                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                              <span className="text-lg font-bold text-blue-600">{step.stepNumber}</span>
-                            </div>
-                            <div>
-                              <h4 className="text-lg font-semibold text-slate-800">{step.stepName}</h4>
-                              <p className="text-sm text-slate-600">{step.explanation}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-slate-800">
-                              ${step.amount.toLocaleString()}
-                            </div>
-                            {step.formula && (
-                              <div className="text-xs text-slate-500 mt-1 font-mono">
-                                {step.formula}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Document Sources */}
-                        <div className="mb-4">
-                          <h5 className="text-sm font-semibold text-slate-700 mb-2">Sources:</h5>
-                          <div className="flex flex-wrap gap-2">
-                            {step.sources.map((source, sourceIndex) => (
-                              <div key={sourceIndex} className="bg-slate-100 rounded-lg px-3 py-2 text-xs">
-                                <div className="font-semibold text-slate-700">{source.documentName}</div>
-                                <div className="text-slate-500">{source.documentDate}</div>
-                                {source.sectionName && (
-                                  <div className="text-slate-500">{source.sectionName}</div>
-                                )}
-                                {source.excerpt && (
-                                  <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Sub-steps */}
-                        {step.subSteps && step.subSteps.length > 0 && (
-                          <div className="ml-6 space-y-2">
-                            <h6 className="text-sm font-semibold text-slate-700">Breakdown:</h6>
-                            {step.subSteps.map((subStep, subIndex) => (
-                              <div key={subIndex} className="bg-slate-50 rounded-lg p-3 border border-slate-200">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center">
-                                    <span className="text-sm font-medium text-slate-700 mr-2">
-                                      {subStep.stepNumber}
-                                    </span>
-                                    <span className="text-sm text-slate-600">{subStep.stepName}</span>
-                                  </div>
-                                  <span className="text-lg font-bold text-slate-800">
-                                    ${subStep.amount.toLocaleString()}
-                                  </span>
-                                </div>
-                                <p className="text-xs text-slate-500 mt-1">{subStep.explanation}</p>
-                                {subStep.sources && subStep.sources.length > 0 && (
-                                  <div className="mt-2">
-                                    <div className="text-xs font-semibold text-slate-600">Source:</div>
-                                    <div className="text-xs text-slate-500">
-                                      {subStep.sources[0].documentName} - {subStep.sources[0].excerpt}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Visual Separator */}
-          <hr className="my-8 border-t border-slate-200" />
-
-          {/* Main Calculator Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {/* Input Panel */}
-            <div className="space-y-8">
-              {/* Closing Data Input */}
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-                <CardHeader
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg cursor-pointer"
-                  onClick={() => toggleSection('closingData')}
-                >
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <Banknote className="h-6 w-6 mr-3" />
-                      Closing Statement Data
-                    </div>
-                    {expandedSections.closingData ?
-                      <ChevronDown className="h-6 w-6" /> :
-                      <ChevronRight className="h-6 w-6" />
-                    }
-                  </CardTitle>
-                  <p className="text-blue-100 text-sm">Source: Final Sellers Closing Statement (05/30/2025)</p>
-                </CardHeader>
-                {expandedSections.closingData && (
-                  <CardContent className="p-8 space-y-6">
-                    <div className="grid grid-cols-1 gap-6">
-                      {/* Sale Price */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="salePrice" className="text-base font-semibold text-slate-700">
-                            Sale Price
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">The total sale price of the property at 3525 8th Avenue.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="salePrice"
-                            type="number"
-                            value={closingData.salePrice}
-                            onChange={(e) => handleClosingDataChange('salePrice', parseFloat(e.target.value) || 0)}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <DollarSign className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: Final Sellers Closing Statement</p>
-                      </div>
-
-                      {/* Lender Payoff */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="lenderPayoff" className="text-base font-semibold text-slate-700">
-                            Lender Payoff
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">Total amount paid to Mr. Cooper for Lakeview Loan Servicing, LLC.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="lenderPayoff"
-                            type="number"
-                            value={closingData.lenderPayoff}
-                            onChange={(e) => handleClosingDataChange('lenderPayoff', parseFloat(e.target.value) || 0)}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <CreditCard className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: Final Sellers Closing Statement - Payoffs/Payments</p>
-                      </div>
-
-                      {/* Net Proceeds */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="netProceeds" className="text-base font-semibold text-slate-700">
-                            Net Proceeds to Sellers
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">Amount due to sellers after all deductions.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="netProceeds"
-                            type="number"
-                            value={closingData.netProceeds}
-                            onChange={(e) => handleClosingDataChange('netProceeds', parseFloat(e.target.value) || 0)}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <Banknote className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: Final Sellers Closing Statement</p>
-                      </div>
-
-                      {/* Rosanna's Withholding */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="rosannaWithholding" className="text-base font-semibold text-slate-700">
-                            Rosanna&apos;s FTB Withholding
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">Real Estate Withholding 593 sent to Franchise Tax Board.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="rosannaWithholding"
-                            type="number"
-                            value={closingData.rosannaWithholding}
-                            onChange={(e) => handleClosingDataChange('rosannaWithholding', parseFloat(e.target.value) || 0)}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <Landmark className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: Final Sellers Closing Statement - Real Estate Withholding 593</p>
-                      </div>
-
-                      {/* Mathieu's Tax Obligation */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="mathieuTaxObligation" className="text-base font-semibold text-slate-700">
-                            Mathieu&apos;s Estimated Tax Obligation
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">User-provided estimate of tax liability from the sale.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="mathieuTaxObligation"
-                            type="number"
-                            value={closingData.mathieuTaxObligation}
-                            onChange={(e) => handleClosingDataChange('mathieuTaxObligation', parseFloat(e.target.value) || 0)}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <FileText className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: User Input</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                )}
-              </Card>
-
-              {/* Mortgage Breakdown Input */}
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-                <CardHeader
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg cursor-pointer"
-                  onClick={() => toggleSection('mortgageBreakdown')}
-                >
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <Calculator className="h-6 w-6 mr-3" />
-                      Lender Payoff Breakdown
-                    </div>
-                    {expandedSections.mortgageBreakdown ?
-                      <ChevronDown className="h-6 w-6" /> :
-                      <ChevronRight className="h-6 w-6" />
-                    }
-                  </CardTitle>
-                  <p className="text-green-100 text-sm">Source: Final Sellers Closing Statement - Lender Payoff Details</p>
-                </CardHeader>
-                {expandedSections.mortgageBreakdown && (
-                  <CardContent className="p-8 space-y-6">
-                    <div className="grid grid-cols-1 gap-6">
-                      {/* Principal */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="principal" className="text-base font-semibold text-slate-700">
-                            Principal Balance
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">Outstanding principal balance on the loan.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="principal"
-                            type="number"
-                            value={mortgageBreakdown.principal}
-                            onChange={(e) => handleMortgageBreakdownChange('principal', parseFloat(e.target.value) || 0)}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <DollarSign className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: Final Sellers Closing Statement</p>
-                      </div>
-
-                      {/* Interest */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="interest" className="text-base font-semibold text-slate-700">
-                            Interest & Additional Interest
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">Interest to 6/1/2025 plus additional interest for 6/1-6/2.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="interest"
-                            type="number"
-                            value={mortgageBreakdown.interest}
-                            onChange={(e) => handleMortgageBreakdownChange('interest', parseFloat(e.target.value) || 0)}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <TrendingUp className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: Final Sellers Closing Statement</p>
-                      </div>
-
-                      {/* Escrow Advances */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="escrowAdvances" className="text-base font-semibold text-slate-700">
-                            Escrow Advances
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">Escrow advances made by the lender.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="escrowAdvances"
-                            type="number"
-                            value={mortgageBreakdown.escrowAdvances}
-                            onChange={(e) => handleMortgageBreakdownChange('escrowAdvances', parseFloat(e.target.value) || 0)}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <Receipt className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: Final Sellers Closing Statement</p>
-                      </div>
-
-                      {/* Late Fees */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="lateFees" className="text-base font-semibold text-slate-700">
-                            Late Fees & Administrative Costs
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">Deferred late fees, check fees, and other administrative costs.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="lateFees"
-                            type="number"
-                            value={mortgageBreakdown.lateFees + mortgageBreakdown.checkFees + mortgageBreakdown.otherFees + mortgageBreakdown.recordingFees + mortgageBreakdown.reconveyanceFee}
-                            onChange={(e) => {
-                              const total = parseFloat(e.target.value) || 0;
-                              const currentTotal = mortgageBreakdown.lateFees + mortgageBreakdown.checkFees + mortgageBreakdown.otherFees + mortgageBreakdown.recordingFees + mortgageBreakdown.reconveyanceFee;
-                              const difference = total - currentTotal;
-                              handleMortgageBreakdownChange('lateFees', mortgageBreakdown.lateFees + difference);
-                            }}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <AlertTriangle className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: Final Sellers Closing Statement</p>
-                      </div>
-
-                      {/* Lender Paid Expenses */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor="lenderPaidExpenses" className="text-base font-semibold text-slate-700">
-                            Lender Paid Expenses & Legal Fees
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">Lender paid expenses and legal fees.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <div className="relative">
-                          <Input
-                            id="lenderPaidExpenses"
-                            type="number"
-                            value={mortgageBreakdown.lenderPaidExpenses + mortgageBreakdown.legalFees}
-                            onChange={(e) => {
-                              const total = parseFloat(e.target.value) || 0;
-                              const currentTotal = mortgageBreakdown.lenderPaidExpenses + mortgageBreakdown.legalFees;
-                              const difference = total - currentTotal;
-                              handleMortgageBreakdownChange('lenderPaidExpenses', mortgageBreakdown.lenderPaidExpenses + difference);
-                            }}
-                            className="pl-10 text-xl font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500 h-14"
-                          />
-                          <CreditCard className="absolute left-4 top-4 h-6 w-6 text-slate-400" />
-                        </div>
-                        <p className="text-sm text-slate-500">Source: Final Sellers Closing Statement</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                )}
-              </Card>
-            </div>
-
-            {/* Results Panel */}
-            <div className="space-y-8">
-              {/* Fair Allocation Results */}
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-                <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
-                  <CardTitle className="flex items-center">
-                    <Users className="h-6 w-6 mr-3" />
-                    Fair Allocation Results
-                  </CardTitle>
-                  <p className="text-green-100 text-sm">Equal division methodology (50/50)</p>
-                </CardHeader>
-                <CardContent className="p-8 space-y-6">
-                  {/* Total Lender Payoff */}
-                  <div className="text-center p-8 bg-slate-50 rounded-xl">
-                    <div className="flex items-center justify-center gap-2 mb-3">
-                      <p className="text-base text-slate-600">Total Lender Payoff</p>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="max-w-xs">Total amount paid to lender from Final Sellers Closing Statement.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <p className="text-5xl font-black text-slate-800">
-                      ${calculationResult.summary.totalLenderPayoff.toLocaleString()}
-                    </p>
-                  </div>
-
-                  {/* Individual Allocations */}
-                  <div className="grid grid-cols-1 gap-6">
-                    <div className="text-center p-6 bg-blue-50 rounded-xl border border-blue-200">
-                      <div className="flex items-center justify-center mb-3">
-                        <Users className="h-5 w-5 text-blue-600 mr-2" />
-                        <p className="text-base font-semibold text-blue-800">Mathieu Wauters</p>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <HelpCircle className="h-4 w-4 text-blue-400 cursor-help ml-2" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="max-w-xs">50% of the lender payoff amount - equal responsibility for community debt.</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                             <p className="text-4xl font-black text-blue-900">
-                               ${calculationResult.summary.mathieuFinalDistribution.toLocaleString()}
-                             </p>
-                      <Badge variant="outline" className="mt-3 text-sm px-4 py-2">50% Equal Responsibility</Badge>
-                    </div>
-
-                    <div className="text-center p-6 bg-green-50 rounded-xl border border-green-200">
-                      <div className="flex items-center justify-center mb-3">
-                        <Users className="h-5 w-5 text-green-600 mr-2" />
-                        <p className="text-base font-semibold text-green-800">Rosanna Alvero</p>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <HelpCircle className="h-4 w-4 text-green-400 cursor-help ml-2" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="max-w-xs">50% of the lender payoff amount - equal responsibility for community debt.</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                             <p className="text-4xl font-black text-green-900">
-                               ${calculationResult.summary.rosannaFinalDistribution.toLocaleString()}
-                             </p>
-                      <Badge variant="outline" className="mt-3 text-sm px-4 py-2">50% Equal Responsibility</Badge>
-                    </div>
-                  </div>
-
-                  <Alert className="border-orange-200 bg-orange-50">
-                    <AlertTriangle className="h-5 w-5 text-orange-600" />
-                    <AlertDescription className="text-orange-800 text-base">
-                      <strong>SOD Net Adjustment:</strong> ${calculationResult.summary.netAdjustment.toLocaleString()} - This represents the net amount owed between parties after SOD adjustments.
-                    </AlertDescription>
-                  </Alert>
-                </CardContent>
-              </Card>
-
-              {/* Final Net Distribution */}
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-                <CardHeader className="bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-t-lg">
-                  <CardTitle className="flex items-center">
-                    <DollarSign className="h-6 w-6 mr-3" />
-                    Final Net Distribution
-                  </CardTitle>
-                  <p className="text-gray-100 text-sm">After tax obligations from net proceeds</p>
-                </CardHeader>
-                <CardContent className="p-8 space-y-6">
-                  {/* Net Proceeds After Taxes */}
-                  <div className="text-center p-8 bg-slate-50 rounded-xl">
-                    <div className="flex items-center justify-center gap-2 mb-3">
-                      <p className="text-base text-slate-600">Net Proceeds After Tax Obligations</p>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="max-w-xs">Net proceeds minus both parties&apos; tax obligations.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                           <p className="text-5xl font-black text-slate-800">
-                             ${calculationResult.summary.netProceedsBeforeSOD.toLocaleString()}
-                           </p>
-                  </div>
-
-                  {/* Individual Final Distributions */}
-                  <div className="grid grid-cols-1 gap-6">
-                    <div className="text-center p-6 bg-blue-50 rounded-xl border border-blue-200">
-                      <div className="flex items-center justify-center mb-3">
-                        <Users className="h-5 w-5 text-blue-600 mr-2" />
-                        <p className="text-base font-semibold text-blue-800">Mathieu Wauters</p>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <HelpCircle className="h-4 w-4 text-blue-400 cursor-help ml-2" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="max-w-xs">50% of the Net Proceeds After Tax Obligations.</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                      <p className="text-4xl font-black text-blue-900">
-                        ${calculationResult.summary.mathieuFinalDistribution.toLocaleString()}
-                      </p>
-                      <Badge variant="outline" className="mt-3 text-sm px-4 py-2">50% of Net After Taxes</Badge>
-                    </div>
-
-                    <div className="text-center p-6 bg-green-50 rounded-xl border border-green-200">
-                      <div className="flex items-center justify-center mb-3">
-                        <Users className="h-5 w-5 text-green-600 mr-2" />
-                        <p className="text-base font-semibold text-green-800">Rosanna Alvero</p>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <HelpCircle className="h-4 w-4 text-green-400 cursor-help ml-2" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="max-w-xs">50% of the Net Proceeds After Tax Obligations.</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                      <p className="text-4xl font-black text-green-900">
-                        ${calculationResult.summary.rosannaFinalDistribution.toLocaleString()}
-                      </p>
-                      <Badge variant="outline" className="mt-3 text-sm px-4 py-2">50% of Net After Taxes</Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Visual Separator */}
-          <hr className="my-8 border-t border-slate-200" />
-
-          {/* Enhanced Detailed Breakdown */}
-          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm mb-8">
-            <CardHeader
-              className="bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-t-lg cursor-pointer"
-              onClick={() => toggleSection('costAllocations')}
-            >
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Calculator className="h-6 w-6 mr-3" />
-                  Interactive Cost Breakdown
-                </div>
-                {expandedSections.costAllocations ?
-                  <ChevronDown className="h-6 w-6" /> :
-                  <ChevronRight className="h-6 w-6" />
-                }
-              </CardTitle>
-              <p className="text-slate-200 text-sm">Click to expand with interactive negotiation controls</p>
-            </CardHeader>
-            {expandedSections.costAllocations && (
-              <CardContent className="p-8">
-                <div className="space-y-8">
-                  {/* Realtor Commission Breakdown */}
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-                    <div className="flex items-center mb-6">
-                      <Building className="h-6 w-6 text-blue-600 mr-3" />
-                      <h3 className="text-xl font-bold text-blue-800">Real Estate Commission Breakdown</h3>
-                    </div>
-                    
-                    {/* Commission Rate Control */}
-                    <div className="mb-6 p-4 bg-white rounded-xl border border-blue-200">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center">
-                          <Percent className="h-5 w-5 text-blue-600 mr-2" />
-                          <span className="font-semibold text-blue-800">Total Commission Rate</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => adjustParam('totalCommissionRate', -0.001)}
-                            className="h-10 w-10 p-0 bg-blue-50 hover:bg-blue-100 border-blue-300 hover:border-blue-400 transition-all duration-200 hover:scale-110"
-                          >
-                            <ArrowDown className="h-5 w-5 text-blue-700" />
-                          </Button>
-                          <span className="text-3xl font-black text-blue-900 min-w-[100px] text-center tracking-tight">
-                            {(negotiableParams.totalCommissionRate * 100).toFixed(1)}%
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => adjustParam('totalCommissionRate', 0.001)}
-                            className="h-10 w-10 p-0 bg-blue-50 hover:bg-blue-100 border-blue-300 hover:border-blue-400 transition-all duration-200 hover:scale-110"
-                          >
-                            <ArrowUp className="h-5 w-5 text-blue-700" />
-                          </Button>
-                        </div>
-                      </div>
-                      <p className="text-sm text-blue-600">
-                        Total Commission: ${(closingData.salePrice * negotiableParams.totalCommissionRate).toLocaleString()}
-                      </p>
-                    </div>
-
-                    {/* Realtor Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {realtorInfo.map((realtor, index) => {
-                        const totalCommission = closingData.salePrice * negotiableParams.totalCommissionRate;
-                        const realtorShare = totalCommission * (realtor.role === 'listing' ? negotiableParams.listingAgentSplit : negotiableParams.buyerAgentSplit);
-                        const agentAmount = realtorShare * negotiableParams.agentBrokerSplit;
-                        const brokerageAmount = realtorShare * (1 - negotiableParams.agentBrokerSplit);
-                        
-                        return (
-                          <div key={index} className="bg-white rounded-xl p-4 border border-blue-200">
-                            <div className="flex items-center mb-3">
-                              <User className="h-5 w-5 text-blue-600 mr-2" />
-                              <div>
-                                <h4 className="font-semibold text-blue-800">{realtor.name}</h4>
-                                <p className="text-sm text-blue-600">{realtor.brokerage}</p>
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex justify-between">
-                                <span className="text-sm text-slate-600">Total Share:</span>
-                                <span className="font-bold text-blue-900">${realtorShare.toLocaleString()}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-sm text-slate-600">Agent Portion:</span>
-                                <span className="font-semibold text-green-700">${agentAmount.toLocaleString()}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-sm text-slate-600">Brokerage Portion:</span>
-                                <span className="font-semibold text-purple-700">${brokerageAmount.toLocaleString()}</span>
-                              </div>
-                            </div>
-                          </div>
-                        );
+                    <div>
+                      <span className="font-semibold">Generated:</span> {new Date().toLocaleTimeString('en-US', { 
+                        hour: '2-digit',
+                        minute: '2-digit'
                       })}
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  {/* Watts Charges Breakdown */}
-                  <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-6 border border-red-200">
-                    <div className="flex items-center mb-6">
-                      <Home className="h-6 w-6 text-red-600 mr-3" />
-                      <h3 className="text-xl font-bold text-red-800">Watts Charges (Exclusive Possession)</h3>
-                    </div>
-                    
-                    {/* Watts Rate Control */}
-                    <div className="mb-6 p-4 bg-white rounded-xl border border-red-200">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center">
-                          <DollarSign className="h-5 w-5 text-red-600 mr-2" />
-                          <span className="font-semibold text-red-800">Monthly Rate</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => adjustParam('wattsChargesRate', -100)}
-                            className="h-8 w-8 p-0"
-                          >
-                            <ArrowDown className="h-4 w-4" />
-                          </Button>
-                          <span className="text-2xl font-bold text-red-900 min-w-[100px] text-center">
-                            ${negotiableParams.wattsChargesRate.toLocaleString()}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => adjustParam('wattsChargesRate', 100)}
-                            className="h-8 w-8 p-0"
-                          >
-                            <ArrowUp className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                      <p className="text-sm text-red-600">
-                        Total Watts Charges: ${(negotiableParams.wattsChargesRate * 32.5).toLocaleString()} (32.5 months)
-                      </p>
-                    </div>
+              {/* FINAL DISTRIBUTION SUMMARY */}
+              <div className="court-calculation mb-12">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">FINAL DISTRIBUTION SUMMARY</h3>
+                  <p className="text-lg font-medium text-slate-700">Statement of Decision Allocation with Adjustments</p>
+                </div>
 
-                    <div className="bg-white rounded-xl p-4 border border-red-200">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center">
-                          <AlertTriangle className="h-5 w-5 text-red-600 mr-2" />
-                          <span className="font-semibold text-red-800">Mathieu Owes Rosanna</span>
-                        </div>
-                        <span className="text-2xl font-bold text-red-900">
-                          ${(negotiableParams.wattsChargesRate * 32.5).toLocaleString()}
-                        </span>
-                      </div>
-                      <p className="text-sm text-red-600">
-                        Jan 2021-Sept 2023: $46,200 + Oct 2023-May 2025: $2,440 = $48,640
-                      </p>
+                {/* DISTRIBUTION AMOUNTS */}
+                <div className="grid grid-cols-2 gap-8 mb-8">
+                  {/* Alvero Distribution */}
+                  <div className="bg-slate-50 border-2 border-slate-300 p-6 text-center">
+                    <h4 className="text-lg font-bold text-slate-800 mb-3">ROSANNA ALVERO</h4>
+                    <div className="text-4xl font-black text-slate-900 mb-2">
+                      ${calculationResult.summary.rosannaFinalDistribution.toLocaleString()}
                     </div>
+                    <p className="text-sm text-slate-600 font-medium">35% SOD Allocation + Net Adjustments</p>
                   </div>
 
-                  {/* Exclusive Possession Credit */}
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-200">
-                    <div className="flex items-center mb-6">
-                      <Calendar className="h-6 w-6 text-green-600 mr-3" />
-                      <h3 className="text-xl font-bold text-green-800">Exclusive Possession Credit</h3>
+                  {/* Wauters Distribution */}
+                  <div className="bg-slate-50 border-2 border-slate-300 p-6 text-center">
+                    <h4 className="text-lg font-bold text-slate-800 mb-3">MATHIEU WAUTERS</h4>
+                    <div className="text-4xl font-black text-slate-900 mb-2">
+                      ${calculationResult.summary.mathieuFinalDistribution.toLocaleString()}
                     </div>
-                    
-                    {/* Months Control */}
-                    <div className="mb-6 p-4 bg-white rounded-xl border border-green-200">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center">
-                          <Calendar className="h-5 w-5 text-green-600 mr-2" />
-                          <span className="font-semibold text-green-800">Months in Home</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => adjustParam('exclusivePossessionMonths', -0.1)}
-                            className="h-8 w-8 p-0"
-                          >
-                            <ArrowDown className="h-4 w-4" />
-                          </Button>
-                          <span className="text-2xl font-bold text-green-900 min-w-[80px] text-center">
-                            {negotiableParams.exclusivePossessionMonths.toFixed(1)}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => adjustParam('exclusivePossessionMonths', 0.1)}
-                            className="h-8 w-8 p-0"
-                          >
-                            <ArrowUp className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                      <p className="text-sm text-green-600">
-                        Credit: ${(negotiableParams.exclusivePossessionMonths * 5000 * 0.65).toLocaleString()} (65% of $5,000/month)
-                      </p>
-                    </div>
-
-                    <div className="bg-white rounded-xl p-4 border border-green-200">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center">
-                          <TrendingUp className="h-5 w-5 text-green-600 mr-2" />
-                          <span className="font-semibold text-green-800">Rosanna Owes Mathieu</span>
-                        </div>
-                        <span className="text-2xl font-bold text-green-900">
-                          ${(negotiableParams.exclusivePossessionMonths * 5000 * 0.65).toLocaleString()}
-                        </span>
-                      </div>
-                      <p className="text-sm text-green-600">
-                        Equal treatment under Watts doctrine - Rosanna&apos;s exclusive possession credit
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Other SOD Adjustments */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Rental Income */}
-                    <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
-                      <div className="flex items-center mb-3">
-                        <Receipt className="h-5 w-5 text-blue-600 mr-2" />
-                        <span className="font-semibold text-blue-800">Rental Income Share</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xl font-bold text-blue-900">${sodAdjustments.rentalIncomeShare.toLocaleString()}</span>
-                        <p className="text-sm text-blue-600">Rosanna&apos;s 35% share</p>
-                      </div>
-                    </div>
-
-                    {/* Motorcycle */}
-                    <div className="bg-green-50 rounded-xl p-4 border border-green-200">
-                      <div className="flex items-center mb-3">
-                        <CreditCard className="h-5 w-5 text-green-600 mr-2" />
-                        <span className="font-semibold text-green-800">Motorcycle Share</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xl font-bold text-green-900">${sodAdjustments.motorcycleShare.toLocaleString()}</span>
-                        <p className="text-sm text-green-600">Rosanna&apos;s share of Ural</p>
-                      </div>
-                    </div>
-
-                    {/* Furniture */}
-                    <div className="bg-orange-50 rounded-xl p-4 border border-orange-200">
-                      <div className="flex items-center mb-3">
-                        <FileCheck className="h-5 w-5 text-orange-600 mr-2" />
-                        <span className="font-semibold text-orange-800">Furniture Share</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xl font-bold text-orange-900">${sodAdjustments.furnitureShare.toLocaleString()}</span>
-                        <p className="text-sm text-orange-600">Disputed - Rosanna&apos;s share</p>
-                      </div>
-                    </div>
-
-                    {/* Furniture Correction */}
-                    <div className="bg-indigo-50 rounded-xl p-4 border border-indigo-200">
-                      <div className="flex items-center mb-3">
-                        <Users className="h-5 w-5 text-indigo-600 mr-2" />
-                        <span className="font-semibold text-indigo-800">Furniture Correction</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xl font-bold text-indigo-900">${sodAdjustments.furnitureCorrection.toLocaleString()}</span>
-                        <p className="text-sm text-indigo-600">$15,000 swing credit</p>
-                      </div>
-                    </div>
+                    <p className="text-sm text-slate-600 font-medium">65% SOD Allocation + Net Adjustments</p>
                   </div>
                 </div>
-              </CardContent>
-            )}
-          </Card>
+              </div>
 
-          {/* Visual Separator */}
-          <hr className="my-8 border-t border-slate-200" />
+              {/* DETAILED CALCULATION BREAKDOWN */}
+              <div className="court-calculation mb-12">
+                <h3 className="text-xl font-bold text-slate-800 mb-6 text-center">DETAILED CALCULATION BREAKDOWN</h3>
 
-          {/* Legal Analysis Section */}
-          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-            <CardHeader
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-t-lg cursor-pointer"
-              onClick={() => toggleSection('legalAnalysis')}
-            >
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Scale className="h-6 w-6 mr-3" />
-                  Legal Analysis & Citations
-                </div>
-                {expandedSections.legalAnalysis ?
-                  <ChevronDown className="h-6 w-6" /> :
-                  <ChevronRight className="h-6 w-6" />
-                }
-              </CardTitle>
-              <p className="text-indigo-200 text-sm">Click to expand legal basis and citations</p>
-            </CardHeader>
-            {expandedSections.legalAnalysis && (
-              <CardContent className="p-8">
+                {/* Calculation Steps */}
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                      <div className="flex items-center mb-4">
-                        <Building className="h-5 w-5 text-blue-600 mr-2" />
-                        <h3 className="font-semibold text-blue-900">Equal Division of Community Property</h3>
+                  {calculationResult.reasoningPath.map((step, index) => (
+                    <div key={index} className="court-step bg-white border border-slate-200 p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center mr-4 border-2 border-slate-300">
+                            <span className="text-sm font-bold text-slate-700">{step.stepNumber}</span>
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-bold text-slate-800">{step.stepName}</h4>
+                            <p className="text-sm text-slate-600">{step.explanation}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-2xl font-black text-slate-900">
+                            ${step.amount.toLocaleString()}
+                          </div>
+                          {step.formula && (
+                            <div className="text-xs text-slate-500 mt-1 font-mono bg-slate-50 px-2 py-1 rounded">
+                              {step.formula}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <p className="text-sm text-blue-800 leading-relaxed">
-                        California Family Code § 2550 mandates equal division of community property. The lender payoff of $759,364.32 represents a community debt that should be divided equally between both parties.
-                      </p>
-                    </div>
 
-                    <div className="bg-green-50 border border-green-200 rounded-xl p-6">
-                      <div className="flex items-center mb-4">
-                        <Receipt className="h-5 w-5 text-green-600 mr-2" />
-                        <h3 className="font-semibold text-green-900">Property Tax Obligations</h3>
+                      {/* Document Sources */}
+                      <div className="mb-4">
+                        <h5 className="text-sm font-bold text-slate-700 mb-2">DOCUMENT SOURCES:</h5>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {step.sources.map((source, sourceIndex) => (
+                            <div key={sourceIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-xs">
+                              <div className="font-bold text-slate-700">{source.documentName}</div>
+                              <div className="text-slate-600">{source.documentDate}</div>
+                              {source.sectionName && (
+                                <div className="text-slate-600">{source.sectionName}</div>
+                              )}
+                              {source.excerpt && (
+                                <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <p className="text-sm text-green-800 leading-relaxed">
-                        Revenue and Taxation Code § 2187 establishes joint liability for property taxes. Escrow advances of $38,924.96 represent community property tax obligations.
-                      </p>
-                    </div>
 
-                    <div className="bg-orange-50 border border-orange-200 rounded-xl p-6">
-                      <div className="flex items-center mb-4">
-                        <AlertTriangle className="h-5 w-5 text-orange-600 mr-2" />
-                        <h3 className="font-semibold text-orange-900">Administrative Costs</h3>
-                      </div>
-                      <p className="text-sm text-orange-800 leading-relaxed">
-                        California Civil Code § 1717 establishes joint and several liability for contract damages. Late fees and administrative costs totaling $657.80 are community obligations.
-                      </p>
+                      {/* Sub-steps */}
+                      {step.subSteps && step.subSteps.length > 0 && (
+                        <div className="ml-6 mt-4">
+                          <h6 className="text-sm font-bold text-slate-700 mb-2">SUB-CALCULATIONS:</h6>
+                          <div className="space-y-2">
+                            {step.subSteps.map((subStep, subIndex) => (
+                              <div key={subIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-sm">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-slate-700 font-medium">{subStep.stepName}</span>
+                                  <span className="font-bold text-slate-800">${subStep.amount.toLocaleString()}</span>
+                                </div>
+                                {subStep.explanation && (
+                                  <p className="text-slate-600 mt-1 text-xs">{subStep.explanation}</p>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-
-                    <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-                      <div className="flex items-center mb-4">
-                        <CreditCard className="h-5 w-5 text-red-600 mr-2" />
-                        <h3 className="font-semibold text-red-900">Foreclosure-Related Expenses</h3>
-                      </div>
-                      <p className="text-sm text-red-800 leading-relaxed">
-                        Lender paid expenses and legal fees totaling $5,694.71 represent foreclosure-related costs that are community obligations under Family Code § 2550.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 mt-6">
-                    <div className="flex items-center mb-4">
-                      <Landmark className="h-5 w-5 text-purple-600 mr-2" />
-                      <h3 className="font-semibold text-purple-900">Tax Withholding from Community Asset</h3>
-                    </div>
-                    <p className="text-sm text-purple-800 leading-relaxed">
-                      Tax liabilities arising from the sale of a community property asset are community debts. Both parties&apos; tax obligations should be settled from the sale proceeds before the final, equal division of the remaining net proceeds.
-                    </p>
-                  </div>
-
-                  <Alert className="border-emerald-200 bg-emerald-50 mt-6">
-                    <CheckCircle className="h-5 w-5 text-emerald-600" />
-                    <AlertDescription className="text-emerald-800 text-base">
-                      <strong>Legal Conclusion:</strong> The lender payoff amount of $759,364.32, along with both parties&apos; tax obligations, should be paid from the gross sale proceeds. The remaining net proceeds of $280,355.83 should then be divided equally after accounting for tax obligations.
-                    </AlertDescription>
-                  </Alert>
+                  ))}
                 </div>
-              </CardContent>
-            )}
-          </Card>
+              </div>
 
-          {/* Footer */}
-          <div className="text-center mt-8 p-8 bg-white/50 rounded-xl">
-            <p className="text-slate-600 text-base">
-              This calculator provides a comprehensive analysis for FL-320 declaration purposes. All calculations are based on the Final Sellers Closing Statement dated 05/30/2025.
-            </p>
-          </div>
-
-          {/* PDF Footer */}
-          <div className="mt-16 pt-8 border-t-2 border-slate-300 text-center">
-            <div className="bg-slate-50 rounded-xl p-6">
-              <h3 className="text-lg font-bold text-slate-800 mb-4">Legal Disclaimer</h3>
-              <p className="text-sm text-slate-600 leading-relaxed max-w-4xl mx-auto">
-                This calculation is based on the provided Statement of Decision and supporting documents. 
-                All figures are derived from official court documents and closing statements. 
-                This tool is for informational purposes only and should not replace professional legal advice. 
-                Please consult with your attorney before making any legal decisions based on these calculations.
-              </p>
-              <div className="mt-4 text-xs text-slate-500">
-                <p>Document Sources: Final Sellers Closing Statement, Lakeview Mortgage Payoff Statement, Statement of Decision</p>
-                <p>Calculation Date: {new Date().toLocaleDateString()} | Version: 1.0</p>
+              {/* COURT FOOTER */}
+              <div className="court-footer mt-16 pt-8 border-t-2 border-slate-300 text-center">
+                <div className="bg-slate-50 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-slate-800 mb-4">LEGAL DISCLAIMER</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed max-w-4xl mx-auto mb-4">
+                    This calculation is based on the provided Statement of Decision and supporting documents. 
+                    All figures are derived from official court documents and closing statements. 
+                    This tool is for informational purposes only and should not replace professional legal advice. 
+                    Please consult with your attorney before making any legal decisions based on these calculations.
+                  </p>
+                  <div className="text-xs text-slate-500 space-y-1">
+                    <p><strong>Document Sources:</strong> Final Sellers Closing Statement, Lakeview Mortgage Payoff Statement, Statement of Decision</p>
+                    <p><strong>Calculation Date:</strong> {new Date().toLocaleDateString()} | <strong>Version:</strong> 1.0</p>
+                    <p><strong>Generated for:</strong> Wauters v. Alvero | <strong>Court Filing:</strong> FL-320 Declaration</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+
       </div>
     </TooltipProvider>
     </>
