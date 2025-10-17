@@ -14,7 +14,8 @@ import {
   AlertCircle,
   CheckCircle2,
   XCircle,
-  ScrollText
+  ScrollText,
+  GitCompare
 } from 'lucide-react';
 
 interface RFOContent {
@@ -42,7 +43,7 @@ const RFOComparisonPage: React.FC = () => {
   const [respondentFL320, setRespondentFL320] = useState<RFOContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['overview']));
-  // Removed unused showDetailedRebuttals state
+  const [activeTab, setActiveTab] = useState<'petitioner' | 'respondent' | 'comparison'>('petitioner');
 
   // Load documents
   useEffect(() => {
@@ -278,6 +279,47 @@ const RFOComparisonPage: React.FC = () => {
             </Tooltip>
           </div>
 
+          {/* Tab Navigation */}
+          <div className="fixed top-4 left-4 z-50 no-print">
+            <div className="bg-white rounded-lg shadow-lg border border-slate-200 overflow-hidden">
+              <div className="flex">
+                <button
+                  onClick={() => setActiveTab('petitioner')}
+                  className={`px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'petitioner'
+                      ? 'bg-red-50 text-red-700 border-b-2 border-red-500'
+                      : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                  }`}
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  Petitioner&apos;s Proposal
+                </button>
+                <button
+                  onClick={() => setActiveTab('respondent')}
+                  className={`px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'respondent'
+                      ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
+                      : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                  }`}
+                >
+                  <CheckCircle2 className="h-4 w-4" />
+                  Respondent&apos;s Proposal
+                </button>
+                <button
+                  onClick={() => setActiveTab('comparison')}
+                  className={`px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'comparison'
+                      ? 'bg-purple-50 text-purple-700 border-b-2 border-purple-500'
+                      : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                  }`}
+                >
+                  <GitCompare className="h-4 w-4" />
+                  Side-by-Side Comparison
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Court-Ready Document Layout */}
           <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-7xl rounded-lg" ref={printRef}>
             {/* Sophisticated Page Edge Shading */}
@@ -314,219 +356,360 @@ const RFOComparisonPage: React.FC = () => {
                     REQUEST FOR ORDER vs RESPONSIVE DECLARATION
                   </h1>
                   <h2 className="text-xl md:text-2xl font-semibold text-slate-700 mb-2">
-                    SIDE-BY-SIDE COMPARISON AND REBUTTAL
+                    {activeTab === 'petitioner' && 'PETITIONER&apos;S PROPOSAL'}
+                    {activeTab === 'respondent' && 'RESPONDENT&apos;S PROPOSAL'}
+                    {activeTab === 'comparison' && 'SIDE-BY-SIDE COMPARISON AND REBUTTAL'}
                   </h2>
                   <p className="text-sm text-slate-600">
                     Filed: {new Date().toLocaleDateString()} | Hearing: August 28, 2025
                   </p>
                 </div>
 
-                {/* OVERVIEW SECTION */}
-                <div className="mb-12">
-                  <div 
-                    className="flex items-center justify-between cursor-pointer mb-4"
-                    onClick={() => toggleSection('overview')}
-                  >
-                    <h3 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center">
-                      <ScaleIcon className="h-6 w-6 mr-3 text-blue-600" />
-                      EXECUTIVE SUMMARY
-                    </h3>
-                    {expandedSections.has('overview') ? 
-                      <ChevronDown className="h-6 w-6 text-slate-600" /> : 
-                      <ChevronRight className="h-6 w-6 text-slate-600" />
-                    }
-                  </div>
-                  
-                  {expandedSections.has('overview') && (
-                    <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h4 className="text-lg font-semibold text-red-700 mb-3">PETITIONER&apos;S POSITION</h4>
-                          <p className="text-sm text-slate-700 leading-relaxed mb-3">
-                            Petitioner claims Respondent owes additional amounts by adding back $77,779.88 mortgage 
-                            arrears to net proceeds ($280,355.83 + $77,779.88 = $358,155.71) before dividing 65/35.
-                          </p>
-                          <div className="text-xs text-slate-600 bg-red-100 p-3 rounded">
-                            <strong>Petitioner&apos;s Calculation:</strong><br/>
-                            • Net proceeds: $358,155.71 (with add-back)<br/>
-                            • Petitioner (35%): $116,453.00<br/>
-                            • Respondent (65%): $163,902.83<br/>
-                            • Plus additional Watts charges and interest
+                {/* TAB CONTENT */}
+                {activeTab === 'petitioner' && (
+                  <div className="mb-12">
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-8">
+                      <h3 className="text-2xl font-bold text-red-800 mb-6 flex items-center">
+                        <AlertCircle className="h-6 w-6 mr-3" />
+                        PETITIONER&apos;S REQUEST FOR ORDER
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div className="bg-white p-6 rounded-lg border border-red-200">
+                          <h4 className="text-lg font-semibold text-red-700 mb-4">DOCUMENT INFORMATION</h4>
+                          <div className="text-sm text-slate-700 space-y-2">
+                            <div><strong>Filed:</strong> June 26, 2025</div>
+                            <div><strong>Pages:</strong> {petitionerRFO?.pages || 101}</div>
+                            <div><strong>Attorney:</strong> Selam Gezahegn, Simon Law</div>
+                            <div><strong>Hearing:</strong> August 28, 2025</div>
+                            <div><strong>Case No:</strong> FDI-21-794666</div>
                           </div>
                         </div>
-                        <div>
-                          <h4 className="text-lg font-semibold text-blue-700 mb-3">RESPONDENT&apos;S REBUTTAL</h4>
-                          <p className="text-sm text-slate-700 leading-relaxed mb-3">
-                            Respondent demonstrates that Petitioner&apos;s calculation double-counts mortgage arrears 
-                            that were already paid from sale proceeds. The correct calculation uses actual net 
-                            proceeds of $280,355.83 per the closing statement.
-                          </p>
-                          <div className="text-xs text-slate-600 bg-blue-100 p-3 rounded">
-                            <strong>Respondent&apos;s Correct Calculation:</strong><br/>
-                            • Net proceeds: $280,355.83 (actual closing)<br/>
-                            • Petitioner (35%): $98,124.54<br/>
-                            • Respondent (65%): $182,231.29<br/>
-                            • Plus Statement of Decision adjustments
+                        
+                        <div className="bg-white p-6 rounded-lg border border-red-200">
+                          <h4 className="text-lg font-semibold text-red-700 mb-4">KEY REQUESTS</h4>
+                          <div className="text-sm text-slate-700 space-y-2">
+                            <div>• Property division with add-back of mortgage arrears</div>
+                            <div>• Additional Watts charges with interest</div>
+                            <div>• Tax withholding credit allocation</div>
+                            <div>• Attorney&apos;s fees and costs</div>
+                            <div>• Cleanup and repair cost reimbursement</div>
                           </div>
                         </div>
                       </div>
+
+                      <div className="bg-white p-6 rounded-lg border border-red-200 mb-6">
+                        <h4 className="text-lg font-semibold text-red-700 mb-4">PETITIONER&apos;S CALCULATION METHODOLOGY</h4>
+                        <div className="text-sm text-slate-700 space-y-3">
+                          <div className="bg-red-100 p-4 rounded border border-red-200">
+                            <strong>Step 1:</strong> Add back mortgage arrears to net proceeds<br/>
+                            <span className="ml-4">$280,355.83 + $77,779.88 = $358,155.71</span>
+                          </div>
+                          <div className="bg-red-100 p-4 rounded border border-red-200">
+                            <strong>Step 2:</strong> Divide 65/35 per Statement of Decision<br/>
+                            <span className="ml-4">Petitioner (35%): $358,155.71 × 0.35 = $125,354.50</span><br/>
+                            <span className="ml-4">Respondent (65%): $358,155.71 × 0.65 = $232,801.21</span>
+                          </div>
+                          <div className="bg-red-100 p-4 rounded border border-red-200">
+                            <strong>Step 3:</strong> Apply tax withholding credit<br/>
+                            <span className="ml-4">Petitioner: $125,354.50 - $8,910.50 = <strong>$116,453.00</strong></span><br/>
+                            <span className="ml-4">Respondent: $232,801.21 - $77,779.88 + $8,901.50 = <strong>$163,902.83</strong></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-white p-6 rounded-lg border border-red-200">
+                        <h4 className="text-lg font-semibold text-red-700 mb-4">RFO CONTENT PREVIEW</h4>
+                        <div className="bg-slate-50 p-4 rounded border border-red-200 max-h-96 overflow-y-auto">
+                          <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
+                            {petitionerRFO?.text?.substring(0, 3000) || 'Loading RFO content...'}
+                            {(petitionerRFO?.text?.length || 0) > 3000 && '\n\n[... Content truncated for display ...]'}
+                          </pre>
+                        </div>
+                      </div>
                     </div>
-                  )}
-                </div>
-
-                {/* SIDE-BY-SIDE COMPARISON */}
-                <div className="mb-12">
-                  <h3 className="text-xl md:text-2xl font-bold text-slate-800 mb-6 flex items-center">
-                    <ScrollText className="h-6 w-6 mr-3 text-blue-600" />
-                    DETAILED COMPARISON BY ISSUE
-                  </h3>
-
-                  <div className="space-y-8">
-                    {comparisonPoints.map((point) => (
-                      <Card key={point.id} className="border border-slate-200">
-                        <CardHeader className="bg-slate-50">
-                          <div className="flex items-center justify-between">
-                            <CardTitle className="text-lg font-semibold text-slate-800">
-                              {point.title}
-                            </CardTitle>
-                            <Badge className={`${getStatusColor(point.status)} border`}>
-                              {getStatusIcon(point.status)}
-                              <span className="ml-2 capitalize">{point.status}</span>
-                            </Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="p-6">
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {/* Petitioner's Claim */}
-                            <div className="border-r border-slate-200 pr-6">
-                              <h4 className="text-md font-semibold text-red-700 mb-3 flex items-center">
-                                <AlertCircle className="h-4 w-4 mr-2" />
-                                PETITIONER&apos;S CLAIM
-                              </h4>
-                              <p className="text-sm text-slate-700 leading-relaxed mb-4">
-                                {point.petitionerClaim}
-                              </p>
-                              <div className="text-xs text-slate-500">
-                                Reference: {point.pageRefs.petitioner}
-                              </div>
-                            </div>
-
-                            {/* Respondent's Rebuttal */}
-                            <div className="pl-6">
-                              <h4 className="text-md font-semibold text-blue-700 mb-3 flex items-center">
-                                <CheckCircle2 className="h-4 w-4 mr-2" />
-                                RESPONDENT&apos;S REBUTTAL
-                              </h4>
-                              <p className="text-sm text-slate-700 leading-relaxed mb-4">
-                                {point.respondentRebuttal}
-                              </p>
-                              <div className="text-xs text-slate-500">
-                                Reference: {point.pageRefs.respondent}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Supporting Evidence */}
-                          <div className="mt-6 pt-4 border-t border-slate-200">
-                            <h5 className="text-sm font-semibold text-slate-700 mb-3">SUPPORTING EVIDENCE</h5>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              {point.evidence.map((evidence, index) => (
-                                <div key={index} className="flex items-center text-xs text-slate-600">
-                                  <FileText className="h-3 w-3 mr-2 text-blue-500" />
-                                  {evidence}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
                   </div>
-                </div>
+                )}
 
-                {/* DOCUMENT COMPARISON */}
-                <div className="mb-12">
-                  <h3 className="text-xl md:text-2xl font-bold text-slate-800 mb-6 flex items-center">
-                    <FileText className="h-6 w-6 mr-3 text-blue-600" />
-                    DOCUMENT COMPARISON
-                  </h3>
+                {activeTab === 'respondent' && (
+                  <div className="mb-12">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-8">
+                      <h3 className="text-2xl font-bold text-blue-800 mb-6 flex items-center">
+                        <CheckCircle2 className="h-6 w-6 mr-3" />
+                        RESPONDENT&apos;S FL-320 RESPONSE
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div className="bg-white p-6 rounded-lg border border-blue-200">
+                          <h4 className="text-lg font-semibold text-blue-700 mb-4">DOCUMENT INFORMATION</h4>
+                          <div className="text-sm text-slate-700 space-y-2">
+                            <div><strong>Filed:</strong> {new Date().toLocaleDateString()}</div>
+                            <div><strong>Pages:</strong> {respondentFL320?.pages || 'TBD'}</div>
+                            <div><strong>Attorney:</strong> Thomas J. Rotert</div>
+                            <div><strong>Hearing:</strong> August 28, 2025</div>
+                            <div><strong>Case No:</strong> FDI-21-794666</div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-white p-6 rounded-lg border border-blue-200">
+                          <h4 className="text-lg font-semibold text-blue-700 mb-4">KEY REBUTTALS</h4>
+                          <div className="text-sm text-slate-700 space-y-2">
+                            <div>• Correct net proceeds calculation</div>
+                            <div>• Statement of Decision compliance</div>
+                            <div>• Tax obligation symmetry</div>
+                            <div>• Watts charges already calculated</div>
+                            <div>• Furniture division completed</div>
+                          </div>
+                        </div>
+                      </div>
 
-                  <div className="side-by-side-container grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Petitioner's RFO (LEFT SIDE) */}
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                            <h4 className="text-lg font-semibold text-red-800 mb-4 flex items-center">
-                        <AlertCircle className="h-5 w-5 mr-2" />
-                        PETITIONER&apos;S REQUEST FOR ORDER
-                      </h4>
-                      <div className="text-sm text-slate-700 space-y-2 mb-4">
-                        <div><strong>Filed:</strong> June 26, 2025</div>
-                        <div><strong>Pages:</strong> {petitionerRFO?.pages || 101}</div>
-                        <div><strong>Attorney:</strong> Selam Gezahegn, Simon Law</div>
-                        <div><strong>Hearing:</strong> August 28, 2025</div>
+                      <div className="bg-white p-6 rounded-lg border border-blue-200 mb-6">
+                        <h4 className="text-lg font-semibold text-blue-700 mb-4">RESPONDENT&apos;S CORRECT CALCULATION</h4>
+                        <div className="text-sm text-slate-700 space-y-3">
+                          <div className="bg-blue-100 p-4 rounded border border-blue-200">
+                            <strong>Step 1:</strong> Use actual net proceeds from closing statement<br/>
+                            <span className="ml-4">Net proceeds: $280,355.83 (per closing statement)</span>
+                          </div>
+                          <div className="bg-blue-100 p-4 rounded border border-blue-200">
+                            <strong>Step 2:</strong> Divide 65/35 per Statement of Decision<br/>
+                            <span className="ml-4">Petitioner (35%): $280,355.83 × 0.35 = $98,124.54</span><br/>
+                            <span className="ml-4">Respondent (65%): $280,355.83 × 0.65 = $182,231.29</span>
+                          </div>
+                          <div className="bg-blue-100 p-4 rounded border border-blue-200">
+                            <strong>Step 3:</strong> Apply Statement of Decision adjustments<br/>
+                            <span className="ml-4">Watts charges, furniture, rental income offsets</span>
+                          </div>
+                          <div className="bg-blue-100 p-4 rounded border border-blue-200">
+                            <strong>Step 4:</strong> Account for tax obligations<br/>
+                            <span className="ml-4">Petitioner&apos;s withholding: $13,694.62</span><br/>
+                            <span className="ml-4">Respondent&apos;s estimated tax: $25,432.88</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-white p-6 rounded-lg border border-blue-200">
+                        <h4 className="text-lg font-semibold text-blue-700 mb-4">FL-320 CONTENT PREVIEW</h4>
+                        <div className="bg-slate-50 p-4 rounded border border-blue-200 max-h-96 overflow-y-auto">
+                          <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
+                            {respondentFL320?.text?.substring(0, 3000) || 'FL-320 response in preparation. This will contain detailed rebuttals to each point raised in the RFO, supported by overwhelming evidence from the Statement of Decision, closing statements, tax documentation, and email correspondence.'}
+                            {(respondentFL320?.text?.length || 0) > 3000 && '\n\n[... Content truncated for display ...]'}
+                          </pre>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'comparison' && (
+                  <>
+                    {/* OVERVIEW SECTION */}
+                    <div className="mb-12">
+                      <div 
+                        className="flex items-center justify-between cursor-pointer mb-4"
+                        onClick={() => toggleSection('overview')}
+                      >
+                        <h3 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center">
+                          <ScaleIcon className="h-6 w-6 mr-3 text-blue-600" />
+                          EXECUTIVE SUMMARY
+                        </h3>
+                        {expandedSections.has('overview') ? 
+                          <ChevronDown className="h-6 w-6 text-slate-600" /> : 
+                          <ChevronRight className="h-6 w-6 text-slate-600" />
+                        }
                       </div>
                       
-                      {/* Petitioner's Actual Calculation */}
-                      <div className="bg-white p-4 rounded border border-red-200 mb-4">
-                        <h5 className="text-sm font-semibold text-red-700 mb-3">PETITIONER&apos;S CALCULATION</h5>
-                        <div className="text-xs text-slate-700 space-y-2">
-                          <div><strong>Step 1:</strong> Add back mortgage arrears to net proceeds</div>
-                          <div className="ml-4">$280,355.83 + $77,779.88 = $358,155.71</div>
-                          <div><strong>Step 2:</strong> Divide 65/35 per Statement of Decision</div>
-                          <div className="ml-4">Petitioner (35%): $358,155.71 × 0.35 = $125,354.50</div>
-                          <div className="ml-4">Respondent (65%): $358,155.71 × 0.65 = $232,801.21</div>
-                          <div><strong>Step 3:</strong> Apply tax withholding credit</div>
-                          <div className="ml-4">Petitioner: $125,354.50 - $8,910.50 = <strong>$116,453.00</strong></div>
-                          <div className="ml-4">Respondent: $232,801.21 - $77,779.88 + $8,901.50 = <strong>$163,902.83</strong></div>
+                      {expandedSections.has('overview') && (
+                        <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                              <h4 className="text-lg font-semibold text-red-700 mb-3">PETITIONER&apos;S POSITION</h4>
+                              <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                                Petitioner claims Respondent owes additional amounts by adding back $77,779.88 mortgage 
+                                arrears to net proceeds ($280,355.83 + $77,779.88 = $358,155.71) before dividing 65/35.
+                              </p>
+                              <div className="text-xs text-slate-600 bg-red-100 p-3 rounded">
+                                <strong>Petitioner&apos;s Calculation:</strong><br/>
+                                • Net proceeds: $358,155.71 (with add-back)<br/>
+                                • Petitioner (35%): $116,453.00<br/>
+                                • Respondent (65%): $163,902.83<br/>
+                                • Plus additional Watts charges and interest
+                              </div>
+                            </div>
+                            <div>
+                              <h4 className="text-lg font-semibold text-blue-700 mb-3">RESPONDENT&apos;S REBUTTAL</h4>
+                              <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                                Respondent demonstrates that Petitioner&apos;s calculation double-counts mortgage arrears 
+                                that were already paid from sale proceeds. The correct calculation uses actual net 
+                                proceeds of $280,355.83 per the closing statement.
+                              </p>
+                              <div className="text-xs text-slate-600 bg-blue-100 p-3 rounded">
+                                <strong>Respondent&apos;s Correct Calculation:</strong><br/>
+                                • Net proceeds: $280,355.83 (actual closing)<br/>
+                                • Petitioner (35%): $98,124.54<br/>
+                                • Respondent (65%): $182,231.29<br/>
+                                • Plus Statement of Decision adjustments
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      )}
+                    </div>
 
-                      <div className="bg-white p-4 rounded border border-red-200 max-h-96 overflow-y-auto">
-                        <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
-                          {petitionerRFO?.text?.substring(0, 2000) || 'Loading RFO content...'}
-                          {(petitionerRFO?.text?.length || 0) > 2000 && '\n\n[... Content truncated for display ...]'}
-                        </pre>
+                    {/* SIDE-BY-SIDE COMPARISON */}
+                    <div className="mb-12">
+                      <h3 className="text-xl md:text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                        <ScrollText className="h-6 w-6 mr-3 text-blue-600" />
+                        DETAILED COMPARISON BY ISSUE
+                      </h3>
+
+                      <div className="space-y-8">
+                        {comparisonPoints.map((point) => (
+                          <Card key={point.id} className="border border-slate-200">
+                            <CardHeader className="bg-slate-50">
+                              <div className="flex items-center justify-between">
+                                <CardTitle className="text-lg font-semibold text-slate-800">
+                                  {point.title}
+                                </CardTitle>
+                                <Badge className={`${getStatusColor(point.status)} border`}>
+                                  {getStatusIcon(point.status)}
+                                  <span className="ml-2 capitalize">{point.status}</span>
+                                </Badge>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="p-6">
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Petitioner's Claim */}
+                                <div className="border-r border-slate-200 pr-6">
+                                  <h4 className="text-md font-semibold text-red-700 mb-3 flex items-center">
+                                    <AlertCircle className="h-4 w-4 mr-2" />
+                                    PETITIONER&apos;S CLAIM
+                                  </h4>
+                                  <p className="text-sm text-slate-700 leading-relaxed mb-4">
+                                    {point.petitionerClaim}
+                                  </p>
+                                  <div className="text-xs text-slate-500">
+                                    Reference: {point.pageRefs.petitioner}
+                                  </div>
+                                </div>
+
+                                {/* Respondent's Rebuttal */}
+                                <div className="pl-6">
+                                  <h4 className="text-md font-semibold text-blue-700 mb-3 flex items-center">
+                                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                                    RESPONDENT&apos;S REBUTTAL
+                                  </h4>
+                                  <p className="text-sm text-slate-700 leading-relaxed mb-4">
+                                    {point.respondentRebuttal}
+                                  </p>
+                                  <div className="text-xs text-slate-500">
+                                    Reference: {point.pageRefs.respondent}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Supporting Evidence */}
+                              <div className="mt-6 pt-4 border-t border-slate-200">
+                                <h5 className="text-sm font-semibold text-slate-700 mb-3">SUPPORTING EVIDENCE</h5>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  {point.evidence.map((evidence, index) => (
+                                    <div key={index} className="flex items-center text-xs text-slate-600">
+                                      <FileText className="h-3 w-3 mr-2 text-blue-500" />
+                                      {evidence}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
                       </div>
                     </div>
 
-                    {/* Respondent's FL-320 (RIGHT SIDE) */}
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                            <h4 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
-                        <CheckCircle2 className="h-5 w-5 mr-2" />
-                        RESPONDENT&apos;S FL-320 RESPONSE
-                      </h4>
-                      <div className="text-sm text-slate-700 space-y-2 mb-4">
-                        <div><strong>Filed:</strong> {new Date().toLocaleDateString()}</div>
-                        <div><strong>Pages:</strong> {respondentFL320?.pages || 'TBD'}</div>
-                        <div><strong>Attorney:</strong> Thomas J. Rotert</div>
-                        <div><strong>Hearing:</strong> August 28, 2025</div>
-                      </div>
+                    {/* DOCUMENT COMPARISON */}
+                    <div className="mb-12">
+                      <h3 className="text-xl md:text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                        <FileText className="h-6 w-6 mr-3 text-blue-600" />
+                        DOCUMENT COMPARISON
+                      </h3>
 
-                      {/* Respondent's Correct Calculation */}
-                      <div className="bg-white p-4 rounded border border-blue-200 mb-4">
-                        <h5 className="text-sm font-semibold text-blue-700 mb-3">RESPONDENT&apos;S CORRECT CALCULATION</h5>
-                        <div className="text-xs text-slate-700 space-y-2">
-                          <div><strong>Step 1:</strong> Use actual net proceeds from closing statement</div>
-                          <div className="ml-4">Net proceeds: $280,355.83 (per closing statement)</div>
-                          <div><strong>Step 2:</strong> Divide 65/35 per Statement of Decision</div>
-                          <div className="ml-4">Petitioner (35%): $280,355.83 × 0.35 = $98,124.54</div>
-                          <div className="ml-4">Respondent (65%): $280,355.83 × 0.65 = $182,231.29</div>
-                          <div><strong>Step 3:</strong> Apply Statement of Decision adjustments</div>
-                          <div className="ml-4">Watts charges, furniture, rental income offsets</div>
-                          <div><strong>Step 4:</strong> Account for tax obligations</div>
-                          <div className="ml-4">Petitioner&apos;s withholding: $13,694.62</div>
-                          <div className="ml-4">Respondent&apos;s estimated tax: $25,432.88</div>
+                      <div className="side-by-side-container grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* Petitioner's RFO (LEFT SIDE) */}
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                          <h4 className="text-lg font-semibold text-red-800 mb-4 flex items-center">
+                            <AlertCircle className="h-5 w-5 mr-2" />
+                            PETITIONER&apos;S REQUEST FOR ORDER
+                          </h4>
+                          <div className="text-sm text-slate-700 space-y-2 mb-4">
+                            <div><strong>Filed:</strong> June 26, 2025</div>
+                            <div><strong>Pages:</strong> {petitionerRFO?.pages || 101}</div>
+                            <div><strong>Attorney:</strong> Selam Gezahegn, Simon Law</div>
+                            <div><strong>Hearing:</strong> August 28, 2025</div>
+                          </div>
+                          
+                          {/* Petitioner's Actual Calculation */}
+                          <div className="bg-white p-4 rounded border border-red-200 mb-4">
+                            <h5 className="text-sm font-semibold text-red-700 mb-3">PETITIONER&apos;S CALCULATION</h5>
+                            <div className="text-xs text-slate-700 space-y-2">
+                              <div><strong>Step 1:</strong> Add back mortgage arrears to net proceeds</div>
+                              <div className="ml-4">$280,355.83 + $77,779.88 = $358,155.71</div>
+                              <div><strong>Step 2:</strong> Divide 65/35 per Statement of Decision</div>
+                              <div className="ml-4">Petitioner (35%): $358,155.71 × 0.35 = $125,354.50</div>
+                              <div className="ml-4">Respondent (65%): $358,155.71 × 0.65 = $232,801.21</div>
+                              <div><strong>Step 3:</strong> Apply tax withholding credit</div>
+                              <div className="ml-4">Petitioner: $125,354.50 - $8,910.50 = <strong>$116,453.00</strong></div>
+                              <div className="ml-4">Respondent: $232,801.21 - $77,779.88 + $8,901.50 = <strong>$163,902.83</strong></div>
+                            </div>
+                          </div>
+
+                          <div className="bg-white p-4 rounded border border-red-200 max-h-96 overflow-y-auto">
+                            <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
+                              {petitionerRFO?.text?.substring(0, 2000) || 'Loading RFO content...'}
+                              {(petitionerRFO?.text?.length || 0) > 2000 && '\n\n[... Content truncated for display ...]'}
+                            </pre>
+                          </div>
+                        </div>
+
+                        {/* Respondent's FL-320 (RIGHT SIDE) */}
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                          <h4 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
+                            <CheckCircle2 className="h-5 w-5 mr-2" />
+                            RESPONDENT&apos;S FL-320 RESPONSE
+                          </h4>
+                          <div className="text-sm text-slate-700 space-y-2 mb-4">
+                            <div><strong>Filed:</strong> {new Date().toLocaleDateString()}</div>
+                            <div><strong>Pages:</strong> {respondentFL320?.pages || 'TBD'}</div>
+                            <div><strong>Attorney:</strong> Thomas J. Rotert</div>
+                            <div><strong>Hearing:</strong> August 28, 2025</div>
+                          </div>
+
+                          {/* Respondent's Correct Calculation */}
+                          <div className="bg-white p-4 rounded border border-blue-200 mb-4">
+                            <h5 className="text-sm font-semibold text-blue-700 mb-3">RESPONDENT&apos;S CORRECT CALCULATION</h5>
+                            <div className="text-xs text-slate-700 space-y-2">
+                              <div><strong>Step 1:</strong> Use actual net proceeds from closing statement</div>
+                              <div className="ml-4">Net proceeds: $280,355.83 (per closing statement)</div>
+                              <div><strong>Step 2:</strong> Divide 65/35 per Statement of Decision</div>
+                              <div className="ml-4">Petitioner (35%): $280,355.83 × 0.35 = $98,124.54</div>
+                              <div className="ml-4">Respondent (65%): $280,355.83 × 0.65 = $182,231.29</div>
+                              <div><strong>Step 3:</strong> Apply Statement of Decision adjustments</div>
+                              <div className="ml-4">Watts charges, furniture, rental income offsets</div>
+                              <div><strong>Step 4:</strong> Account for tax obligations</div>
+                              <div className="ml-4">Petitioner&apos;s withholding: $13,694.62</div>
+                              <div className="ml-4">Respondent&apos;s estimated tax: $25,432.88</div>
+                            </div>
+                          </div>
+
+                          <div className="bg-white p-4 rounded border border-blue-200 max-h-96 overflow-y-auto">
+                            <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
+                              {respondentFL320?.text?.substring(0, 2000) || 'FL-320 response in preparation. This will contain detailed rebuttals to each point raised in the RFO, supported by overwhelming evidence from the Statement of Decision, closing statements, tax documentation, and email correspondence.'}
+                              {(respondentFL320?.text?.length || 0) > 2000 && '\n\n[... Content truncated for display ...]'}
+                            </pre>
+                          </div>
                         </div>
                       </div>
-
-                      <div className="bg-white p-4 rounded border border-blue-200 max-h-96 overflow-y-auto">
-                        <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
-                          {respondentFL320?.text?.substring(0, 2000) || 'FL-320 response in preparation. This will contain detailed rebuttals to each point raised in the RFO, supported by overwhelming evidence from the Statement of Decision, closing statements, tax documentation, and email correspondence.'}
-                          {(respondentFL320?.text?.length || 0) > 2000 && '\n\n[... Content truncated for display ...]'}
-                        </pre>
-                      </div>
                     </div>
-                  </div>
-                </div>
+                  </>
+                )}
 
                 {/* COURT FOOTER */}
                 <div className="mt-16 pt-8 border-t-2 border-slate-300">
