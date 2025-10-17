@@ -67,24 +67,62 @@ The repo includes a “Moneyball” scorecard visualization (`src/app/scorecards
 - Launch locally: `npm run dev` and open `http://localhost:3000/scorecards` for the Moneyball visualization.  
 - Data source of truth: `Mail/LEGAL-DIVORCE STUFF-EVIDENCE.mbox`; metrics live in `src/data/participants.ts`.
 
-## Specification-Driven Development
+## Spec-Kit Framework Workflow
 
-This project uses [GitHub Spec-Kit](https://github.com/github/spec-kit) for feature development:
+This project uses [GitHub Spec-Kit](https://github.com/github/spec-kit) for specification-driven development with JusticeOS™ principles.
 
-1. **Constitution**: See `.specify/memory/constitution.md` for non-negotiable principles
-2. **New Features**: Use `/speckit.specify` to create specs in `specs/` directory
-3. **Quality Gates**: WCAG AAA, <3s loads, evidence-based claims, trauma-informed UX
+### Core Workflow
+
+1. **Constitution First**: All development follows `.specify/memory/constitution.md` principles
+2. **Specification**: Create detailed specs in `specs/` directory using `/speckit.specify`
+3. **Planning**: Generate implementation plans with `/speckit.plan`
+4. **Tasks**: Break down into atomic tasks using `/speckit.tasks`
+5. **Implementation**: Execute with TDD using `/speckit.implement`
 
 ### Available Slash Commands
-- `/speckit.constitution` - Review/update governing principles
+
+#### Core Commands
+- `/speckit.constitution` - Review/update JusticeOS™ governing principles
 - `/speckit.specify` - Create new feature specification
 - `/speckit.plan` - Generate technical implementation plan
 - `/speckit.tasks` - Break down into atomic tasks
 - `/speckit.implement` - Execute tasks with TDD
 
-### JusticeOS™ Integration
-Before merging into JusticeOS repo, all features must pass demo validation without breaking existing functionality. The constitution enforces empathy-first design, accessibility excellence, and trauma-informed UX patterns.
+#### Enhancement Commands
+- `/speckit.clarify` - Ask structured questions to de-risk ambiguous areas
+- `/speckit.analyze` - Cross-artifact consistency & alignment report
+- `/speckit.checklist` - Generate quality checklists for requirements validation
+
+### JusticeOS™ Compliance Requirements
+
+All features must meet these non-negotiable standards:
+- **Empathy-First Design**: Reduce stress, avoid retraumatization
+- **WCAG AAA Accessibility**: Full screen reader compatibility
+- **Trauma-Informed Technology**: Safe content handling, clear escape routes
+- **Privacy by Design**: End-to-end encryption, zero-knowledge architecture
+- **Transparency**: Explainable AI decisions in plain language
 
 ### Current Feature Specifications
-- `specs/001-contact-extraction/` - Email parsing and contact extraction
-- `specs/002-email-deduplication/` - CSV deduplication and data cleaning
+
+- `specs/contact-extraction/` - Advanced NLP for legal contact identification
+- `specs/deduplication/` - Intelligent matching and merging system
+- `specs/whatsapp-analysis/` - Secure parsing of messaging communications
+- `specs/evidence-organization/` - Structured categorization and tagging
+
+### Demo Success Criteria
+
+- 95%+ accuracy in contact extraction
+- 90%+ accuracy in duplicate detection
+- Complete WCAG AAA compliance verification
+- Zero data breaches or privacy violations
+- User testing shows reduced stress levels
+- Trauma-safe content filtering validation
+
+### Quality Gates
+
+Before any production deployment:
+- Trauma-informed design review
+- WCAG AAA compliance verification
+- Privacy impact assessment
+- User testing with legal professionals
+- Security audit completion
