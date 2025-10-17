@@ -2,43 +2,19 @@
 
 import React, { useState, useMemo, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import {
-  Calculator,
   FileText,
-  DollarSign,
-  AlertTriangle,
-  CheckCircle,
   ChevronDown,
   ChevronRight,
-  Scale,
-  Receipt,
-  TrendingUp,
-  Users,
-  Building,
-  CreditCard,
-  FileCheck,
-  HelpCircle,
-  Landmark,
-  Banknote,
-  Percent,
-  User,
-  Home,
-  ArrowUp,
-  ArrowDown,
-  Calendar,
   Download,
   Printer,
   Eye,
   EyeOff,
   ScrollText,
-  FileSpreadsheet,
-  Gavel,
   Scale as ScaleIcon
 } from 'lucide-react';
 
@@ -50,7 +26,7 @@ interface DocumentSource {
 }
 
 interface CalculationStep {
-  stepNumber: number;
+  stepNumber: string;
   stepName: string;
   amount: number;
   formula?: string;
@@ -74,7 +50,7 @@ interface SODAdjustments {
 const FinalDistributionSSOT: React.FC = () => {
   const pdfRef = useRef<HTMLDivElement>(null);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-  const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set([1, 2, 3]));
+  const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set(['1', '2', '3']));
   const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(false);
 
   // Single Source of Truth Data - All values from authoritative documents
@@ -119,7 +95,7 @@ const FinalDistributionSSOT: React.FC = () => {
     // Progressive disclosure reasoning path
     const reasoningPath: CalculationStep[] = [
       {
-        stepNumber: 1,
+        stepNumber: "1",
         stepName: "FINAL DISTRIBUTION AMOUNTS",
         amount: mathieuFinalDistribution + rosannaFinalDistribution,
         explanation: "The bottom line: What each party receives after all calculations and adjustments.",
@@ -139,7 +115,7 @@ const FinalDistributionSSOT: React.FC = () => {
         ],
         subSteps: [
           {
-            stepNumber: 1.1,
+            stepNumber: "1.1",
             stepName: "MATHIEU WAUTERS RECEIVES",
             amount: mathieuFinalDistribution,
             formula: `65% SOD Share - Net Adjustments = ${mathieuSODShare.toLocaleString()} - ${netAdjustment.toLocaleString()} = ${mathieuFinalDistribution.toLocaleString()}`,
@@ -154,7 +130,7 @@ const FinalDistributionSSOT: React.FC = () => {
             ]
           },
           {
-            stepNumber: 1.2,
+            stepNumber: "1.2",
             stepName: "ROSANNA ALVERO RECEIVES",
             amount: rosannaFinalDistribution,
             formula: `35% SOD Share + Net Adjustments = ${rosannaSODShare.toLocaleString()} + ${netAdjustment.toLocaleString()} = ${rosannaFinalDistribution.toLocaleString()}`,
@@ -171,7 +147,7 @@ const FinalDistributionSSOT: React.FC = () => {
         ]
       },
       {
-        stepNumber: 2,
+        stepNumber: "2",
         stepName: "STATEMENT OF DECISION ALLOCATION",
         amount: netProceedsToSellers,
         formula: `Net Proceeds × 65%/35% = ${netProceedsToSellers.toLocaleString()} × 0.65/0.35`,
@@ -192,7 +168,7 @@ const FinalDistributionSSOT: React.FC = () => {
         ],
         subSteps: [
           {
-            stepNumber: 2.1,
+            stepNumber: "2.1",
             stepName: "Mathieu's SOD Share (65%)",
             amount: mathieuSODShare,
             formula: `${netProceedsToSellers.toLocaleString()} × 0.65 = ${mathieuSODShare.toLocaleString()}`,
@@ -207,7 +183,7 @@ const FinalDistributionSSOT: React.FC = () => {
             ]
           },
           {
-            stepNumber: 2.2,
+            stepNumber: "2.2",
             stepName: "Rosanna's SOD Share (35%)",
             amount: rosannaSODShare,
             formula: `${netProceedsToSellers.toLocaleString()} × 0.35 = ${rosannaSODShare.toLocaleString()}`,
@@ -224,7 +200,7 @@ const FinalDistributionSSOT: React.FC = () => {
         ]
       },
       {
-        stepNumber: 3,
+        stepNumber: "3",
         stepName: "NET PROCEEDS FROM HOME SALE",
         amount: netProceedsToSellers,
         explanation: "The amount available for distribution after all sale costs and lender payoff.",
@@ -238,7 +214,7 @@ const FinalDistributionSSOT: React.FC = () => {
         ],
         subSteps: [
           {
-            stepNumber: 3.1,
+            stepNumber: "3.1",
             stepName: "Gross Sale Price",
             amount: grossSalePrice,
             explanation: "The total sale price of the home.",
@@ -252,7 +228,7 @@ const FinalDistributionSSOT: React.FC = () => {
             ]
           },
           {
-            stepNumber: 3.2,
+            stepNumber: "3.2",
             stepName: "Lender Payoff",
             amount: lenderPayoff,
             explanation: "Amount paid to satisfy the mortgage loan.",
@@ -266,7 +242,7 @@ const FinalDistributionSSOT: React.FC = () => {
             ]
           },
           {
-            stepNumber: 3.3,
+            stepNumber: "3.3",
             stepName: "Sale Costs & Deductions",
             amount: grossSalePrice - lenderPayoff - netProceedsToSellers,
             explanation: "Real estate commissions, transfer taxes, and other closing costs.",
@@ -282,7 +258,7 @@ const FinalDistributionSSOT: React.FC = () => {
         ]
       },
       {
-        stepNumber: 4,
+        stepNumber: "4",
         stepName: "SOD ADJUSTMENTS",
         amount: netAdjustment,
         formula: `Mathieu owes Rosanna: ${mathieuOwesRosanna.toLocaleString()} - Rosanna owes Mathieu: ${rosannaOwesMathieu.toLocaleString()} = ${netAdjustment.toLocaleString()}`,
@@ -297,7 +273,7 @@ const FinalDistributionSSOT: React.FC = () => {
         ],
         subSteps: [
           {
-            stepNumber: 4.1,
+            stepNumber: "4.1",
             stepName: "Mathieu Owes Rosanna",
             amount: mathieuOwesRosanna,
             explanation: "Total amount Mathieu owes Rosanna per Statement of Decision.",
@@ -329,7 +305,7 @@ const FinalDistributionSSOT: React.FC = () => {
             ],
             subSteps: [
               {
-                stepNumber: 4.1.1,
+                stepNumber: "4.1.1",
                 stepName: "Watts Charges",
                 amount: sodAdjustments.wattsChargesOriginal,
                 explanation: "Mathieu's exclusive possession charges per Statement of Decision.",
@@ -343,7 +319,7 @@ const FinalDistributionSSOT: React.FC = () => {
                 ]
               },
               {
-                stepNumber: 4.1.2,
+                stepNumber: "4.1.2",
                 stepName: "Rental Income Share",
                 amount: sodAdjustments.rentalIncomeShare,
                 explanation: "Mathieu's share of rental income per Statement of Decision.",
@@ -357,7 +333,7 @@ const FinalDistributionSSOT: React.FC = () => {
                 ]
               },
               {
-                stepNumber: 4.1.3,
+                stepNumber: "4.1.3",
                 stepName: "Motorcycle Share",
                 amount: sodAdjustments.motorcycleShare,
                 explanation: "Mathieu's share of motorcycle value per Statement of Decision.",
@@ -371,7 +347,7 @@ const FinalDistributionSSOT: React.FC = () => {
                 ]
               },
               {
-                stepNumber: 4.1.4,
+                stepNumber: "4.1.4",
                 stepName: "Furniture Share",
                 amount: sodAdjustments.furnitureShare,
                 explanation: "Mathieu's share of furniture value per Statement of Decision.",
@@ -387,7 +363,7 @@ const FinalDistributionSSOT: React.FC = () => {
             ]
           },
           {
-            stepNumber: 4.2,
+            stepNumber: "4.2",
             stepName: "Rosanna Owes Mathieu",
             amount: rosannaOwesMathieu,
             explanation: "Total amount Rosanna owes Mathieu based on post-SOD adjustments.",
@@ -407,7 +383,7 @@ const FinalDistributionSSOT: React.FC = () => {
             ],
             subSteps: [
               {
-                stepNumber: 4.2.1,
+                stepNumber: "4.2.1",
                 stepName: "Exclusive Possession Credit",
                 amount: sodAdjustments.rosannaExclusivePossession,
                 explanation: "Credit for Rosanna's exclusive possession of the home.",
@@ -421,7 +397,7 @@ const FinalDistributionSSOT: React.FC = () => {
                 ]
               },
               {
-                stepNumber: 4.2.2,
+                stepNumber: "4.2.2",
                 stepName: "Furniture Correction",
                 amount: sodAdjustments.furnitureCorrection,
                 explanation: "Correction for furniture allocation discrepancy.",
@@ -439,7 +415,7 @@ const FinalDistributionSSOT: React.FC = () => {
         ]
       },
       {
-        stepNumber: 5,
+        stepNumber: "5",
         stepName: "TAX WITHHOLDING CONSIDERATIONS",
         amount: rosannaWithholding + mathieuTaxObligation,
         explanation: "Tax obligations that affect the final distribution amounts.",
@@ -453,7 +429,7 @@ const FinalDistributionSSOT: React.FC = () => {
         ],
         subSteps: [
           {
-            stepNumber: 5.1,
+            stepNumber: "5.1",
             stepName: "Rosanna's FTB Withholding",
             amount: rosannaWithholding,
             explanation: "Amount withheld by Franchise Tax Board from Rosanna's proceeds.",
@@ -467,7 +443,7 @@ const FinalDistributionSSOT: React.FC = () => {
             ]
           },
           {
-            stepNumber: 5.2,
+            stepNumber: "5.2",
             stepName: "Mathieu's Estimated Tax Obligation",
             amount: mathieuTaxObligation,
             explanation: "Estimated tax obligation for Mathieu's share of the proceeds.",
@@ -503,7 +479,7 @@ const FinalDistributionSSOT: React.FC = () => {
     };
   }, [sodAdjustments]);
 
-  const toggleStep = (stepNumber: number) => {
+  const toggleStep = (stepNumber: string) => {
     setExpandedSteps(prev => {
       const newSet = new Set(prev);
       if (newSet.has(stepNumber)) {
