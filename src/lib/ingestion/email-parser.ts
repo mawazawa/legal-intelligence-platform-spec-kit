@@ -1,316 +1,245 @@
-import fs from 'fs/promises';
-import path from 'path';
+import { parse } from 'mailparser';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 export interface EmailEvent {
-  externalId: string;
-  type: 'email';
+  id: string;
   date: string;
-  description: string;
-  actor: 'petitioner' | 'respondent' | 'court' | 'attorney' | 'other';
-  sourcePath: string;
-  snippet: string;
-  metadata: {
-    from: string;
-    to: string[];
-    cc?: string[];
-    subject: string;
-    messageId: string;
-  };
-}
-
-export interface ParsedEmail {
-  messageId: string;
   from: string;
   to: string[];
-  cc: string[];
   subject: string;
-  date: string;
   body: string;
-  headers: Record<string, string>;
+  actor: 'petitioner' | 'respondent' | 'court' | 'other';
+  eventType: 'continuance_request' | 'cooperation' | 'delay' | 'financial' | 'communication';
+  urgency: 'low' | 'medium' | 'high';
+  cooperationScore: number; // -1 to 1
+  delayDays?: number;
+  sourcePath: string;
+  snippet: string;
+}
+
+export interface ContinuanceEvent {
+  id: string;
+  date: string;
+  requestedBy: 'petitioner' | 'respondent' | 'court';
+  reason: string;
+  durationDays: number;
+  sourceEmail: string;
+  justification: string;
+  cooperationLevel: number;
 }
 
 export class EmailParser {
-  private actorMapping: Record<string, 'petitioner' | 'respondent' | 'court' | 'attorney' | 'other'> = {
-    'mathieuwauters@gmail.com': 'respondent',
-    'mathieu.wauters': 'respondent',
-    'rosanna.alvero': 'petitioner',
-    'rosanna': 'petitioner',
-    'selam.gezahegn': 'attorney',
-    'selam@': 'attorney',
-    'berman': 'attorney',
-    'court': 'court',
-    'sftc.org': 'court',
-    'superior court': 'court'
-  };
+  private mboxPath: string;
+  private actorEmails: Map<string, 'petitioner' | 'respondent' | 'court'>;
 
-  async parseMboxFile(filePath: string): Promise<EmailEvent[]> {
-    try {
-      const content = await fs.readFile(filePath, 'utf-8');
-      const emails = this.parseMboxContent(content);
+  constructor(mboxPath: string) {
+    this.mboxPath = mboxPath;
+    this.actorEmails = new Map([
+      // Petitioner emails
+      ['mathieu@example.com', 'petitioner'],
+      ['mathieu.wauters@example.com', 'petitioner'],
       
-      return emails.map(email => this.convertToEvent(email, filePath));
-    } catch (error) {
-      console.error(`Error parsing mbox file ${filePath}:`, error);
-      return [];
-    }
+      // Respondent emails  
+      ['rosanna@example.com', 'respondent'],
+      ['rosanna.alvero@example.com', 'respondent'],
+      
+      // Court emails
+      ['court@example.com', 'court'],
+      ['clerk@example.com', 'court'],
+    ]);
   }
 
-  async parseMboxDirectory(directoryPath: string): Promise<EmailEvent[]> {
-    try {
-      const files = await fs.readdir(directoryPath);
-      const mboxFiles = files.filter(file => file.endsWith('.mbox'));
-      
-      const allEvents: EmailEvent[] = [];
-      
-      for (const file of mboxFiles) {
-        const filePath = path.join(directoryPath, file);
-        const events = await this.parseMboxFile(filePath);
-        allEvents.push(...events);
-      }
-      
-      return allEvents;
-    } catch (error) {
-      console.error(`Error parsing mbox directory ${directoryPath}:`, error);
-      return [];
-    }
-  }
-
-  private parseMboxContent(content: string): ParsedEmail[] {
-    const emails: ParsedEmail[] = [];
-    const emailBlocks = content.split(/^From /m).filter(block => block.trim());
+  async parseMbox(): Promise<EmailEvent[]> {
+    const mboxContent = readFileSync(this.mboxPath, 'utf-8');
+    const emails = this.splitMbox(mboxContent);
     
-    for (const block of emailBlocks) {
+    const events: EmailEvent[] = [];
+    
+    for (const email of emails) {
       try {
-        const email = this.parseEmailBlock(block);
-        if (email) {
-          emails.push(email);
+        const parsed = await parse(email);
+        const event = this.extractEvent(parsed);
+        if (event) {
+          events.push(event);
         }
       } catch (error) {
-        console.warn('Error parsing email block:', error);
+        console.warn('Failed to parse email:', error);
       }
     }
     
-    return emails;
+    return events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
 
-  private parseEmailBlock(block: string): ParsedEmail | null {
-    const lines = block.split('\n');
-    const headers: Record<string, string> = {};
-    let bodyStart = -1;
+  private splitMbox(content: string): string[] {
+    // Split mbox by "From " lines
+    const emails = content.split(/^From /m).filter(email => email.trim());
+    return emails.map(email => `From ${email}`);
+  }
+
+  private extractEvent(parsed: any): EmailEvent | null {
+    if (!parsed.from || !parsed.date) return null;
+
+    const from = parsed.from.value[0]?.address || '';
+    const actor = this.actorEmails.get(from) || 'other';
     
-    // Parse headers
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      
-      if (line.trim() === '') {
-        bodyStart = i + 1;
-        break;
-      }
-      
-      if (line.includes(':')) {
-        const [key, ...valueParts] = line.split(':');
-        const value = valueParts.join(':').trim();
-        headers[key.toLowerCase()] = value;
-      }
-    }
-    
-    if (bodyStart === -1) {
-      return null;
-    }
-    
-    // Extract body
-    const body = lines.slice(bodyStart).join('\n').trim();
-    
-    // Extract key fields
-    const from = headers['from'] || '';
-    const to = this.parseEmailList(headers['to'] || '');
-    const cc = this.parseEmailList(headers['cc'] || '');
-    const subject = headers['subject'] || '';
-    const date = headers['date'] || '';
-    const messageId = headers['message-id'] || '';
+    const eventType = this.classifyEventType(parsed);
+    const cooperationScore = this.calculateCooperationScore(parsed);
+    const urgency = this.calculateUrgency(parsed);
     
     return {
-      messageId,
-      from,
-      to,
-      cc,
-      subject,
-      date,
-      body,
-      headers
-    };
-  }
-
-  private parseEmailList(emailString: string): string[] {
-    if (!emailString) return [];
-    
-    return emailString
-      .split(',')
-      .map(email => email.trim())
-      .filter(email => email.length > 0);
-  }
-
-  private convertToEvent(email: ParsedEmail, sourcePath: string): EmailEvent {
-    const actor = this.determineActor(email.from, email.subject, email.body);
-    const description = this.generateDescription(email);
-    const snippet = this.extractSnippet(email.body);
-    
-    return {
-      externalId: `email_${email.messageId}`,
-      type: 'email',
-      date: email.date,
-      description,
+      id: this.generateId(parsed),
+      date: parsed.date.toISOString(),
+      from: from,
+      to: parsed.to?.value?.map((v: any) => v.address) || [],
+      subject: parsed.subject || '',
+      body: parsed.text || '',
       actor,
-      sourcePath,
-      snippet,
-      metadata: {
-        from: email.from,
-        to: email.to,
-        cc: email.cc,
-        subject: email.subject,
-        messageId: email.messageId
-      }
+      eventType,
+      urgency,
+      cooperationScore,
+      sourcePath: this.mboxPath,
+      snippet: this.extractSnippet(parsed)
     };
   }
 
-  private determineActor(
-    from: string,
-    subject: string,
-    body: string
-  ): 'petitioner' | 'respondent' | 'court' | 'attorney' | 'other' {
-    const text = `${from} ${subject} ${body}`.toLowerCase();
+  private classifyEventType(parsed: any): EmailEvent['eventType'] {
+    const subject = (parsed.subject || '').toLowerCase();
+    const body = (parsed.text || '').toLowerCase();
     
-    for (const [key, actor] of Object.entries(this.actorMapping)) {
-      if (text.includes(key.toLowerCase())) {
-        return actor;
-      }
+    // Continuance requests
+    if (subject.includes('continuance') || subject.includes('adjourn') || 
+        body.includes('request continuance') || body.includes('adjourn hearing')) {
+      return 'continuance_request';
     }
     
-    return 'other';
+    // Financial discussions
+    if (subject.includes('payment') || subject.includes('money') || 
+        subject.includes('settlement') || body.includes('$') || body.includes('dollar')) {
+      return 'financial';
+    }
+    
+    // Cooperation indicators
+    if (subject.includes('cooperate') || subject.includes('work together') ||
+        body.includes('let\'s work together') || body.includes('coordinate')) {
+      return 'cooperation';
+    }
+    
+    // Delay indicators
+    if (subject.includes('delay') || subject.includes('late') ||
+        body.includes('running late') || body.includes('delayed')) {
+      return 'delay';
+    }
+    
+    return 'communication';
   }
 
-  private generateDescription(email: ParsedEmail): string {
-    const subject = email.subject;
-    const from = email.from;
+  private calculateCooperationScore(parsed: any): number {
+    const body = (parsed.text || '').toLowerCase();
+    const subject = (parsed.subject || '').toLowerCase();
     
-    if (subject.toLowerCase().includes('continuance')) {
-      return `Continuance request: ${subject}`;
-    }
+    let score = 0;
     
-    if (subject.toLowerCase().includes('hearing')) {
-      return `Hearing communication: ${subject}`;
-    }
+    // Positive cooperation indicators
+    const positiveTerms = [
+      'cooperate', 'work together', 'coordinate', 'collaborate',
+      'mutual', 'agreed', 'consensus', 'compromise', 'reasonable'
+    ];
     
-    if (subject.toLowerCase().includes('motion')) {
-      return `Motion filing: ${subject}`;
-    }
+    // Negative cooperation indicators  
+    const negativeTerms = [
+      'refuse', 'deny', 'object', 'oppose', 'unreasonable',
+      'stubborn', 'difficult', 'non-cooperative', 'refuse to'
+    ];
     
-    if (subject.toLowerCase().includes('discovery')) {
-      return `Discovery request: ${subject}`;
-    }
-    
-    return `Email communication: ${subject}`;
-  }
-
-  private extractSnippet(body: string, maxLength: number = 200): string {
-    // Remove quoted text and signatures
-    const cleaned = body
-      .replace(/^>.*$/gm, '') // Remove quoted lines
-      .replace(/^On.*wrote:$/gm, '') // Remove "On ... wrote:" lines
-      .replace(/^--\s*$/gm, '') // Remove signature separators
-      .replace(/\n{3,}/g, '\n\n') // Collapse multiple newlines
-      .trim();
-    
-    if (cleaned.length <= maxLength) {
-      return cleaned;
-    }
-    
-    // Find a good break point
-    const truncated = cleaned.substring(0, maxLength);
-    const lastSpace = truncated.lastIndexOf(' ');
-    const lastPeriod = truncated.lastIndexOf('.');
-    const lastNewline = truncated.lastIndexOf('\n');
-    
-    const breakPoint = Math.max(lastPeriod, lastNewline, lastSpace);
-    
-    if (breakPoint > maxLength * 0.7) {
-      return cleaned.substring(0, breakPoint + 1) + '...';
-    }
-    
-    return truncated + '...';
-  }
-
-  // Continuance detection
-  detectContinuances(emails: EmailEvent[]): EmailEvent[] {
-    return emails.filter(email => {
-      const text = `${email.description} ${email.snippet}`.toLowerCase();
-      return text.includes('continuance') || 
-             text.includes('adjourn') || 
-             text.includes('postpone') ||
-             text.includes('reschedule');
+    positiveTerms.forEach(term => {
+      if (body.includes(term) || subject.includes(term)) score += 0.1;
     });
+    
+    negativeTerms.forEach(term => {
+      if (body.includes(term) || subject.includes(term)) score -= 0.1;
+    });
+    
+    return Math.max(-1, Math.min(1, score));
   }
 
-  // Delay analysis
-  analyzeDelays(emails: EmailEvent[]): {
-    byActor: Record<string, number>;
-    timeline: Array<{
-      date: string;
-      actor: string;
-      description: string;
-      delayDays?: number;
-    }>;
-  } {
-    const byActor: Record<string, number> = {};
-    const timeline: Array<{
-      date: string;
-      actor: string;
-      description: string;
-      delayDays?: number;
-    }> = [];
-
-    for (const email of emails) {
-      byActor[email.actor] = (byActor[email.actor] || 0) + 1;
-      
-      timeline.push({
-        date: email.date,
-        actor: email.actor,
-        description: email.description,
-        delayDays: this.extractDelayDays(email.snippet)
-      });
+  private calculateUrgency(parsed: any): EmailEvent['urgency'] {
+    const subject = (parsed.subject || '').toLowerCase();
+    const body = (parsed.text || '').toLowerCase();
+    
+    const urgentTerms = ['urgent', 'asap', 'immediately', 'emergency', 'deadline'];
+    const mediumTerms = ['soon', 'quickly', 'priority', 'important'];
+    
+    if (urgentTerms.some(term => subject.includes(term) || body.includes(term))) {
+      return 'high';
     }
-
-    return { byActor, timeline };
+    
+    if (mediumTerms.some(term => subject.includes(term) || body.includes(term))) {
+      return 'medium';
+    }
+    
+    return 'low';
   }
 
-  private extractDelayDays(snippet: string): number | undefined {
-    const delayMatch = snippet.match(/(\d+)\s*(?:day|week|month)/i);
-    if (delayMatch) {
-      const value = parseInt(delayMatch[1]);
-      const unit = delayMatch[0].toLowerCase();
+  private extractSnippet(parsed: any): string {
+    const text = parsed.text || '';
+    return text.substring(0, 200) + (text.length > 200 ? '...' : '');
+  }
+
+  private generateId(parsed: any): string {
+    const date = parsed.date?.toISOString() || '';
+    const from = parsed.from?.value?.[0]?.address || '';
+    const subject = parsed.subject || '';
+    return `${date}-${from}-${subject}`.replace(/[^a-zA-Z0-9-]/g, '-');
+  }
+
+  // Extract continuance events specifically
+  async extractContinuances(): Promise<ContinuanceEvent[]> {
+    const events = await this.parseMbox();
+    
+    return events
+      .filter(event => event.eventType === 'continuance_request')
+      .map(event => ({
+        id: event.id,
+        date: event.date,
+        requestedBy: event.actor === 'other' ? 'petitioner' : event.actor,
+        reason: this.extractContinuanceReason(event),
+        durationDays: this.extractDurationDays(event),
+        sourceEmail: event.from,
+        justification: event.snippet,
+        cooperationLevel: event.cooperationScore
+      }));
+  }
+
+  private extractContinuanceReason(event: EmailEvent): string {
+    const body = event.body.toLowerCase();
+    
+    if (body.includes('medical')) return 'Medical emergency';
+    if (body.includes('travel')) return 'Travel conflict';
+    if (body.includes('work')) return 'Work conflict';
+    if (body.includes('family')) return 'Family emergency';
+    if (body.includes('attorney')) return 'Attorney unavailable';
+    
+    return 'General scheduling conflict';
+  }
+
+  private extractDurationDays(event: EmailEvent): number {
+    const body = event.body.toLowerCase();
+    
+    // Look for duration mentions
+    const durationMatch = body.match(/(\d+)\s*(day|week|month)/);
+    if (durationMatch) {
+      const num = parseInt(durationMatch[1]);
+      const unit = durationMatch[2];
       
-      if (unit.includes('week')) {
-        return value * 7;
-      } else if (unit.includes('month')) {
-        return value * 30;
-      } else {
-        return value;
+      switch (unit) {
+        case 'day': return num;
+        case 'week': return num * 7;
+        case 'month': return num * 30;
+        default: return 14; // Default 2 weeks
       }
     }
     
-    return undefined;
-  }
-}
-
-// Utility function to parse all mbox files in the Mail directory
-export async function parseAllEmails(): Promise<EmailEvent[]> {
-  const parser = new EmailParser();
-  const mailDir = path.resolve(process.cwd(), '..', 'Mail');
-  
-  try {
-    return await parser.parseMboxDirectory(mailDir);
-  } catch (error) {
-    console.error('Error parsing emails:', error);
-    return [];
+    return 14; // Default duration
   }
 }
