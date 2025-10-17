@@ -11,12 +11,37 @@ interface LedgerItem {
   sources?: string[];
 }
 
+interface LedgerNodeValue {
+  respondent?: number;
+  petitioner?: number;
+  total?: number;
+  sale_price?: number;
+  due_to_seller?: number;
+  constructive_net?: number;
+  r65?: number;
+  p35?: number;
+  arrears_total?: number;
+  each?: number;
+}
+
+interface LedgerNode {
+  value?: LedgerNodeValue;
+  items?: LedgerItem[];
+  formulas?: string[];
+}
+
+interface SourceCitation {
+  citations?: Array<{
+    lines?: [number, number];
+  }>;
+}
+
 interface LedgerData {
   root?: {
-    value?: unknown;
-    children?: unknown[];
+    value?: LedgerNodeValue;
+    children?: LedgerNode[];
   };
-  sources?: Record<string, unknown>;
+  sources?: Record<string, SourceCitation>;
 }
 
 export function ComputationExplorerClient({ ledger }: { ledger: LedgerData }) {

@@ -53,6 +53,16 @@ export async function GET(req: NextRequest) {
     if (!latest) return NextResponse.json({ error: 'no ingested respondent/fl320 found' }, { status: 404 })
     text = latest.text
     meta = latest.meta
+  } else if (key === 'petitioner_declaration') {
+    const latest = await readLatestIngested('petitioner/declaration')
+    if (!latest) return NextResponse.json({ error: 'no ingested petitioner/declaration found' }, { status: 404 })
+    text = latest.text
+    meta = latest.meta
+  } else if (key === 'petitioner_memo') {
+    const latest = await readLatestIngested('petitioner/memo')
+    if (!latest) return NextResponse.json({ error: 'no ingested petitioner/memo found' }, { status: 404 })
+    text = latest.text
+    meta = latest.meta
   } else if (!file) {
     return NextResponse.json({ error: 'unknown file' }, { status: 400 })
   }
