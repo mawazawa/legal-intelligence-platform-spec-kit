@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 function toCurrency(n: number | undefined) {
   if (typeof n !== 'number' || Number.isNaN(n)) return '—'
@@ -24,11 +24,22 @@ async function loadScheduleMd(): Promise<string | null> {
   }
 }
 
-async function loadResultsJson(): Promise<any | null> {
+interface ResultsData {
+  method_add_back?: {
+    total?: number;
+  };
+  inputs?: {
+    sale?: {
+      actual_net_to_trust?: number;
+    };
+  };
+}
+
+async function loadResultsJson(): Promise<ResultsData | null> {
   try {
     const p = await readSibling('case-financials', 'results', 'results.json')
     const raw = await fs.readFile(p, 'utf8')
-    return JSON.parse(raw)
+    return JSON.parse(raw) as ResultsData
   } catch {
     return null
   }
@@ -66,7 +77,6 @@ export default async function Page() {
     equalC1 = extractAmounts(c1Block)
 
     const possTitle = pickLine(md, '## Equal-Arrears — Possession Adjusted')
-    const possNext = md.split('\n')[md.split('\n').indexOf(possTitle) + 1] || ''
     const possAmounts = md.split('\n')[md.split('\n').indexOf(possTitle) + 2] || ''
     possAdj = extractAmounts(possAmounts)
   }

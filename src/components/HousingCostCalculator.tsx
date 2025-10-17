@@ -2,20 +2,18 @@
 
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { 
-  Calculator, 
-  FileText, 
-  DollarSign, 
-  AlertTriangle, 
-  CheckCircle, 
-  ChevronDown, 
+import {
+  Calculator,
+  FileText,
+  DollarSign,
+  AlertTriangle,
+  CheckCircle,
+  ChevronDown,
   ChevronRight,
   Info,
   Scale,
@@ -25,7 +23,6 @@ import {
   Building,
   CreditCard,
   FileCheck,
-  ExternalLink,
   HelpCircle
 } from 'lucide-react';
 
@@ -74,8 +71,6 @@ const HousingCostCalculator: React.FC = () => {
     totalReinstatement: 95962.46
   });
 
-  const [allocationMethod, setAllocationMethod] = useState<'equal' | 'income' | 'usage'>('equal');
-  const [incomeRatio, setIncomeRatio] = useState({ mathieu: 50, rosanna: 50 });
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     mortgageBreakdown: true,
     costAllocations: false,
@@ -164,7 +159,7 @@ const HousingCostCalculator: React.FC = () => {
         agreedAmount: mathieuTotal + rosannaTotal
       }
     };
-  }, [mortgageData, allocationMethod, incomeRatio]);
+  }, [mortgageData]);
 
   const handleInputChange = (field: string, value: number) => {
     setMortgageData(prev => ({
@@ -240,7 +235,7 @@ const HousingCostCalculator: React.FC = () => {
                         <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p className="max-w-xs">The portion of your monthly payment that goes toward reducing the loan balance. This is the actual amount borrowed that you're paying back.</p>
+                        <p className="max-w-xs">The portion of your monthly payment that goes toward reducing the loan balance. This is the actual amount borrowed that you&apos;re paying back.</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -267,7 +262,7 @@ const HousingCostCalculator: React.FC = () => {
                         <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p className="max-w-xs">The cost of borrowing money, calculated as a percentage of the outstanding loan balance. This is the lender's profit.</p>
+                        <p className="max-w-xs">The cost of borrowing money, calculated as a percentage of the outstanding loan balance. This is the lender&apos;s profit.</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -348,7 +343,7 @@ const HousingCostCalculator: React.FC = () => {
                         <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p className="max-w-xs">Legal fees, property inspections, and other costs incurred by the lender during foreclosure proceedings. These are the true "foreclosure costs" beyond regular mortgage payments.</p>
+                        <p className="max-w-xs">Legal fees, property inspections, and other costs incurred by the lender during foreclosure proceedings. These are the true &quot;foreclosure costs&quot; beyond regular mortgage payments.</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -434,7 +429,7 @@ const HousingCostCalculator: React.FC = () => {
                         <HelpCircle className="h-3 w-3 text-blue-400 cursor-help ml-1" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p className="max-w-xs">Respondent's fair share based on equal division of community property under California Family Code § 2550.</p>
+                        <p className="max-w-xs">Respondent&apos;s fair share based on equal division of community property under California Family Code § 2550.</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -453,7 +448,7 @@ const HousingCostCalculator: React.FC = () => {
                         <HelpCircle className="h-3 w-3 text-green-400 cursor-help ml-1" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p className="max-w-xs">Petitioner's fair share based on equal division of community property under California Family Code § 2550.</p>
+                        <p className="max-w-xs">Petitioner&apos;s fair share based on equal division of community property under California Family Code § 2550.</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -574,8 +569,8 @@ const HousingCostCalculator: React.FC = () => {
                       <h3 className="font-semibold text-blue-900">California Family Code § 2550</h3>
                     </div>
                     <p className="text-sm text-blue-800 leading-relaxed">
-                      "Except as otherwise provided by law, in a proceeding for dissolution of marriage, 
-                      the court shall divide the community estate equally between the parties."
+                      &quot;Except as otherwise provided by law, in a proceeding for dissolution of marriage,
+                      the court shall divide the community estate equally between the parties.&quot;
                     </p>
                   </div>
                   
@@ -634,6 +629,7 @@ const HousingCostCalculator: React.FC = () => {
             All calculations are based on the Lakeview Mortgage Statement dated 05/20/2025.
           </p>
         </div>
+      </div>
       </div>
     </TooltipProvider>
   );

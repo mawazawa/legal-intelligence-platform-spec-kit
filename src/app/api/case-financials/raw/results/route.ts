@@ -12,8 +12,9 @@ export async function GET() {
         'Content-Type': 'application/json; charset=utf-8'
       }
     })
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'not found' }, { status: 404 })
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'not found'
+    return NextResponse.json({ error: message }, { status: 404 })
   }
 }
 

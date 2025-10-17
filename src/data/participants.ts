@@ -134,6 +134,8 @@ export const participants: ParticipantStat[] = [
     received: 3,
     uniqueThreads: 3,
     leverageScore: 8,
+    firstSeen: '2020-01-01',
+    lastSeen: '2023-01-01',
     caseHooks: [
       {
         caseId: 'FDI-21-794666',
@@ -141,7 +143,7 @@ export const participants: ParticipantStat[] = [
       },
       {
         caseId: 'FDV-24-817888',
-        hook: 'Third-party witness to client’s urgency and perceived pressure points during alleged DV period.',
+        hook: "Third-party witness to client's urgency and perceived pressure points during alleged DV period.",
       },
     ],
     signalBoost:
