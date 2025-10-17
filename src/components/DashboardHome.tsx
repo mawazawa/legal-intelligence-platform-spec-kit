@@ -19,7 +19,8 @@ import {
   Clock,
   BarChart3,
   FileCheck,
-  Scale
+  Scale,
+  GitCompare
 } from 'lucide-react';
 
 export function DashboardHome() {
@@ -61,6 +62,14 @@ export function DashboardHome() {
       href: '/rfo-opposition',
       icon: <FileCheck className="h-8 w-8" />,
       color: 'from-red-500 to-rose-600',
+      badge: 'NEW'
+    },
+    {
+      title: 'RFO Comparison',
+      description: 'Side-by-side comparison of petitioner\'s RFO vs our FL-320 response',
+      href: '/rfo-comparison',
+      icon: <GitCompare className="h-8 w-8" />,
+      color: 'from-orange-500 to-red-600',
       badge: 'NEW'
     },
     {

@@ -48,6 +48,11 @@ export async function GET(req: NextRequest) {
     if (!latest) return NextResponse.json({ error: 'no ingested petitioner/rfo found' }, { status: 404 })
     text = latest.text
     meta = latest.meta
+  } else if (key === 'respondent_fl320') {
+    const latest = await readLatestIngested('respondent/fl320')
+    if (!latest) return NextResponse.json({ error: 'no ingested respondent/fl320 found' }, { status: 404 })
+    text = latest.text
+    meta = latest.meta
   } else if (!file) {
     return NextResponse.json({ error: 'unknown file' }, { status: 400 })
   }
