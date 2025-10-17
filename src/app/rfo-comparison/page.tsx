@@ -141,7 +141,7 @@ const RFOComparisonPage: React.FC = () => {
         respondent: 'FL-320 Distribution Analysis'
       }
     }
-  ];
+  ], []); // Empty dependency array - comparison points are static
 
   const isActive = (tab: TabType) => activeTab === tab;
 

@@ -14,7 +14,7 @@ interface RespondentViewProps {
   ledger: Record<string, unknown> | null;
 }
 
-const RespondentView: React.FC<RespondentViewProps> = ({ fl320Content, ledger }) => {
+const RespondentView = React.memo<RespondentViewProps>(({ fl320Content, ledger }) => {
   const fmt = (n?: number) => typeof n === 'number' ? n.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '—';
 
   if (!fl320Content && !ledger) {
@@ -192,6 +192,7 @@ const RespondentView: React.FC<RespondentViewProps> = ({ fl320Content, ledger })
       )}
     </div>
   );
-};
+});
+RespondentView.displayName = 'RespondentView';
 
 export default RespondentView;

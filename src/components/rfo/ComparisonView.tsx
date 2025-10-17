@@ -22,7 +22,7 @@ interface ComparisonViewProps {
   comparisonPoints: ComparisonPoint[];
 }
 
-const ComparisonView: React.FC<ComparisonViewProps> = ({ comparisonPoints }) => {
+const ComparisonView = React.memo<ComparisonViewProps>(({ comparisonPoints }) => {
   const [expandedPoints, setExpandedPoints] = useState<Set<string>>(new Set());
 
   const togglePoint = (pointId: string) => {
@@ -170,6 +170,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ comparisonPoints }) => 
       </Card>
     </div>
   );
-};
+});
+ComparisonView.displayName = 'ComparisonView';
 
 export default ComparisonView;

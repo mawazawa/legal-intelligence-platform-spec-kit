@@ -15,7 +15,7 @@ interface PetitionerViewProps {
   } | null;
 }
 
-const PetitionerView: React.FC<PetitionerViewProps> = ({ rfoContent }) => {
+const PetitionerView = React.memo<PetitionerViewProps>(({ rfoContent }) => {
   if (!rfoContent) {
     return (
       <div className={tx(typography.body.medium, textColors.tertiary, 'text-center py-8')}>
@@ -120,6 +120,7 @@ const PetitionerView: React.FC<PetitionerViewProps> = ({ rfoContent }) => {
       </Card>
     </div>
   );
-};
+});
+PetitionerView.displayName = 'PetitionerView';
 
 export default PetitionerView;
