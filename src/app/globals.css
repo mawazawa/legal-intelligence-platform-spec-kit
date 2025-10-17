@@ -50,7 +50,21 @@ body {
 }
 
 @media print {
-  body { background: #fff; }
+  @page { size: Letter; margin: 1in; }
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-family: "Times New Roman", Times, serif !important;
+    font-size: 12pt;
+  }
   .paper { box-shadow: none; border: none; padding: 0.6in; }
-  .no-print { display: none !important; }
+  .no-print, nav, aside, .Sidebar, .fixed, .sticky { display: none !important; }
+  .printable, .prose, .court-document { box-shadow: none !important; border: 0 !important; background: #fff !important; }
+  .page-break { break-before: page; }
+  .avoid-break { break-inside: avoid; }
 }
+
+/* Pleading/declaration screen preview font */
+.print-pleading { font-family: "Times New Roman", Times, serif; }

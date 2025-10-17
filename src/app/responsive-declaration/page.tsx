@@ -59,7 +59,7 @@ export default async function ResponsiveDeclarationPage() {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          <section className="lg:col-span-2 rounded-lg border bg-white shadow-sm print:shadow-none print:border-0">
+          <section className="lg:col-span-2 rounded-lg border bg-white shadow-sm print:shadow-none print:border-0 print-pleading">
             <div className="p-6 prose prose-slate max-w-none">
               {decl ? (
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{decl.content}</ReactMarkdown>

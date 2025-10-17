@@ -734,25 +734,27 @@ const RFOAnalysisPage: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={continuanceData}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, value }) => `${name}: ${value}`}
-                        >
-                          {continuanceData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
+                    <Suspense fallback={<ChartSkeleton />}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={continuanceData}
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label={({ name, value }) => `${name}: ${value}`}
+                          >
+                            {continuanceData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </Suspense>
                   </div>
                 </CardContent>
               </Card>
@@ -763,14 +765,16 @@ const RFOAnalysisPage: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={financialData}>
-                        <XAxis dataKey="category" />
-                        <YAxis />
-                        <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Amount']} />
-                        <Bar dataKey="amount" fill="#8884d8" />
-                      </BarChart>
-                    </ResponsiveContainer>
+                    <Suspense fallback={<ChartSkeleton />}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={financialData}>
+                          <XAxis dataKey="category" />
+                          <YAxis />
+                          <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Amount']} />
+                          <Bar dataKey="amount" fill="#8884d8" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </Suspense>
                   </div>
                 </CardContent>
               </Card>

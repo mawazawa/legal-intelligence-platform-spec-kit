@@ -87,7 +87,7 @@ interface NegotiableParameter {
 
 const FinalDistributionSSOT: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('calculation');
-  const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(false);
+  const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(true);
   // const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
   const [negotiableParams, setNegotiableParams] = useState<NegotiableParameter[]>([
     {
@@ -145,6 +145,14 @@ const FinalDistributionSSOT: React.FC = () => {
   }, [petitionerRFO])
 
   const printRef = useRef<HTMLDivElement>(null);
+  // Ensure expanded before printing
+  useEffect(() => {
+    const onBeforePrint = () => setShowDetailedBreakdown(true);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeprint', onBeforePrint);
+      return () => window.removeEventListener('beforeprint', onBeforePrint);
+    }
+  }, []);
 
   // Hardcoded calculation result for now
   const calculationResult = useMemo(() => {

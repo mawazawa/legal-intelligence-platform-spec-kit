@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "./scripts/dev-server.sh",
+    "dev:unsafe": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint .",
@@ -15,7 +16,8 @@
     "check": "npm run typecheck && npm run lint && npm test",
     "ci": "npm run check && npm run build",
     "exhibits:build": "node scripts/build-exhibits.mjs",
-    "clean": "rm -rf .next coverage"
+    "clean": "rm -rf .next coverage",
+    "kill-dev": "lsof -ti:3000 | xargs kill -9 2>/dev/null || pkill -9 -f 'next dev' 2>/dev/null || echo '✅ No dev servers running'"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
@@ -25,15 +27,15 @@
     "@types/jspdf": "^1.3.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "html-to-image": "^1.11.11",
     "lucide-react": "^0.546.0",
     "neo4j-driver": "^6.0.0",
     "next": "15.5.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "recharts": "3.3.0",
     "tailwind-merge": "^3.3.1",
-    "voyageai": "^0.0.8",
-    "zod": "^3.23.8",
-    "html-to-image": "^1.11.11"
+    "voyageai": "^0.0.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -46,14 +48,14 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.6",
+    "eslint-config-prettier": "^9.1.0",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
-    "tailwindcss": "^4",
-    "typescript": "^5",
     "prettier": "^3.3.3",
-    "eslint-config-prettier": "^9.1.0",
     "react-markdown": "^9.0.1",
-    "remark-gfm": "^4.0.0"
+    "remark-gfm": "^4.0.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   },
   "engines": {
     "node": ">=20.0.0"

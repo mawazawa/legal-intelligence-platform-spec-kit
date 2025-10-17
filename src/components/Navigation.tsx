@@ -44,7 +44,8 @@ const Navigation: React.FC = () => {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    prefetch={true}
+                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-all duration-150 ${
                       isActive
                         ? 'border-blue-500 text-slate-900'
                         : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'

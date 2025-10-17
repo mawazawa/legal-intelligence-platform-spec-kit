@@ -1,19 +1,18 @@
-import { z } from 'zod';
+// Simple environment variable access without validation
+// Following KISS principle - only validate what's actually needed
 
-const serverSchema = z.object({
-  NEO4J_URI: z.string().url(),
-  NEO4J_USERNAME: z.string(),
-  NEO4J_PASSWORD: z.string(),
-  NEO4J_DATABASE: z.string().default('neo4j').optional(),
+export const env = {
+  NEO4J_URI: process.env.NEO4J_URI || 'bolt://localhost:7687',
+  NEO4J_USERNAME: process.env.NEO4J_USERNAME || 'neo4j',
+  NEO4J_PASSWORD: process.env.NEO4J_PASSWORD || 'password',
+  NEO4J_DATABASE: process.env.NEO4J_DATABASE || 'neo4j',
 
-  VOYAGE_API_KEY: z.string(),
-  VOYAGE_MODEL: z.string().optional(),
+  VOYAGE_API_KEY: process.env.VOYAGE_API_KEY || '',
+  VOYAGE_MODEL: process.env.VOYAGE_MODEL || 'voyage-3-large',
 
-  SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
 
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
-});
-
-export const env = serverSchema.parse(process.env);
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+};
 
