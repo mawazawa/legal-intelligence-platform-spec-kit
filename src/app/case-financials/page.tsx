@@ -189,16 +189,25 @@ export default async function Page() {
             <details className="mb-2">
               <summary className="cursor-pointer font-medium">SOD Constructive Net and 65/35</summary>
               <div className="pl-4 mt-2">Constructive net: {toCurrency(ledger.root.children[1].value.constructive_net)} · R 65%: {toCurrency(ledger.root.children[1].value.r65)} · P 35%: {toCurrency(ledger.root.children[1].value.p35)}</div>
+              {ledger.root.children[1].formulas && (
+                <div className="pl-4 mt-1 text-xs font-mono text-slate-600">
+                  {ledger.root.children[1].formulas.map((f:string, i:number) => (<div key={i}>{f}</div>))}
+                </div>
+              )}
             </details>
             <details className="mb-2">
               <summary className="cursor-pointer font-medium">Equal Sharing of Arrears</summary>
               <div className="pl-4 mt-2">Total arrears: {toCurrency(ledger.root.children[2].value.arrears_total)} → Each: {toCurrency(ledger.root.children[2].value.each)}</div>
+              {ledger.root.children[2].formulas && <div className="pl-4 mt-1 text-xs font-mono text-slate-600">{ledger.root.children[2].formulas[0]}</div>}
             </details>
             <details className="mb-2">
               <summary className="cursor-pointer font-medium">SOD Payouts (to Petitioner)</summary>
               <ul className="list-disc ml-9 mt-2">
                 {ledger.root.children[3].items.map((it: any, idx: number) => (
-                  <li key={idx}>{it.label}: {toCurrency(it.amount)}</li>
+                  <li key={idx} className="mb-1">
+                    <div>{it.label}: <strong>{toCurrency(it.amount)}</strong></div>
+                    {it.formula && <div className="text-xs font-mono text-slate-600">{it.formula}</div>}
+                  </li>
                 ))}
               </ul>
             </details>
@@ -206,7 +215,10 @@ export default async function Page() {
               <summary className="cursor-pointer font-medium">Symmetry & Possession Adjustments</summary>
               <ul className="list-disc ml-9 mt-2">
                 {ledger.root.children[4].items.map((it: any, idx: number) => (
-                  <li key={idx}>{it.label}: {toCurrency(it.amount)}</li>
+                  <li key={idx} className="mb-1">
+                    <div>{it.label}: <strong>{toCurrency(it.amount)}</strong></div>
+                    {it.formula && <div className="text-xs font-mono text-slate-600">{it.formula}</div>}
+                  </li>
                 ))}
               </ul>
             </details>
@@ -214,7 +226,10 @@ export default async function Page() {
               <summary className="cursor-pointer font-medium">Remove Respondent Form 593 from Pot</summary>
               <ul className="list-disc ml-9 mt-2">
                 {ledger.root.children[5].items.map((it: any, idx: number) => (
-                  <li key={idx}>{it.label}{it.amount ? `: ${toCurrency(it.amount)}` : ''}</li>
+                  <li key={idx} className="mb-1">
+                    <div>{it.label}{it.amount ? `: ${toCurrency(it.amount)}` : ''}</div>
+                    {it.formula && <div className="text-xs font-mono text-slate-600">{it.formula}</div>}
+                  </li>
                 ))}
               </ul>
             </details>
