@@ -7,8 +7,9 @@ export async function GET() {
     const p = path.resolve(process.cwd(), '..', 'case-financials', 'results', 'ledger.json')
     const text = await fs.readFile(p, 'utf8')
     return new NextResponse(text, { status: 200, headers: { 'Content-Type': 'application/json; charset=utf-8' } })
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'not found' }, { status: 404 })
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'not found'
+    return NextResponse.json({ error: message }, { status: 404 })
   }
 }
 

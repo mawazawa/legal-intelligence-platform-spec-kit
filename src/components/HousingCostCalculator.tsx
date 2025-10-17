@@ -644,7 +644,7 @@ const HousingCostCalculator: React.FC = () => {
               documentName: "Calculation",
               documentDate: "Current",
               sectionName: "SOD Allocation + Adjustments",
-              excerpt: "Rosanna's 35% share plus net adjustments"
+              excerpt: "Rosanna&apos;s 35% share plus net adjustments"
             }],
             explanation: "Rosanna's final distribution after SOD allocation and adjustments."
           }
@@ -936,7 +936,7 @@ const HousingCostCalculator: React.FC = () => {
                                   <div className="text-slate-500">{source.sectionName}</div>
                                 )}
                                 {source.excerpt && (
-                                  <div className="text-slate-600 mt-1 italic">"{source.excerpt}"</div>
+                                  <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
                                 )}
                               </div>
                             ))}
@@ -1098,7 +1098,7 @@ const HousingCostCalculator: React.FC = () => {
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
                           <Label htmlFor="rosannaWithholding" className="text-base font-semibold text-slate-700">
-                            Rosanna's FTB Withholding
+                            Rosanna&apos;s FTB Withholding
                           </Label>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -1126,7 +1126,7 @@ const HousingCostCalculator: React.FC = () => {
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
                           <Label htmlFor="mathieuTaxObligation" className="text-base font-semibold text-slate-700">
-                            Mathieu's Estimated Tax Obligation
+                            Mathieu&apos;s Estimated Tax Obligation
                           </Label>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -1429,7 +1429,7 @@ const HousingCostCalculator: React.FC = () => {
                           <HelpCircle className="h-5 w-5 text-slate-400 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p className="max-w-xs">Net proceeds minus both parties' tax obligations.</p>
+                          <p className="max-w-xs">Net proceeds minus both parties&apos; tax obligations.</p>
                         </TooltipContent>
                       </Tooltip>
                     </div>
@@ -1695,7 +1695,7 @@ const HousingCostCalculator: React.FC = () => {
                         </span>
                       </div>
                       <p className="text-sm text-green-600">
-                        Equal treatment under Watts doctrine - Rosanna's exclusive possession credit
+                        Equal treatment under Watts doctrine - Rosanna&apos;s exclusive possession credit
                       </p>
                     </div>
                   </div>
@@ -1710,7 +1710,7 @@ const HousingCostCalculator: React.FC = () => {
                       </div>
                       <div className="text-right">
                         <span className="text-xl font-bold text-blue-900">${sodAdjustments.rentalIncomeShare.toLocaleString()}</span>
-                        <p className="text-sm text-blue-600">Rosanna's 35% share</p>
+                        <p className="text-sm text-blue-600">Rosanna&apos;s 35% share</p>
                       </div>
                     </div>
 
@@ -1722,7 +1722,7 @@ const HousingCostCalculator: React.FC = () => {
                       </div>
                       <div className="text-right">
                         <span className="text-xl font-bold text-green-900">${sodAdjustments.motorcycleShare.toLocaleString()}</span>
-                        <p className="text-sm text-green-600">Rosanna's share of Ural</p>
+                        <p className="text-sm text-green-600">Rosanna&apos;s share of Ural</p>
                       </div>
                     </div>
 
@@ -1734,7 +1734,7 @@ const HousingCostCalculator: React.FC = () => {
                       </div>
                       <div className="text-right">
                         <span className="text-xl font-bold text-orange-900">${sodAdjustments.furnitureShare.toLocaleString()}</span>
-                        <p className="text-sm text-orange-600">Disputed - Rosanna's share</p>
+                        <p className="text-sm text-orange-600">Disputed - Rosanna&apos;s share</p>
                       </div>
                     </div>
 
@@ -1827,14 +1827,14 @@ const HousingCostCalculator: React.FC = () => {
                       <h3 className="font-semibold text-purple-900">Tax Withholding from Community Asset</h3>
                     </div>
                     <p className="text-sm text-purple-800 leading-relaxed">
-                      Tax liabilities arising from the sale of a community property asset are community debts. Both parties' tax obligations should be settled from the sale proceeds before the final, equal division of the remaining net proceeds.
+                      Tax liabilities arising from the sale of a community property asset are community debts. Both parties&apos; tax obligations should be settled from the sale proceeds before the final, equal division of the remaining net proceeds.
                     </p>
                   </div>
 
                   <Alert className="border-emerald-200 bg-emerald-50 mt-6">
                     <CheckCircle className="h-5 w-5 text-emerald-600" />
                     <AlertDescription className="text-emerald-800 text-base">
-                      <strong>Legal Conclusion:</strong> The lender payoff amount of $759,364.32, along with both parties' tax obligations, should be paid from the gross sale proceeds. The remaining net proceeds of $280,355.83 should then be divided equally after accounting for tax obligations.
+                      <strong>Legal Conclusion:</strong> The lender payoff amount of $759,364.32, along with both parties&apos; tax obligations, should be paid from the gross sale proceeds. The remaining net proceeds of $280,355.83 should then be divided equally after accounting for tax obligations.
                     </AlertDescription>
                   </Alert>
                 </div>
