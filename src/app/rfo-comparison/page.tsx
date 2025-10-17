@@ -14,18 +14,12 @@ import {
   AlertCircle,
   CheckCircle2,
   XCircle,
-  Eye,
-  EyeOff,
-  ScrollText,
-  Download,
-  Upload,
-  PenLine,
-  Trash2
+  ScrollText
 } from 'lucide-react';
 
 interface RFOContent {
   text: string;
-  meta: any;
+  meta: Record<string, unknown>;
   pages: number;
 }
 
@@ -48,7 +42,7 @@ const RFOComparisonPage: React.FC = () => {
   const [respondentFL320, setRespondentFL320] = useState<RFOContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['overview']));
-  const [showDetailedRebuttals, setShowDetailedRebuttals] = useState(false);
+  // Removed unused showDetailedRebuttals state
 
   // Load documents
   useEffect(() => {
@@ -101,71 +95,90 @@ const RFOComparisonPage: React.FC = () => {
     });
   };
 
-  // Key comparison points based on the RFO content
+  // Key comparison points based on the actual RFO content
   const comparisonPoints: ComparisonPoint[] = [
     {
-      id: 'property_sale',
-      title: 'Property Sale Proceeds Distribution',
-      petitionerClaim: 'Respondent failed to properly account for property sale proceeds and owes additional amounts',
-      respondentRebuttal: 'Property sale was handled according to Statement of Decision with proper accounting for all costs, taxes, and adjustments',
+      id: 'net_proceeds_calculation',
+      title: 'Net Proceeds Calculation',
+      petitionerClaim: 'Add back $77,779.88 mortgage arrears to net proceeds ($280,355.83 + $77,779.88 = $358,155.71) before dividing 65/35',
+      respondentRebuttal: 'Mortgage arrears were already paid from sale proceeds; cannot double-count by adding back to net proceeds',
       evidence: [
-        'Final Sellers Closing Statement showing actual proceeds',
+        'Final Sellers Closing Statement showing $280,355.83 net proceeds',
         'Statement of Decision property division orders',
-        'Tax withholding documentation',
-        'Email evidence of cooperation during sale process'
+        'Mortgage payoff documentation showing $759,364.32 paid to lender',
+        'November 2024 mortgage statement showing arrears'
       ],
       status: 'disputed',
       pageRefs: {
-        petitioner: 'RFO Pages 15-25',
+        petitioner: 'RFO Attachment 7, Page 11',
         respondent: 'FL-320 Financial Computation'
       }
     },
     {
-      id: 'watts_charges',
-      title: 'Watts Charges and Exclusive Possession',
-      petitionerClaim: 'Respondent owes additional Watts charges for exclusive possession period',
-      respondentRebuttal: 'Watts charges already calculated and offset in Statement of Decision; petitioner received credit for exclusive possession',
+      id: 'petitioner_distribution',
+      title: 'Petitioner&apos;s Distribution Calculation',
+      petitionerClaim: 'Petitioner receives $116,453.00 (35% of $358,155.71 = $125,354.50 minus $8,910.50 tax credit)',
+      respondentRebuttal: 'Calculation based on incorrect net proceeds figure; should be based on actual $280,355.83 net proceeds',
       evidence: [
-        'Statement of Decision Watts calculation',
-        'Exclusive possession timeline documentation',
-        'Rental income offset calculations'
+        'Petitioner&apos;s calculation: 35% × $358,155.71 = $125,354.50',
+        'Tax withholding credit: $8,910.50 (65% of $13,694.62)',
+        'Final amount: $125,354.50 - $8,910.50 = $116,453.00',
+        'Statement of Decision 35% allocation'
       ],
       status: 'disputed',
       pageRefs: {
-        petitioner: 'RFO Pages 30-35',
+        petitioner: 'RFO Attachment 7, Page 5',
+        respondent: 'FL-320 Distribution Analysis'
+      }
+    },
+    {
+      id: 'respondent_distribution',
+      title: 'Respondent&apos;s Distribution Calculation',
+      petitionerClaim: 'Respondent receives $163,902.83 (65% of $358,155.71 = $232,801.21 minus $77,779.88 arrears = $155,001.33 plus $8,901.50 tax credit)',
+      respondentRebuttal: 'Double-counting mortgage arrears; respondent already paid arrears through sale proceeds',
+      evidence: [
+        'Petitioner&apos;s calculation: 65% × $358,155.71 = $232,801.21',
+        'Subtract arrears: $232,801.21 - $77,779.88 = $155,001.33',
+        'Add tax credit: $155,001.33 + $8,901.50 = $163,902.83',
+        'Statement of Decision 65% allocation'
+      ],
+      status: 'disputed',
+      pageRefs: {
+        petitioner: 'RFO Attachment 7, Page 5',
+        respondent: 'FL-320 Distribution Analysis'
+      }
+    },
+    {
+      id: 'watts_charges_additional',
+      title: 'Additional Watts Charges',
+      petitionerClaim: 'Respondent owes additional Watts charges: $50,395.94 (Jan 2021-Sep 2023), $266.16 (Oct-Nov 2023), $19,648.20 (Dec 2023-Nov 2024)',
+      respondentRebuttal: 'Watts charges already calculated and offset in Statement of Decision; petitioner received credit for exclusive possession',
+      evidence: [
+        'Statement of Decision Watts calculation ($46,200 + interest)',
+        'Exclusive possession timeline documentation',
+        'Rental income offset calculations',
+        'Petitioner&apos;s exclusive possession credit'
+      ],
+      status: 'disputed',
+      pageRefs: {
+        petitioner: 'RFO Attachment 7, Page 5',
         respondent: 'FL-320 Watts Analysis'
       }
     },
     {
-      id: 'furniture_division',
-      title: 'Furniture and Household Goods',
-      petitionerClaim: 'Respondent failed to pay petitioner\'s share of furniture and household goods',
-      respondentRebuttal: 'Furniture division completed per Statement of Decision; petitioner retained all furniture worth $15,000',
-      evidence: [
-        'Statement of Decision furniture orders',
-        'Furniture inventory and valuation',
-        'Evidence of petitioner\'s furniture retention'
-      ],
-      status: 'disputed',
-      pageRefs: {
-        petitioner: 'RFO Pages 40-45',
-        respondent: 'FL-320 Furniture Analysis'
-      }
-    },
-    {
-      id: 'tax_obligations',
-      title: 'Tax Obligations and Withholding',
-      petitionerClaim: 'Respondent failed to properly handle tax obligations from property sale',
-      respondentRebuttal: 'Tax obligations properly calculated and accounted for; petitioner\'s tax withholding already deducted from proceeds',
+      id: 'tax_withholding_credit',
+      title: 'Tax Withholding Credit',
+      petitionerClaim: 'Respondent gets $8,901.50 credit (65% of $13,694.62 tax withholding)',
+      respondentRebuttal: 'Tax withholding was petitioner&apos;s obligation; respondent has separate $25,432.88 tax obligation',
       evidence: [
         'Form 593 tax withholding documentation',
         'Email evidence of tax form discussions',
         'Franchise Tax Board correspondence',
-        'Tax obligation calculations'
+        'Respondent&apos;s estimated tax obligation'
       ],
       status: 'disputed',
       pageRefs: {
-        petitioner: 'RFO Pages 50-55',
+        petitioner: 'RFO Attachment 7, Page 5',
         respondent: 'FL-320 Tax Analysis'
       }
     }
@@ -328,20 +341,33 @@ const RFOComparisonPage: React.FC = () => {
                     <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <h4 className="text-lg font-semibold text-red-700 mb-3">PETITIONER'S POSITION</h4>
-                          <p className="text-sm text-slate-700 leading-relaxed">
-                            Petitioner seeks additional property division amounts, claiming Respondent failed to properly 
-                            account for property sale proceeds, Watts charges, furniture division, and tax obligations. 
-                            Petitioner alleges Respondent owes substantial additional amounts.
+                          <h4 className="text-lg font-semibold text-red-700 mb-3">PETITIONER&apos;S POSITION</h4>
+                          <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                            Petitioner claims Respondent owes additional amounts by adding back $77,779.88 mortgage 
+                            arrears to net proceeds ($280,355.83 + $77,779.88 = $358,155.71) before dividing 65/35.
                           </p>
+                          <div className="text-xs text-slate-600 bg-red-100 p-3 rounded">
+                            <strong>Petitioner&apos;s Calculation:</strong><br/>
+                            • Net proceeds: $358,155.71 (with add-back)<br/>
+                            • Petitioner (35%): $116,453.00<br/>
+                            • Respondent (65%): $163,902.83<br/>
+                            • Plus additional Watts charges and interest
+                          </div>
                         </div>
                         <div>
-                          <h4 className="text-lg font-semibold text-blue-700 mb-3">RESPONDENT'S REBUTTAL</h4>
-                          <p className="text-sm text-slate-700 leading-relaxed">
-                            Respondent demonstrates through overwhelming evidence that all property division was 
-                            completed per the Statement of Decision. Petitioner's claims are factually incorrect 
-                            and ignore existing court orders and documented evidence.
+                          <h4 className="text-lg font-semibold text-blue-700 mb-3">RESPONDENT&apos;S REBUTTAL</h4>
+                          <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                            Respondent demonstrates that Petitioner&apos;s calculation double-counts mortgage arrears 
+                            that were already paid from sale proceeds. The correct calculation uses actual net 
+                            proceeds of $280,355.83 per the closing statement.
                           </p>
+                          <div className="text-xs text-slate-600 bg-blue-100 p-3 rounded">
+                            <strong>Respondent&apos;s Correct Calculation:</strong><br/>
+                            • Net proceeds: $280,355.83 (actual closing)<br/>
+                            • Petitioner (35%): $98,124.54<br/>
+                            • Respondent (65%): $182,231.29<br/>
+                            • Plus Statement of Decision adjustments
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -375,7 +401,7 @@ const RFOComparisonPage: React.FC = () => {
                             <div className="border-r border-slate-200 pr-6">
                               <h4 className="text-md font-semibold text-red-700 mb-3 flex items-center">
                                 <AlertCircle className="h-4 w-4 mr-2" />
-                                PETITIONER'S CLAIM
+                                PETITIONER&apos;S CLAIM
                               </h4>
                               <p className="text-sm text-slate-700 leading-relaxed mb-4">
                                 {point.petitionerClaim}
@@ -389,7 +415,7 @@ const RFOComparisonPage: React.FC = () => {
                             <div className="pl-6">
                               <h4 className="text-md font-semibold text-blue-700 mb-3 flex items-center">
                                 <CheckCircle2 className="h-4 w-4 mr-2" />
-                                RESPONDENT'S REBUTTAL
+                                RESPONDENT&apos;S REBUTTAL
                               </h4>
                               <p className="text-sm text-slate-700 leading-relaxed mb-4">
                                 {point.respondentRebuttal}
@@ -426,11 +452,11 @@ const RFOComparisonPage: React.FC = () => {
                   </h3>
 
                   <div className="side-by-side-container grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Petitioner's RFO */}
+                    {/* Petitioner's RFO (LEFT SIDE) */}
                     <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                      <h4 className="text-lg font-semibold text-red-800 mb-4 flex items-center">
+                            <h4 className="text-lg font-semibold text-red-800 mb-4 flex items-center">
                         <AlertCircle className="h-5 w-5 mr-2" />
-                        PETITIONER'S REQUEST FOR ORDER
+                        PETITIONER&apos;S REQUEST FOR ORDER
                       </h4>
                       <div className="text-sm text-slate-700 space-y-2 mb-4">
                         <div><strong>Filed:</strong> June 26, 2025</div>
@@ -438,19 +464,35 @@ const RFOComparisonPage: React.FC = () => {
                         <div><strong>Attorney:</strong> Selam Gezahegn, Simon Law</div>
                         <div><strong>Hearing:</strong> August 28, 2025</div>
                       </div>
+                      
+                      {/* Petitioner's Actual Calculation */}
+                      <div className="bg-white p-4 rounded border border-red-200 mb-4">
+                        <h5 className="text-sm font-semibold text-red-700 mb-3">PETITIONER&apos;S CALCULATION</h5>
+                        <div className="text-xs text-slate-700 space-y-2">
+                          <div><strong>Step 1:</strong> Add back mortgage arrears to net proceeds</div>
+                          <div className="ml-4">$280,355.83 + $77,779.88 = $358,155.71</div>
+                          <div><strong>Step 2:</strong> Divide 65/35 per Statement of Decision</div>
+                          <div className="ml-4">Petitioner (35%): $358,155.71 × 0.35 = $125,354.50</div>
+                          <div className="ml-4">Respondent (65%): $358,155.71 × 0.65 = $232,801.21</div>
+                          <div><strong>Step 3:</strong> Apply tax withholding credit</div>
+                          <div className="ml-4">Petitioner: $125,354.50 - $8,910.50 = <strong>$116,453.00</strong></div>
+                          <div className="ml-4">Respondent: $232,801.21 - $77,779.88 + $8,901.50 = <strong>$163,902.83</strong></div>
+                        </div>
+                      </div>
+
                       <div className="bg-white p-4 rounded border border-red-200 max-h-96 overflow-y-auto">
                         <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
                           {petitionerRFO?.text?.substring(0, 2000) || 'Loading RFO content...'}
-                          {petitionerRFO?.text?.length > 2000 && '\n\n[... Content truncated for display ...]'}
+                          {(petitionerRFO?.text?.length || 0) > 2000 && '\n\n[... Content truncated for display ...]'}
                         </pre>
                       </div>
                     </div>
 
-                    {/* Respondent's FL-320 */}
+                    {/* Respondent's FL-320 (RIGHT SIDE) */}
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                      <h4 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
+                            <h4 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
                         <CheckCircle2 className="h-5 w-5 mr-2" />
-                        RESPONDENT'S FL-320 RESPONSE
+                        RESPONDENT&apos;S FL-320 RESPONSE
                       </h4>
                       <div className="text-sm text-slate-700 space-y-2 mb-4">
                         <div><strong>Filed:</strong> {new Date().toLocaleDateString()}</div>
@@ -458,10 +500,28 @@ const RFOComparisonPage: React.FC = () => {
                         <div><strong>Attorney:</strong> Thomas J. Rotert</div>
                         <div><strong>Hearing:</strong> August 28, 2025</div>
                       </div>
+
+                      {/* Respondent's Correct Calculation */}
+                      <div className="bg-white p-4 rounded border border-blue-200 mb-4">
+                        <h5 className="text-sm font-semibold text-blue-700 mb-3">RESPONDENT&apos;S CORRECT CALCULATION</h5>
+                        <div className="text-xs text-slate-700 space-y-2">
+                          <div><strong>Step 1:</strong> Use actual net proceeds from closing statement</div>
+                          <div className="ml-4">Net proceeds: $280,355.83 (per closing statement)</div>
+                          <div><strong>Step 2:</strong> Divide 65/35 per Statement of Decision</div>
+                          <div className="ml-4">Petitioner (35%): $280,355.83 × 0.35 = $98,124.54</div>
+                          <div className="ml-4">Respondent (65%): $280,355.83 × 0.65 = $182,231.29</div>
+                          <div><strong>Step 3:</strong> Apply Statement of Decision adjustments</div>
+                          <div className="ml-4">Watts charges, furniture, rental income offsets</div>
+                          <div><strong>Step 4:</strong> Account for tax obligations</div>
+                          <div className="ml-4">Petitioner&apos;s withholding: $13,694.62</div>
+                          <div className="ml-4">Respondent&apos;s estimated tax: $25,432.88</div>
+                        </div>
+                      </div>
+
                       <div className="bg-white p-4 rounded border border-blue-200 max-h-96 overflow-y-auto">
                         <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
                           {respondentFL320?.text?.substring(0, 2000) || 'FL-320 response in preparation. This will contain detailed rebuttals to each point raised in the RFO, supported by overwhelming evidence from the Statement of Decision, closing statements, tax documentation, and email correspondence.'}
-                          {respondentFL320?.text?.length > 2000 && '\n\n[... Content truncated for display ...]'}
+                          {(respondentFL320?.text?.length || 0) > 2000 && '\n\n[... Content truncated for display ...]'}
                         </pre>
                       </div>
                     </div>
@@ -470,9 +530,9 @@ const RFOComparisonPage: React.FC = () => {
 
                 {/* COURT FOOTER */}
                 <div className="mt-16 pt-8 border-t-2 border-slate-300">
-                  <div className="text-center text-xs text-slate-500 space-y-2">
-                    <div>This comparison demonstrates the factual inaccuracies in Petitioner's RFO</div>
-                    <div>Respondent's FL-320 will provide comprehensive rebuttals with supporting evidence</div>
+                    <div className="text-center text-xs text-slate-500 space-y-2">
+                      <div>This comparison demonstrates the factual inaccuracies in Petitioner&apos;s RFO</div>
+                      <div>Respondent&apos;s FL-320 will provide comprehensive rebuttals with supporting evidence</div>
                     <div>Filed: {new Date().toLocaleDateString()} | Case No. FDI-21-794666</div>
                   </div>
                 </div>
