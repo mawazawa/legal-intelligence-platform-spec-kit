@@ -66,3 +66,25 @@ The repo includes a “Moneyball” scorecard visualization (`src/app/scorecards
 - Install dependencies once: `npm install` (Node 18+ recommended).  
 - Launch locally: `npm run dev` and open `http://localhost:3000/scorecards` for the Moneyball visualization.  
 - Data source of truth: `Mail/LEGAL-DIVORCE STUFF-EVIDENCE.mbox`; metrics live in `src/data/participants.ts`.
+
+## Specification-Driven Development
+
+This project uses [GitHub Spec-Kit](https://github.com/github/spec-kit) for feature development:
+
+1. **Constitution**: See `.specify/memory/constitution.md` for non-negotiable principles
+2. **New Features**: Use `/speckit.specify` to create specs in `specs/` directory
+3. **Quality Gates**: WCAG AAA, <3s loads, evidence-based claims, trauma-informed UX
+
+### Available Slash Commands
+- `/speckit.constitution` - Review/update governing principles
+- `/speckit.specify` - Create new feature specification
+- `/speckit.plan` - Generate technical implementation plan
+- `/speckit.tasks` - Break down into atomic tasks
+- `/speckit.implement` - Execute tasks with TDD
+
+### JusticeOS™ Integration
+Before merging into JusticeOS repo, all features must pass demo validation without breaking existing functionality. The constitution enforces empathy-first design, accessibility excellence, and trauma-informed UX patterns.
+
+### Current Feature Specifications
+- `specs/001-contact-extraction/` - Email parsing and contact extraction
+- `specs/002-email-deduplication/` - CSV deduplication and data cleaning
