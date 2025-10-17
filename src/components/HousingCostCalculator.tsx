@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import {
   Calculator,
   FileText,
@@ -34,7 +36,10 @@ import {
   ArrowDown,
   Calendar,
   Key,
-  CircleQuestionMark
+  CircleQuestionMark,
+  Download,
+  Printer,
+  FileDown
 } from 'lucide-react';
 
 interface ClosingData {
@@ -167,6 +172,9 @@ interface CalculationResult {
 }
 
 const HousingCostCalculator: React.FC = () => {
+  const pdfRef = useRef<HTMLDivElement>(null);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  
   const [closingData, setClosingData] = useState<ClosingData>({
     salePrice: 1175000.00, // From Final Sellers Closing Statement
     lenderPayoff: 759364.32, // From Final Sellers Closing Statement
@@ -712,10 +720,131 @@ const HousingCostCalculator: React.FC = () => {
     }));
   };
 
+  const generatePDF = async () => {
+    if (!pdfRef.current) return;
+    
+    setIsGeneratingPDF(true);
+    try {
+      const canvas = await html2canvas(pdfRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      
+      let position = 0;
+      
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      const fileName = `Housing_Cost_Calculation_${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
+
+  const printCalculation = () => {
+    window.print();
+  };
+
   return (
-    <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-        <div className="container mx-auto px-6 py-8 max-w-7xl">
+    <>
+      {/* Print Styles */}
+      <style jsx global>{`
+        @media print {
+          .no-print {
+            display: none !important;
+          }
+          body {
+            background: white !important;
+          }
+          .bg-gradient-to-br {
+            background: white !important;
+          }
+          .shadow-lg, .shadow-xl, .shadow-2xl {
+            box-shadow: none !important;
+          }
+          .animate-in {
+            animation: none !important;
+          }
+          .hover\\:scale-105:hover {
+            transform: none !important;
+          }
+        }
+      `}</style>
+      
+      <TooltipProvider>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        {/* Export/Print Controls */}
+        <div className="fixed top-4 right-4 z-50 flex gap-2 no-print">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={generatePDF}
+                disabled={isGeneratingPDF}
+                className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                size="sm"
+              >
+                {isGeneratingPDF ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                ) : (
+                  <Download className="h-4 w-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Export to PDF for court filing</p>
+            </TooltipContent>
+          </Tooltip>
+          
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={printCalculation}
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                size="sm"
+              >
+                <Printer className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Print calculation</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+
+        <div className="container mx-auto px-6 py-8 max-w-7xl" ref={pdfRef}>
+          {/* PDF Header */}
+          <div className="text-center mb-8 border-b-2 border-slate-300 pb-6">
+            <h1 className="text-4xl font-black text-slate-900 mb-2">Housing Cost Distribution Calculator</h1>
+            <p className="text-lg text-slate-600 mb-2">Statement of Decision Implementation</p>
+            <p className="text-sm text-slate-500">Generated on {new Date().toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}</p>
+          </div>
+
           {/* PRIMARY HEADER - FINAL DISTRIBUTION */}
           <div className="text-center mb-16">
             <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-16 shadow-2xl border border-slate-200 animate-in fade-in-0 slide-in-from-top-4 duration-700">
@@ -1719,9 +1848,27 @@ const HousingCostCalculator: React.FC = () => {
               This calculator provides a comprehensive analysis for FL-320 declaration purposes. All calculations are based on the Final Sellers Closing Statement dated 05/30/2025.
             </p>
           </div>
+
+          {/* PDF Footer */}
+          <div className="mt-16 pt-8 border-t-2 border-slate-300 text-center">
+            <div className="bg-slate-50 rounded-xl p-6">
+              <h3 className="text-lg font-bold text-slate-800 mb-4">Legal Disclaimer</h3>
+              <p className="text-sm text-slate-600 leading-relaxed max-w-4xl mx-auto">
+                This calculation is based on the provided Statement of Decision and supporting documents. 
+                All figures are derived from official court documents and closing statements. 
+                This tool is for informational purposes only and should not replace professional legal advice. 
+                Please consult with your attorney before making any legal decisions based on these calculations.
+              </p>
+              <div className="mt-4 text-xs text-slate-500">
+                <p>Document Sources: Final Sellers Closing Statement, Lakeview Mortgage Payoff Statement, Statement of Decision</p>
+                <p>Calculation Date: {new Date().toLocaleDateString()} | Version: 1.0</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </TooltipProvider>
+    </>
   );
 };
 
