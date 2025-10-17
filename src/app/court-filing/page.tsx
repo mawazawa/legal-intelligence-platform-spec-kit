@@ -716,6 +716,14 @@ const CourtFilingPage: React.FC = () => {
             <Button
               variant="outline"
               className="border-slate-300"
+              onClick={() => window.open('/court-filing/rotert-declaration', '_blank')}
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              View Rotert Declaration
+            </Button>
+            <Button
+              variant="outline"
+              className="border-slate-300"
               onClick={exportToPDF}
             >
               <Download className="h-4 w-4 mr-2" />
