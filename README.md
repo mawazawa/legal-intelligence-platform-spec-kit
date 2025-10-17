@@ -5,12 +5,12 @@
 - Eric J. Proos — referring attorney connecting Mathieu to CFLS specialist.
 - Brett A. Berman — Certified Family Law Specialist courted for trial representation.
 - Robyn Macias — Berman Law Group paralegal coordinating the 30 Dec 2022 intake call.
-- Joe Baldino — appraiser delivering the 25 Jul 2022 valuation for 3535 8th Ave., Los Angeles.
+- Joe Baldino — appraiser delivering the 25 Jul 2022 valuation for 3525 8th Ave., Los Angeles.
 - California Mortgage Relief Program — confirms $49,262.84 mortgage assistance on 02 Nov 2022.
 - Superhuman Reminder Bot — automation evidencing self-imposed follow-up discipline.
 
 # Executive Summary
-Twenty emails in `Mail/LEGAL-DIVORCE STUFF-EVIDENCE.mbox` (21 Mar 2019 – 30 Dec 2022) document the litigation pressure points for cases FDI-21-794666 (core dissolution with trial targeted for February 2023), FDV-24-817888 (credibility and conduct findings), and appellate placeholder A171270. The correspondence captures a mortgage relief infusion, a home appraisal for 3535 8th Ave., Los Angeles, and an attorney referral chain that culminates in a same-day paralegal outreach—each item anchoring valuation, support, or counsel-diligence arguments.
+Twenty emails in `Mail/LEGAL-DIVORCE STUFF-EVIDENCE.mbox` (21 Mar 2019 – 30 Dec 2022) document the litigation pressure points for cases FDI-21-794666 (core dissolution with trial targeted for February 2023), FDV-24-817888 (credibility and conduct findings), and appellate placeholder A171270. The correspondence captures a mortgage relief infusion, a home appraisal for 3525 8th Ave., Los Angeles, and an attorney referral chain that culminates in a same-day paralegal outreach—each item anchoring valuation, support, or counsel-diligence arguments.
 
 The repo includes a “Moneyball” scorecard visualization (`src/app/scorecards/page.tsx`) that weighs email touches, leverage scores, and response cadence for every participant. These metrics highlight Brett Berman’s sub-six-hour response median, Robyn Macias’s sub-ten-minute scheduling follow-through, and Mathieu’s 20-touch ownership of the evidentiary narrative.
 
@@ -18,7 +18,7 @@ The repo includes a “Moneyball” scorecard visualization (`src/app/scorecards
 - **Scope:** Parsed 20 messages from `LEGAL-DIVORCE STUFF-EVIDENCE.mbox` using ad-hoc Python scripts to normalize sender/recipient addresses, tally thread participation, and calculate response lag where reply chains existed.
 - **Time frame:** Earliest entry 21 Mar 2019 (Rosey-Mathieu marital correspondence); latest entry 30 Dec 2022 (Berman Law Group scheduling).
 - **Key artifacts extracted:**  
-  - 25 Jul 2022 appraisal delivery for 3535 8th Ave., Los Angeles.  
+- 25 Jul 2022 appraisal delivery for 3525 8th Ave., Los Angeles.  
   - 02 Nov 2022 notice of $49,262.84 California Mortgage Relief payment (application MRP-0030504).  
   - October–December 2022 referral thread establishing diligence to retain trial counsel ahead of discovery deadlines (responses due 22 Dec 2022; trial referenced as early February 2023).
 - **Visualization workflow:** Participant metrics serialized in `src/data/participants.ts`, exposed through Tailwind-styled cards at `/scorecards`.
@@ -27,7 +27,7 @@ The repo includes a “Moneyball” scorecard visualization (`src/app/scorecards
 ## 1. Mortgage Equity & Property Division (FDI-21-794666 · A171270)
 - **Rule/Standard:** California Fam. Code §§ 2550–2552 (equal division; valuation at trial) and tracing doctrines for post-separation contributions.  
 - **Supporting evidence:**  
-  - Joe Baldino’s 25 Jul 2022 appraisal email establishes contemporaneous fair-market valuation for 3535 8th Ave.  
+  - Joe Baldino’s 25 Jul 2022 appraisal email establishes contemporaneous fair-market valuation for 3525 8th Ave.  
   - Mortgage Relief Program notice (02 Nov 2022) documents a $49,262.84 principal curtailment.  
 - **Contrary considerations:** Relief funds may be characterized as community or separate property depending on application timing; need servicer records.  
 - **Application:** Use appraisal as baseline, then adjust equity split by crediting Mathieu for the relief infusion if sourced from post-separation efforts; lock testimony from lender/appraiser to solidify the timeline for both trial and any A171270 appeal.
