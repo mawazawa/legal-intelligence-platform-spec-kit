@@ -3,6 +3,7 @@ import path from 'node:path';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { PrintButton } from '@/components/case/PrintButton';
 import { buildCitations } from '@/lib/citations';
@@ -79,7 +80,9 @@ export default async function ResponsiveDeclarationPage() {
     };
 
     const insertAfterFirst = (regex: RegExp, marker: string) => {
-      annotated = annotated.replace(regex, (m) => `${m} ${marker}`);
+      const plain = marker.replace(/\[|\]/g, '');
+      const linked = `[${plain}](#ref-${plain})`;
+      annotated = annotated.replace(regex, (m) => `${m} ${linked}`);
     };
 
     // Net proceeds reference → Closing Statement
@@ -109,6 +112,10 @@ export default async function ResponsiveDeclarationPage() {
       insertAfterFirst(/65%|35%|statement of decision(?!\s*\[X\d+\])/i, sodMarker);
     }
 
+    // Insert page breaks before major sections commonly used in filings
+    annotated = annotated.replace(/\n##\s+LEGAL AUTHORITIES/gi, '\n<div class="page-break"></div>\n## LEGAL AUTHORITIES');
+    annotated = annotated.replace(/\n##\s+CERTIFICATE OF SERVICE/gi, '\n<div class="page-break"></div>\n## CERTIFICATE OF SERVICE');
+
     // Mortgage relief (emails)
     const mrelief = pickEmailByBucket('mortgage_relief', 'California Mortgage Relief');
     if (mrelief) insertAfterFirst(/mortgage relief|\$?49,262\.84(?!\s*\[E\d+\])/i, mrelief);
@@ -131,8 +138,15 @@ export default async function ResponsiveDeclarationPage() {
 
     if (!refs.length) return content;
 
-    const lines = [annotated.trim(), '', '---', '', '## References'];
-    refs.forEach((r) => lines.push(`- ${r.label} ${r.detail}`));
+    // Page break before references for clean print
+    const lines = [
+      annotated.trim(),
+      '',
+      '<div class="page-break"></div>',
+      '',
+      '## References',
+    ];
+    refs.forEach((r) => lines.push(`- <span id="ref-${r.label.replace(/^[\[]|[\]]$/g,'')}"></span>${r.label} ${r.detail}`));
     return lines.join('\n');
   }
 
@@ -153,7 +167,7 @@ export default async function ResponsiveDeclarationPage() {
           <section className="lg:col-span-2 rounded-lg border bg-white shadow-sm print:shadow-none print:border-0 print-pleading">
             <div className="p-6 prose prose-slate max-w-none">
               {decl ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{annotatedContent || decl.content}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{annotatedContent || decl.content}</ReactMarkdown>
               ) : (
                 <div className="text-slate-600">Declaration file not found. Please add <code>RESPONSIVE_DECLARATION_FL320_FINAL.md</code> to the project root.</div>
               )}

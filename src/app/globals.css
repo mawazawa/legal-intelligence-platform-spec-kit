@@ -64,6 +64,8 @@ body {
   .printable, .prose, .court-document { box-shadow: none !important; border: 0 !important; background: #fff !important; }
   .page-break { break-before: page; }
   .avoid-break { break-inside: avoid; }
+  a, a:visited { color: inherit; text-decoration: none; }
+  a[href]::after { content: '' !important; }
 }
 
 /* Pleading/declaration screen preview font */

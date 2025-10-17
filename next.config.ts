@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 const nextConfig: NextConfig = {
   // Performance optimizations
   reactStrictMode: true,
@@ -18,10 +22,21 @@ const nextConfig: NextConfig = {
     } : false,
   },
 
+  // External packages for server components
+  serverExternalPackages: ['neo4j-driver'],
+
   // Experimental features for performance
   experimental: {
-    optimizePackageImports: ['lucide-react', '@/components/ui'],
-    serverComponentsExternalPackages: [],
+    optimizePackageImports: [
+      'lucide-react',
+      '@/components/ui',
+      'recharts',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-tooltip',
+      '@radix-ui/react-label'
+    ],
+    // Enable React Compiler for automatic memoization
+    reactCompiler: true,
   },
 
   // Webpack optimizations
@@ -67,4 +82,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

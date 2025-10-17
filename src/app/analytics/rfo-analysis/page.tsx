@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -127,30 +127,32 @@ interface RFOAnalysisData {
   };
 }
 
-// Helper Component: Source Citation Badge
-const SourceCitationBadge: React.FC<{ source: SourceCitation }> = ({ source }) => {
-  const typeColors = {
-    court_order: 'bg-purple-100 text-purple-700 border-purple-300',
-    settlement_stmt: 'bg-blue-100 text-blue-700 border-blue-300',
-    rfo: 'bg-red-100 text-red-700 border-red-300',
-    email: 'bg-green-100 text-green-700 border-green-300',
-    roa: 'bg-yellow-100 text-yellow-700 border-yellow-300',
-    declaration: 'bg-indigo-100 text-indigo-700 border-indigo-300',
-    exhibit: 'bg-pink-100 text-pink-700 border-pink-300'
-  };
+// Type colors constant (outside component for performance)
+const TYPE_COLORS = {
+  court_order: 'bg-purple-100 text-purple-700 border-purple-300',
+  settlement_stmt: 'bg-blue-100 text-blue-700 border-blue-300',
+  rfo: 'bg-red-100 text-red-700 border-red-300',
+  email: 'bg-green-100 text-green-700 border-green-300',
+  roa: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+  declaration: 'bg-indigo-100 text-indigo-700 border-indigo-300',
+  exhibit: 'bg-pink-100 text-pink-700 border-pink-300'
+} as const;
 
+// Helper Component: Source Citation Badge (memoized)
+const SourceCitationBadge = React.memo<{ source: SourceCitation }>(({ source }) => {
   return (
-    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${typeColors[source.type]} text-xs font-medium`}>
+    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${TYPE_COLORS[source.type]} text-xs font-medium`}>
       <FileText className="h-3 w-3" />
       <span>{source.document}</span>
       {source.page && <span className="opacity-70">• p.{source.page}</span>}
       {source.section && <span className="opacity-70 text-[10px]">({source.section})</span>}
     </div>
   );
-};
+});
+SourceCitationBadge.displayName = 'SourceCitationBadge';
 
-// Helper Component: Sources List
-const SourcesList: React.FC<{ sources: SourceCitation[]; title?: string }> = ({ sources, title = 'Sources' }) => {
+// Helper Component: Sources List (memoized)
+const SourcesList = React.memo<{ sources: SourceCitation[]; title?: string }>(({ sources, title = 'Sources' }) => {
   if (!sources || sources.length === 0) return null;
 
   return (
@@ -166,7 +168,8 @@ const SourcesList: React.FC<{ sources: SourceCitation[]; title?: string }> = ({ 
       </div>
     </div>
   );
-};
+});
+SourcesList.displayName = 'SourcesList';
 
 const RFOAnalysisPage: React.FC = () => {
   const [analysisData, setAnalysisData] = useState<RFOAnalysisData | null>(null);
@@ -435,33 +438,34 @@ const RFOAnalysisPage: React.FC = () => {
     loadData();
   }, []);
 
-  const continuanceData = analysisData ? [
+  // Memoize data transformations to prevent unnecessary recalculations
+  const continuanceData = useMemo(() => analysisData ? [
     { name: 'Petitioner', value: analysisData.continuances.petitionerRequests, color: '#EF4444' },
     { name: 'Respondent', value: analysisData.continuances.respondentRequests, color: '#8B5CF6' },
     { name: 'Court', value: analysisData.continuances.courtRequests, color: '#3B82F6' }
-  ] : [];
+  ] : [], [analysisData]);
 
-  const communicationData = analysisData ? [
+  const communicationData = useMemo(() => analysisData ? [
     { name: 'Petitioner', emails: analysisData.communications.petitionerEmails, responseTime: analysisData.communications.petitionerResponseTime },
     { name: 'Respondent', emails: analysisData.communications.respondentEmails, responseTime: analysisData.communications.respondentResponseTime }
-  ] : [];
+  ] : [], [analysisData]);
 
-  const financialData = analysisData ? [
+  const financialData = useMemo(() => analysisData ? [
     { category: 'Invalid Claims', amount: analysisData.summary.totalInvalidClaims, color: '#EF4444' },
     { category: 'Valid Claims', amount: analysisData.summary.totalValidClaims, color: '#10B981' }
-  ] : [];
+  ] : [], [analysisData]);
 
-  const invalidClaimsBreakdown = analysisData?.claims.invalid.map(claim => ({
+  const invalidClaimsBreakdown = useMemo(() => analysisData?.claims.invalid.map(claim => ({
     name: claim.description,
     amount: claim.amount,
     color: '#EF4444'
-  })) || [];
+  })) || [], [analysisData]);
 
-  const validClaimsBreakdown = analysisData?.claims.valid.map(claim => ({
+  const validClaimsBreakdown = useMemo(() => analysisData?.claims.valid.map(claim => ({
     name: claim.description,
     amount: claim.amount,
     color: '#10B981'
-  })) || [];
+  })) || [], [analysisData]);
 
   const exParteTimeline = [
     { date: 'Jun 14, 2024', filing: 'List property for sale', impact: 'High' },
