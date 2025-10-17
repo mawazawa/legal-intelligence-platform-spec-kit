@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
-import { DashboardLayout } from '@/components/DashboardLayout';
-import { PersonsOfInterest } from '@/components/PersonsOfInterest';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
@@ -648,7 +646,7 @@ const FinalDistributionSSOT: React.FC = () => {
   };
 
   return (
-    <DashboardLayout>
+    <>
       {/* Print Styles */}
       <style jsx global>{`
         @media print {
@@ -1093,12 +1091,7 @@ const FinalDistributionSSOT: React.FC = () => {
           </div>
         </div>
       </TooltipProvider>
-
-      {/* Persons of Interest Section */}
-      <div className="max-w-5xl mx-auto px-4 pb-8 no-print">
-        <PersonsOfInterest />
-      </div>
-    </DashboardLayout>
+    </>
   );
 };
 
