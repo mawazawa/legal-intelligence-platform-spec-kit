@@ -186,13 +186,13 @@ const FinalDistributionSSOT: React.FC = () => {
     if (!ledger) return null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const ledgerData = ledger as any; // Type assertion for ledger structure
-    const grossSalePrice = ledgerData.root.children[0].value.sale_price;
-    const netProceedsToSellers = ledgerData.root.children[0].value.due_to_seller;
-    const lenderPayoff = ledgerData.root.children[0].value.lender_payoff || 0;
-    const mathieuFinalDistribution = ledgerData.root.value.respondent;
-    const rosannaFinalDistribution = ledgerData.root.value.petitioner;
-    const mathieuSODShare = ledgerData.root.children[1].value.r65;
-    const rosannaSODShare = ledgerData.root.children[1].value.p35;
+    const grossSalePrice = ledgerData.root?.children?.[0]?.value?.sale_price;
+    const netProceedsToSellers = ledgerData.root?.children?.[0]?.value?.due_to_seller;
+    const lenderPayoff = ledgerData.root?.children?.[0]?.value?.lender_payoff || 0;
+    const mathieuFinalDistribution = ledgerData.root?.value?.respondent;
+    const rosannaFinalDistribution = ledgerData.root?.value?.petitioner;
+    const mathieuSODShare = ledgerData.root?.children?.[1]?.value?.r65;
+    const rosannaSODShare = ledgerData.root?.children?.[1]?.value?.p35;
     const rosannaWithholding = 13694.62;
     const mathieuTaxObligation = 25432.88;
 
