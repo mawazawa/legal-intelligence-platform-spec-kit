@@ -1,3 +1,4 @@
+import { DashboardLayout } from '@/components/DashboardLayout';
 import { participants } from '@/data/participants';
 
 const formatDate = (value: string) =>
@@ -26,6 +27,7 @@ const formatCurrency = (value?: number) => {
 
 export default function ScorecardsPage() {
   return (
+    <DashboardLayout>
     <main className="space-y-8 bg-slate-50 p-8 text-slate-900">
       <header className="max-w-4xl space-y-3">
         <h1 className="text-3xl font-bold tracking-tight">
@@ -85,6 +87,7 @@ export default function ScorecardsPage() {
         ))}
       </section>
     </main>
+    </DashboardLayout>
   );
 }
 
