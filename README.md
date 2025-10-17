@@ -74,24 +74,24 @@ This project uses [GitHub Spec-Kit](https://github.com/github/spec-kit) for spec
 ### Core Workflow
 
 1. **Constitution First**: All development follows `.specify/memory/constitution.md` principles
-2. **Specification**: Create detailed specs in `specs/` directory using `/speckit.specify`
-3. **Planning**: Generate implementation plans with `/speckit.plan`
-4. **Tasks**: Break down into atomic tasks using `/speckit.tasks`
-5. **Implementation**: Execute with TDD using `/speckit.implement`
+2. **Specification**: Create detailed specs in `specs/` directory using `/2` or `/specify`
+3. **Planning**: Generate implementation plans with `/3` or `/plan`
+4. **Tasks**: Break down into atomic tasks using `/4` or `/tasks`
+5. **Implementation**: Execute with TDD using `/5` or `/implement`
 
 ### Available Slash Commands
 
 #### Core Commands
-- `/speckit.constitution` - Review/update JusticeOS™ governing principles
-- `/speckit.specify` - Create new feature specification
-- `/speckit.plan` - Generate technical implementation plan
-- `/speckit.tasks` - Break down into atomic tasks
-- `/speckit.implement` - Execute tasks with TDD
+- `/1` or `/constitution` - Review/update JusticeOS™ governing principles
+- `/2` or `/specify` - Create new feature specification
+- `/3` or `/plan` - Generate technical implementation plan
+- `/4` or `/tasks` - Break down into atomic tasks
+- `/5` or `/implement` - Execute tasks with TDD
 
 #### Enhancement Commands
-- `/speckit.clarify` - Ask structured questions to de-risk ambiguous areas
-- `/speckit.analyze` - Cross-artifact consistency & alignment report
-- `/speckit.checklist` - Generate quality checklists for requirements validation
+- `/6` or `/clarify` - Ask structured questions to de-risk ambiguous areas
+- `/7` or `/analyze` - Cross-artifact consistency & alignment report
+- `/8` or `/checklist` - Generate quality checklists for requirements validation
 
 ### JusticeOS™ Compliance Requirements
 
