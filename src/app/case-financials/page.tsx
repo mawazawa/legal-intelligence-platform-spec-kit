@@ -150,10 +150,10 @@ export default async function Page() {
             <li><a className="text-blue-600 underline" href="/api/case-financials/onepager" target="_blank" rel="noreferrer">One‑pager PDF</a></li>
             <li><a className="text-blue-600 underline" href="/api/case-financials/raw/schedule" target="_blank" rel="noreferrer">schedule.md (raw)</a></li>
             <li><a className="text-blue-600 underline" href="/api/case-financials/raw/results" target="_blank" rel="noreferrer">results.json</a></li>
+            <li><a className="text-blue-600 underline" href="/api/case-financials/raw/withholding" target="_blank" rel="noreferrer">withholding-evidence.md</a></li>
           </ul>
         </CardContent>
       </Card>
     </div>
   )
 }
-
