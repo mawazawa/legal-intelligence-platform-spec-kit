@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { 
   Calculator, 
   FileText, 
@@ -24,7 +25,8 @@ import {
   Building,
   CreditCard,
   FileCheck,
-  ExternalLink
+  ExternalLink,
+  HelpCircle
 } from 'lucide-react';
 
 interface MortgageBreakdown {
@@ -179,8 +181,9 @@ const HousingCostCalculator: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="container mx-auto px-6 py-8 max-w-6xl">
+    <TooltipProvider>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="container mx-auto px-6 py-8 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
@@ -211,6 +214,9 @@ const HousingCostCalculator: React.FC = () => {
           </div>
         </div>
 
+        {/* Visual Separator */}
+        <hr className="my-8 border-t border-slate-200" />
+
         {/* Main Calculator Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Input Panel */}
@@ -225,105 +231,165 @@ const HousingCostCalculator: React.FC = () => {
             <CardContent className="p-6 space-y-6">
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="principal" className="text-sm font-medium text-slate-700">
-                    Principal Payment
-                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="principal" className="text-sm font-medium text-slate-700">
+                      Principal Payment
+                    </Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">The portion of your monthly payment that goes toward reducing the loan balance. This is the actual amount borrowed that you're paying back.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <div className="relative">
                     <Input
                       id="principal"
                       type="number"
                       value={mortgageData.principal}
                       onChange={(e) => handleInputChange('principal', parseFloat(e.target.value) || 0)}
-                      className="pl-8 text-lg font-mono"
+                      className="pl-8 text-lg font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                     <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                   </div>
-                  <p className="text-xs text-slate-500">Source: Line 96</p>
+                  <p className="text-xs text-slate-500">Source: Lakeview Mortgage Statement, Line 96</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="interest" className="text-sm font-medium text-slate-700">
-                    Interest Payment
-                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="interest" className="text-sm font-medium text-slate-700">
+                      Interest Payment
+                    </Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">The cost of borrowing money, calculated as a percentage of the outstanding loan balance. This is the lender's profit.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <div className="relative">
                     <Input
                       id="interest"
                       type="number"
                       value={mortgageData.interest}
                       onChange={(e) => handleInputChange('interest', parseFloat(e.target.value) || 0)}
-                      className="pl-8 text-lg font-mono"
+                      className="pl-8 text-lg font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                     <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                   </div>
-                  <p className="text-xs text-slate-500">Source: Line 97</p>
+                  <p className="text-xs text-slate-500">Source: Lakeview Mortgage Statement, Line 97</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="escrow" className="text-sm font-medium text-slate-700">
-                    Escrow (Property Taxes & Insurance)
-                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="escrow" className="text-sm font-medium text-slate-700">
+                      Escrow (Property Taxes & Insurance)
+                    </Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">Property taxes and homeowners insurance collected monthly and held in escrow. These are ongoing obligations regardless of foreclosure status.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <div className="relative">
                     <Input
                       id="escrow"
                       type="number"
                       value={mortgageData.escrow}
                       onChange={(e) => handleInputChange('escrow', parseFloat(e.target.value) || 0)}
-                      className="pl-8 text-lg font-mono"
+                      className="pl-8 text-lg font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                     <Receipt className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                   </div>
-                  <p className="text-xs text-slate-500">Source: Line 98</p>
+                  <p className="text-xs text-slate-500">Source: Lakeview Mortgage Statement, Line 98</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="fees" className="text-sm font-medium text-slate-700">
-                    Late Fees & Administrative Costs
-                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="fees" className="text-sm font-medium text-slate-700">
+                      Late Fees & Administrative Costs
+                    </Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">Penalties charged for late payments and administrative fees. These are additional costs due to delinquency, not regular mortgage obligations.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <div className="relative">
                     <Input
                       id="fees"
                       type="number"
                       value={mortgageData.fees}
                       onChange={(e) => handleInputChange('fees', parseFloat(e.target.value) || 0)}
-                      className="pl-8 text-lg font-mono"
+                      className="pl-8 text-lg font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                     <AlertTriangle className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                   </div>
-                  <p className="text-xs text-slate-500">Source: Line 100</p>
+                  <p className="text-xs text-slate-500">Source: Lakeview Mortgage Statement, Line 100</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="lenderPaidExpenses" className="text-sm font-medium text-slate-700">
-                    Lender Paid Expenses (Legal/Inspection)
-                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="lenderPaidExpenses" className="text-sm font-medium text-slate-700">
+                      Lender Paid Expenses (Legal/Inspection)
+                    </Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">Legal fees, property inspections, and other costs incurred by the lender during foreclosure proceedings. These are the true "foreclosure costs" beyond regular mortgage payments.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <div className="relative">
                     <Input
                       id="lenderPaidExpenses"
                       type="number"
                       value={mortgageData.lenderPaidExpenses}
                       onChange={(e) => handleInputChange('lenderPaidExpenses', parseFloat(e.target.value) || 0)}
-                      className="pl-8 text-lg font-mono"
+                      className="pl-8 text-lg font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                     <CreditCard className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                   </div>
-                  <p className="text-xs text-slate-500">Source: Lines 64-82</p>
+                  <p className="text-xs text-slate-500">Source: Lakeview Mortgage Statement, Lines 64-82</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="overduePayments" className="text-sm font-medium text-slate-700">
-                    Overdue Payments (Accumulated)
-                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="overduePayments" className="text-sm font-medium text-slate-700">
+                      Overdue Payments (Accumulated)
+                    </Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">The total amount of missed mortgage payments that have accumulated over time. This represents the core mortgage obligation that was not paid.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <div className="relative">
                     <Input
                       id="overduePayments"
                       type="number"
                       value={mortgageData.overduePayments}
                       onChange={(e) => handleInputChange('overduePayments', parseFloat(e.target.value) || 0)}
-                      className="pl-8 text-lg font-mono"
+                      className="pl-8 text-lg font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                     <TrendingUp className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                   </div>
-                  <p className="text-xs text-slate-500">Source: Line 101</p>
+                  <p className="text-xs text-slate-500">Source: Lakeview Mortgage Statement, Line 101</p>
                 </div>
               </div>
             </CardContent>
@@ -341,8 +407,18 @@ const HousingCostCalculator: React.FC = () => {
             <CardContent className="p-6 space-y-6">
               {/* Total Amount */}
               <div className="text-center p-6 bg-slate-50 rounded-xl">
-                <p className="text-sm text-slate-600 mb-2">Total Mortgage Amount</p>
-                <p className="text-3xl font-bold text-slate-800">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <p className="text-sm text-slate-600">Total Mortgage Amount</p>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs">The complete reinstatement amount required to bring the mortgage current, including all overdue payments, fees, and lender expenses.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <p className="text-4xl font-black text-slate-800">
                   ${calculationResult.summary.totalMortgageAmount.toLocaleString()}
                 </p>
               </div>
@@ -353,8 +429,16 @@ const HousingCostCalculator: React.FC = () => {
                   <div className="flex items-center justify-center mb-2">
                     <Users className="h-4 w-4 text-blue-600 mr-1" />
                     <p className="text-sm font-medium text-blue-800">Mathieu Wauters</p>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 text-blue-400 cursor-help ml-1" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">Respondent's fair share based on equal division of community property under California Family Code § 2550.</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
-                  <p className="text-2xl font-bold text-blue-900">
+                  <p className="text-3xl font-black text-blue-900">
                     ${calculationResult.summary.mathieuTotalResponsibility.toLocaleString()}
                   </p>
                   <Badge variant="outline" className="mt-2 text-xs">50% Equal Responsibility</Badge>
@@ -364,8 +448,16 @@ const HousingCostCalculator: React.FC = () => {
                   <div className="flex items-center justify-center mb-2">
                     <Users className="h-4 w-4 text-green-600 mr-1" />
                     <p className="text-sm font-medium text-green-800">Rosanna Alvero</p>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 text-green-400 cursor-help ml-1" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">Petitioner's fair share based on equal division of community property under California Family Code § 2550.</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
-                  <p className="text-2xl font-bold text-green-900">
+                  <p className="text-3xl font-black text-green-900">
                     ${calculationResult.summary.rosannaTotalResponsibility.toLocaleString()}
                   </p>
                   <Badge variant="outline" className="mt-2 text-xs">50% Equal Responsibility</Badge>
@@ -385,6 +477,9 @@ const HousingCostCalculator: React.FC = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Visual Separator */}
+        <hr className="my-8 border-t border-slate-200" />
 
         {/* Detailed Cost Breakdown */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm mb-8">
@@ -422,11 +517,11 @@ const HousingCostCalculator: React.FC = () => {
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <div className="bg-white/50 rounded-lg p-3">
                         <Label className="text-xs font-medium opacity-70">Mathieu Wauters</Label>
-                        <div className="font-bold text-lg">${allocation.mathieuShare.toLocaleString()}</div>
+                        <div className="font-black text-xl">${allocation.mathieuShare.toLocaleString()}</div>
                       </div>
                       <div className="bg-white/50 rounded-lg p-3">
                         <Label className="text-xs font-medium opacity-70">Rosanna Alvero</Label>
-                        <div className="font-bold text-lg">${allocation.rosannaShare.toLocaleString()}</div>
+                        <div className="font-black text-xl">${allocation.rosannaShare.toLocaleString()}</div>
                       </div>
                     </div>
                     
@@ -447,6 +542,9 @@ const HousingCostCalculator: React.FC = () => {
             </CardContent>
           )}
         </Card>
+
+        {/* Visual Separator */}
+        <hr className="my-8 border-t border-slate-200" />
 
         {/* Legal Analysis Section */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
@@ -537,7 +635,7 @@ const HousingCostCalculator: React.FC = () => {
           </p>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
