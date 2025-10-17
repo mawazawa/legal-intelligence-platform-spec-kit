@@ -17,7 +17,10 @@ import {
   Scale as ScaleIcon,
   CheckCircle2,
   AlertCircle,
-  Download
+  Download,
+  Upload,
+  PenLine,
+  Trash2
 } from 'lucide-react';
 
 interface DocumentSource {
@@ -65,8 +68,17 @@ const FinalDistributionSSOT: React.FC = () => {
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set(['1', '2', '3']));
   const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(false);
 
+  // Simple e-signature state (drag-drop image OR typed name rendered in cursive)
+  const [respTypedName, setRespTypedName] = useState('');
+  const [petTypedName, setPetTypedName] = useState('');
+  const [respSignedAt, setRespSignedAt] = useState<string | null>(null);
+  const [petSignedAt, setPetSignedAt] = useState<string | null>(null);
+  const [respSigImage, setRespSigImage] = useState<string | null>(null);
+  const [petSigImage, setPetSigImage] = useState<string | null>(null);
+  const handwritingFont = `"Segoe Script", "Lucida Handwriting", "Snell Roundhand", "Zapfino", "Bradley Hand", "Brush Script MT", cursive`;
+
   // Load ledger (single source of truth) instead of hard-coded adjustments
-  const [ledger, setLedger] = useState<Record<string, any> | null>(null);
+  const [ledger, setLedger] = useState<Record<string, unknown> | null>(null);
   useEffect(() => {
     fetch('/api/case-financials/ledger', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
@@ -172,13 +184,15 @@ const FinalDistributionSSOT: React.FC = () => {
 
   const calculationResult = useMemo(() => {
     if (!ledger) return null;
-    const grossSalePrice = ledger.root.children[0].value.sale_price;
-    const netProceedsToSellers = ledger.root.children[0].value.due_to_seller;
-    const lenderPayoff = ledger.root.children[0].value.lender_payoff || 0;
-    const mathieuFinalDistribution = ledger.root.value.respondent;
-    const rosannaFinalDistribution = ledger.root.value.petitioner;
-    const mathieuSODShare = ledger.root.children[1].value.r65;
-    const rosannaSODShare = ledger.root.children[1].value.p35;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ledgerData = ledger as any; // Type assertion for ledger structure
+    const grossSalePrice = ledgerData.root.children[0].value.sale_price;
+    const netProceedsToSellers = ledgerData.root.children[0].value.due_to_seller;
+    const lenderPayoff = ledgerData.root.children[0].value.lender_payoff || 0;
+    const mathieuFinalDistribution = ledgerData.root.value.respondent;
+    const rosannaFinalDistribution = ledgerData.root.value.petitioner;
+    const mathieuSODShare = ledgerData.root.children[1].value.r65;
+    const rosannaSODShare = ledgerData.root.children[1].value.p35;
     const rosannaWithholding = 13694.62;
     const mathieuTaxObligation = 25432.88;
 
@@ -585,7 +599,7 @@ const FinalDistributionSSOT: React.FC = () => {
         rosannaWithholding,
         mathieuTaxObligation
       },
-      reasoningPath: ledger
+      reasoningPath
     };
   }, [ledger]);
 
@@ -624,6 +638,42 @@ const FinalDistributionSSOT: React.FC = () => {
   const printCalculation = () => {
     window.print();
   };
+
+  // Helpers for drag-drop signature images
+  function preventDefaults(e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  function handleDrop(e: React.DragEvent, who: 'resp'|'pet') {
+    preventDefaults(e);
+    const f = e.dataTransfer.files?.[0];
+    if (f && f.type.startsWith('image/')) {
+      const url = URL.createObjectURL(f);
+      if (who==='resp') { setRespSigImage(url); setRespSignedAt(new Date().toISOString()); }
+      else { setPetSigImage(url); setPetSignedAt(new Date().toISOString()); }
+    }
+  }
+  function handlePick(e: React.ChangeEvent<HTMLInputElement>, who: 'resp'|'pet') {
+    const f = e.target.files?.[0];
+    if (f && f.type.startsWith('image/')) {
+      const url = URL.createObjectURL(f);
+      if (who==='resp') { setRespSigImage(url); setRespSignedAt(new Date().toISOString()); }
+      else { setPetSigImage(url); setPetSignedAt(new Date().toISOString()); }
+    }
+  }
+
+  function signTyped(who: 'resp'|'pet') {
+    const hasName = who==='resp' ? respTypedName.trim().length>0 : petTypedName.trim().length>0;
+    if (!hasName) return;
+    const now = new Date().toISOString();
+    if (who==='resp') { setRespSigImage(null); setRespSignedAt(now); }
+    else { setPetSigImage(null); setPetSignedAt(now); }
+  }
+
+  function clearSignature(who: 'resp'|'pet') {
+    if (who==='resp') { setRespSigImage(null); setRespSignedAt(null); }
+    else { setPetSigImage(null); setPetSignedAt(null); }
+  }
 
   // Seller Deductions Breakdown Component
   const SellerDeductionsBreakdown = () => (
@@ -1307,6 +1357,136 @@ const FinalDistributionSSOT: React.FC = () => {
                       {calculationResult.reasoningPath.map((step: CalculationStep) => renderCalculationStep(step))}
                     </div>
                   )}
+                </div>
+
+                {/* SIGNATURES */}
+                <div className="court-calculation mb-12">
+                  <h3 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center mb-6">
+                    <PenLine className="h-5 md:h-6 w-5 md:w-6 mr-2 md:mr-3 text-blue-600" />
+                    SIGNATURES (Electronic)
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Respondent signature */}
+                    <div>
+                      <div className="text-sm text-slate-600 font-medium mb-2">Respondent (Mathieu Wauters)</div>
+                      <div
+                        className="relative rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 p-4 min-h-[160px] flex items-center justify-center text-center"
+                        onDragEnter={preventDefaults}
+                        onDragOver={preventDefaults}
+                        onDrop={(e)=>handleDrop(e,'resp')}
+                      >
+                        {respSigImage ? (
+                          <img src={respSigImage} alt="Respondent signature" className="max-h-32 object-contain" />
+                        ) : respSignedAt && respTypedName ? (
+                          <div className="w-full">
+                            <div
+                              className="text-3xl md:text-4xl leading-tight"
+                              style={{ fontFamily: handwritingFont as any }}
+                            >
+                              {respTypedName}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-slate-500">
+                            <Upload className="h-6 w-6 mx-auto mb-2" />
+                            <div className="mb-1">Drag & drop a signature image here</div>
+                            <div className="text-xs">or use the typed signature below</div>
+                          </div>
+                        )}
+                        <input className="hidden" type="file" accept="image/*" id="resp-sig-input" onChange={(e)=>handlePick(e,'resp')} />
+                        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between no-print">
+                          <label htmlFor="resp-sig-input" className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 cursor-pointer hover:bg-white">
+                            Upload Image
+                          </label>
+                          {(respSigImage || respSignedAt) && (
+                            <button onClick={()=>clearSignature('resp')} className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 hover:bg-white flex items-center gap-1">
+                              <Trash2 className="h-3 w-3" /> Clear
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mt-3 flex items-center gap-2 no-print">
+                        <input
+                          type="text"
+                          value={respTypedName}
+                          onChange={(e)=>setRespTypedName(e.target.value)}
+                          placeholder="Type full name (e.g., Mathieu Wauters)"
+                          className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+                        />
+                        <Button size="sm" onClick={()=>signTyped('resp')}>Sign</Button>
+                      </div>
+                      <div className="mt-4 text-xs text-slate-600">
+                        <div className="border-t border-slate-300 pt-1"></div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">/s/ {respTypedName || '________________'}</span>
+                          <span>Date: {respSignedAt ? new Date(respSignedAt).toLocaleDateString() : '__________'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Petitioner signature */}
+                    <div>
+                      <div className="text-sm text-slate-600 font-medium mb-2">Petitioner (Rosanna Alvero)</div>
+                      <div
+                        className="relative rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 p-4 min-h-[160px] flex items-center justify-center text-center"
+                        onDragEnter={preventDefaults}
+                        onDragOver={preventDefaults}
+                        onDrop={(e)=>handleDrop(e,'pet')}
+                      >
+                        {petSigImage ? (
+                          <img src={petSigImage} alt="Petitioner signature" className="max-h-32 object-contain" />
+                        ) : petSignedAt && petTypedName ? (
+                          <div className="w-full">
+                            <div
+                              className="text-3xl md:text-4xl leading-tight"
+                              style={{ fontFamily: handwritingFont as any }}
+                            >
+                              {petTypedName}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-slate-500">
+                            <Upload className="h-6 w-6 mx-auto mb-2" />
+                            <div className="mb-1">Drag & drop a signature image here</div>
+                            <div className="text-xs">or use the typed signature below</div>
+                          </div>
+                        )}
+                        <input className="hidden" type="file" accept="image/*" id="pet-sig-input" onChange={(e)=>handlePick(e,'pet')} />
+                        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between no-print">
+                          <label htmlFor="pet-sig-input" className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 cursor-pointer hover:bg-white">
+                            Upload Image
+                          </label>
+                          {(petSigImage || petSignedAt) && (
+                            <button onClick={()=>clearSignature('pet')} className="text-xs px-2 py-1 rounded bg-white/80 border border-slate-300 hover:bg-white flex items-center gap-1">
+                              <Trash2 className="h-3 w-3" /> Clear
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mt-3 flex items-center gap-2 no-print">
+                        <input
+                          type="text"
+                          value={petTypedName}
+                          onChange={(e)=>setPetTypedName(e.target.value)}
+                          placeholder="Type full name (e.g., Rosanna Alvero)"
+                          className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+                        />
+                        <Button size="sm" onClick={()=>signTyped('pet')}>Sign</Button>
+                      </div>
+                      <div className="mt-4 text-xs text-slate-600">
+                        <div className="border-t border-slate-300 pt-1"></div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">/s/ {petTypedName || '________________'}</span>
+                          <span>Date: {petSignedAt ? new Date(petSignedAt).toLocaleDateString() : '__________'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 text-[11px] text-slate-500">
+                    By clicking Sign or uploading an image, the signer adopts this electronic signature. This is intended to be acceptable for court filing as an electronically signed document.
+                  </div>
                 </div>
 
                 {/* COURT FOOTER */}
