@@ -153,6 +153,8 @@ const OppositionFilingPage: React.FC = () => {
               <p>I am the Respondent in this action. I have personal knowledge of the facts stated herein and could competently testify thereto if called as a witness. This declaration is made in support of my opposition to Petitioner's Request for Order filed June 25, 2025, seeking redistribution of escrow proceeds from the sale of the real property located at 3525 8th Avenue, Los Angeles, CA 90018 ("Property").</p>
               
               <p>Petitioner's RFO contains fundamental mathematical errors that render her requested relief impossible and legally unsupportable. The core flaw is her attempt to both deduct $77,779.88 from the net proceeds AND add it back to create a fictional "total net proceed" of $358,155.71. This is mathematically impossible and demonstrates either a fundamental misunderstanding of basic arithmetic or an intentional attempt to mislead this Court.</p>
+              
+              <p>This opposition is filed pursuant to Family Code section 271 and California Rules of Court, rule 5.92. I respectfully request that this Court deny Petitioner's motion in its entirety due to the mathematical impossibilities and legal deficiencies outlined below.</p>
             </div>
 
             <div>
