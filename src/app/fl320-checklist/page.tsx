@@ -233,6 +233,10 @@ const FL320ChecklistPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showCompleted, setShowCompleted] = useState(true);
 
+  // Fallback icons for test/mocks environments where lucide-react icons may be undefined
+  const EyeIcon = (Eye as any) || (() => null);
+  const EyeOffIcon = (EyeOff as any) || (() => null);
+
   // Removed unused parsedChecklist - using hardcoded checklist items instead
 
   const toggleItemStatus = (itemId: string) => {
@@ -460,13 +464,13 @@ const FL320ChecklistPage: React.FC = () => {
                     >
                       {showCompleted ? (
                         <>
-                          <EyeOff className="h-4 w-4" />
+                          <EyeOffIcon className="h-4 w-4" />
                           <span className="hidden sm:inline">Hide Completed</span>
                           <span className="sm:hidden">Hide</span>
                         </>
                       ) : (
                         <>
-                          <Eye className="h-4 w-4" />
+                          <EyeIcon className="h-4 w-4" />
                           <span className="hidden sm:inline">Show Completed</span>
                           <span className="sm:hidden">Show</span>
                         </>

@@ -20,7 +20,10 @@ import {
   Download,
   Upload,
   PenLine,
-  Trash2
+  Trash2,
+  Calculator,
+  GitCompare,
+  Scale
 } from 'lucide-react';
 
 interface DocumentSource {
@@ -63,9 +66,12 @@ interface CalculationStep {
 
 // Removed unused SODAdjustments interface
 
+type TabType = 'calculation' | 'comparison' | 'declarations';
+
 const FinalDistributionSSOT: React.FC = () => {
   const printRef = useRef<HTMLDivElement>(null);
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set(['1', '2', '3']));
+  const [activeTab, setActiveTab] = useState<TabType>('calculation');
   const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(false);
 
   // Simple e-signature state (drag-drop image OR typed name rendered in cursive)
@@ -948,6 +954,112 @@ const FinalDistributionSSOT: React.FC = () => {
     );
   }
 
+  // Tab Navigation Component
+  const TabNavigation = () => {
+    const tabs = [
+      { id: 'calculation' as TabType, label: 'Final Distribution Calculation', icon: Calculator },
+      { id: 'comparison' as TabType, label: 'Side-by-Side Comparison', icon: GitCompare },
+      { id: 'declarations' as TabType, label: 'Court Declarations', icon: Scale }
+    ];
+
+    return (
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-slate-200 shadow-sm no-print">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex space-x-1 pt-4 pb-2">
+            {tabs.map(({ id, label, icon: Icon }) => {
+              const isActive = activeTab === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => setActiveTab(id)}
+                  className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 text-sm font-medium rounded-t-lg transition-all duration-200 ${
+                    isActive
+                      ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
+                      : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Tab Content Renderer
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'calculation':
+        return renderCalculationContent();
+      case 'comparison':
+        return renderComparisonContent();
+      case 'declarations':
+        return renderDeclarationsContent();
+      default:
+        return renderCalculationContent();
+    }
+  };
+
+  // Calculation Content (existing content)
+  const renderCalculationContent = () => (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8 rounded-lg shadow-inner">
+      <div className="max-w-7xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200 relative print:shadow-none print:border-none">
+        {/* Print Button */}
+        <div className="fixed top-20 right-4 z-50 no-print">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={printCalculation}
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                size="sm"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print / Save as PDF
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Print calculation or save as PDF</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+
+        {/* Existing calculation content will go here */}
+        {/* This is a placeholder - the actual content will be moved here */}
+        <div className="text-center py-20">
+          <h1 className="text-3xl font-bold text-slate-800 mb-4">Final Distribution Calculation</h1>
+          <p className="text-slate-600">Calculation content will be rendered here</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Comparison Content (placeholder)
+  const renderComparisonContent = () => (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8 rounded-lg shadow-inner">
+      <div className="max-w-7xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200 relative print:shadow-none print:border-none">
+        <div className="text-center py-20">
+          <h1 className="text-3xl font-bold text-slate-800 mb-4">Side-by-Side Comparison</h1>
+          <p className="text-slate-600">Comparison content will be rendered here</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Declarations Content (placeholder)
+  const renderDeclarationsContent = () => (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8 rounded-lg shadow-inner">
+      <div className="max-w-7xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200 relative print:shadow-none print:border-none">
+        <div className="text-center py-20">
+          <h1 className="text-3xl font-bold text-slate-800 mb-4">Court Declarations</h1>
+          <p className="text-slate-600">Declarations content will be rendered here</p>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       {/* Print Styles */}
@@ -1012,41 +1124,13 @@ const FinalDistributionSSOT: React.FC = () => {
       `}</style>
 
       <TooltipProvider>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-        {/* Print Control */}
-        <div className="fixed top-4 right-4 z-50 no-print">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={printCalculation}
-                className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                size="sm"
-              >
-                <Printer className="h-4 w-4 mr-2" />
-                Print / Save as PDF
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Print calculation or save as PDF</p>
-            </TooltipContent>
-          </Tooltip>
+        {/* Tab Navigation */}
+        <TabNavigation />
+        
+        {/* Main Content with Top Padding for Fixed Tabs */}
+        <div className="pt-20">
+          {renderTabContent()}
         </div>
-
-        {/* Court-Ready Document Layout */}
-        <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-5xl rounded-lg" ref={printRef}>
-            {/* Sophisticated Page Edge Shading */}
-            <div className="relative">
-              {/* Top Edge Shading */}
-              <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-slate-100 to-transparent pointer-events-none rounded-t-lg"></div>
-              {/* Bottom Edge Shading */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-100 to-transparent pointer-events-none rounded-b-lg"></div>
-              {/* Left Edge Shading */}
-              <div className="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-slate-100 to-transparent pointer-events-none rounded-l-lg"></div>
-              {/* Right Edge Shading */}
-              <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-slate-100 to-transparent pointer-events-none rounded-r-lg"></div>
-
-              {/* Court Page Content */}
-              <div className="court-page relative z-10 bg-white min-h-[11in] p-16 rounded-lg">
                 {/* Professional Court Header */}
                 <div className="court-header text-center mb-12">
                   <div className="mb-6">
