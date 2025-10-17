@@ -1,6 +1,7 @@
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { PersonsOfInterest } from '@/components/PersonsOfInterest';
 import {
   Calendar,
   Building,
@@ -189,6 +190,9 @@ export default function TimelinePage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Persons of Interest */}
+        <PersonsOfInterest />
       </div>
     </DashboardLayout>
   );

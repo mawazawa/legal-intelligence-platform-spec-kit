@@ -4,6 +4,8 @@ import React from 'react'
 import { DashboardLayout } from '@/components/DashboardLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { PersonsOfInterest } from '@/components/PersonsOfInterest'
+import { ComputationExplorerClient } from '@/components/case/ComputationExplorerClient'
 import Link from 'next/link'
 
 interface LedgerItem {
@@ -270,6 +272,16 @@ export default async function Page() {
           </CardContent>
         </Card>
       )}
+      {ledger && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Computation Explorer (interactive)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ComputationExplorerClient ledger={ledger} />
+          </CardContent>
+        </Card>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Downloads</CardTitle>
@@ -284,6 +296,9 @@ export default async function Page() {
           </ul>
         </CardContent>
       </Card>
+
+      {/* Persons of Interest */}
+      <PersonsOfInterest />
     </div>
     </DashboardLayout>
   )

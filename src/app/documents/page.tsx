@@ -1,6 +1,7 @@
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { PersonsOfInterest } from '@/components/PersonsOfInterest';
 import {
   FileText,
   Download,
@@ -214,6 +215,9 @@ export default function DocumentsPage() {
             ))}
           </div>
         </div>
+
+        {/* Persons of Interest */}
+        <PersonsOfInterest />
       </div>
     </DashboardLayout>
   );

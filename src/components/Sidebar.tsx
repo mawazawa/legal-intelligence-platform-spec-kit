@@ -27,8 +27,9 @@ interface NavItem {
 
 const navigation: NavItem[] = [
   { name: 'Dashboard', href: '/', icon: <LayoutDashboard className="h-5 w-5" /> },
+  { name: 'Final Distribution', href: '/final-distribution', icon: <Scale className="h-5 w-5" />, badge: 'NEW' },
   { name: 'Housing Costs', href: '/housing-costs', icon: <Calculator className="h-5 w-5" /> },
-  { name: 'Tax Withholding', href: '/tax-withholding', icon: <Receipt className="h-5 w-5" />, badge: 'NEW' },
+  { name: 'Tax Withholding', href: '/tax-withholding', icon: <Receipt className="h-5 w-5" /> },
   { name: 'Case Financials', href: '/case-financials', icon: <FileText className="h-5 w-5" /> },
   { name: 'Case Timeline', href: '/timeline', icon: <Clock className="h-5 w-5" /> },
   { name: 'Document Evidence', href: '/documents', icon: <FolderOpen className="h-5 w-5" /> },
