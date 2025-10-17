@@ -17,6 +17,7 @@ import {
   ScrollText,
   GitCompare
 } from 'lucide-react';
+import { PageView } from '@/components/case/PageView'
 
 interface RFOContent {
   text: string;
@@ -44,6 +45,8 @@ const RFOComparisonPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['overview']));
   const [activeTab, setActiveTab] = useState<'petitioner' | 'respondent' | 'comparison'>('petitioner');
+  const [pageIndex, setPageIndex] = useState(0);
+  const [ledger, setLedger] = useState<any>(null);
 
   // Load documents
   useEffect(() => {
@@ -70,6 +73,12 @@ const RFOComparisonPage: React.FC = () => {
             pages: fl320Data.meta?.pages || 0
           });
         }
+
+        // Load ledger for respondent outline
+        try {
+          const lr = await fetch('/api/case-financials/ledger', { cache: 'no-store' })
+          if (lr.ok) setLedger(await lr.json())
+        } catch {}
       } catch (error) {
         console.error('Error loading documents:', error);
       } finally {
@@ -83,6 +92,58 @@ const RFOComparisonPage: React.FC = () => {
   const printComparison = () => {
     window.print();
   };
+
+  // Split concatenated text (with '--- Page N ---' markers) into pages for page view rendering
+  function splitPages(t?: string): string[] {
+    if (!t) return []
+    const parts = t.split(/\n--- Page \d+ ---\n/g).map(s=>s.trim()).filter(Boolean)
+    if (parts.length) return parts
+    const sz = 1800
+    const out: string[] = []
+    for (let i=0; i<t.length; i+=sz) out.push(t.slice(i, i+sz))
+    return out
+  }
+
+  const rfoPages = splitPages(petitionerRFO?.text)
+
+  const fmt = (n?: number) => typeof n==='number' ? n.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '—'
+
+  function buildRespondentPages(): string[] {
+    const d2s = ledger?.root?.children?.[0]?.value?.due_to_seller
+    const r65 = ledger?.root?.children?.[1]?.value?.r65
+    const p35 = ledger?.root?.children?.[1]?.value?.p35
+    const fr = ledger?.root?.value?.respondent
+    const fp = ledger?.root?.value?.petitioner
+    const cn = ledger?.root?.children?.[1]?.value?.constructive_net
+    const p1 = [
+      'RESPONSIVE DECLARATION (FL-320) — Computation Outline',
+      '',
+      'From‑the‑Pot Final Distribution (ledger-based):',
+      `  Respondent: ${fmt(fr)}`,
+      `  Petitioner: ${fmt(fp)}`,
+      '  Split: 65% / 35% per Statement of Decision',
+      '',
+      'Key Corrections:',
+      '  • Do not add arrears back to net proceeds; they were already paid at close.',
+      '  • Apply 65/35 to constructive net, then share arrears equally.',
+      '  • Mirror Form 593 treatment for both parties for symmetry.',
+      '',
+      'Citations: Statement of Decision (65/35, Watts, items), Closing Statement (Due to Seller).',
+    ].join('\n')
+    const p2 = [
+      'CALCULATION SNAPSHOT',
+      '',
+      `Net proceeds (Due to Seller): ${fmt(d2s)}`,
+      `Constructive net: ${fmt(cn)}`,
+      `SOD 65% (Respondent): ${fmt(r65)}`,
+      `SOD 35% (Petitioner): ${fmt(p35)}`,
+      '',
+      'Adjustments (selected):',
+      '  • Watts fixed; $122/mo cutoff; symmetry credit.',
+      '  • Household items flip (+$15,000 to Respondent).',
+    ].join('\n')
+    return [p1, p2]
+  }
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections(prev => {
@@ -419,13 +480,15 @@ const RFOComparisonPage: React.FC = () => {
                       </div>
 
                       <div className="bg-white p-6 rounded-lg border border-red-200">
-                        <h4 className="text-lg font-semibold text-red-700 mb-4">RFO CONTENT PREVIEW</h4>
-                        <div className="bg-slate-50 p-4 rounded border border-red-200 max-h-96 overflow-y-auto">
-                          <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
-                            {petitionerRFO?.text?.substring(0, 3000) || 'Loading RFO content...'}
-                            {(petitionerRFO?.text?.length || 0) > 3000 && '\n\n[... Content truncated for display ...]'}
-                          </pre>
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="text-lg font-semibold text-red-700">RFO — Page View</h4>
+                          <div className="flex items-center gap-2 no-print">
+                            <button className="text-xs px-2 py-1 border rounded" onClick={()=>setPageIndex(Math.max(0, pageIndex-1))}>Prev</button>
+                            <div className="text-xs">{(pageIndex+1)} / {(rfoPages.length||1)}</div>
+                            <button className="text-xs px-2 py-1 border rounded" onClick={()=>setPageIndex(Math.min((rfoPages.length||1)-1, pageIndex+1))}>Next</button>
+                          </div>
                         </div>
+                        <PageView pages={rfoPages.slice(pageIndex, pageIndex+1)} />
                       </div>
                     </div>
                   </div>
@@ -488,13 +551,8 @@ const RFOComparisonPage: React.FC = () => {
                       </div>
 
                       <div className="bg-white p-6 rounded-lg border border-blue-200">
-                        <h4 className="text-lg font-semibold text-blue-700 mb-4">FL-320 CONTENT PREVIEW</h4>
-                        <div className="bg-slate-50 p-4 rounded border border-blue-200 max-h-96 overflow-y-auto">
-                          <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono">
-                            {respondentFL320?.text?.substring(0, 3000) || 'FL-320 response in preparation. This will contain detailed rebuttals to each point raised in the RFO, supported by overwhelming evidence from the Statement of Decision, closing statements, tax documentation, and email correspondence.'}
-                            {(respondentFL320?.text?.length || 0) > 3000 && '\n\n[... Content truncated for display ...]'}
-                          </pre>
-                        </div>
+                        <h4 className="text-lg font-semibold text-blue-700 mb-3">FL‑320 — Page View (Computed Outline)</h4>
+                        <PageView pages={buildRespondentPages()} />
                       </div>
                     </div>
                   </div>
@@ -622,6 +680,29 @@ const RFOComparisonPage: React.FC = () => {
                             </CardContent>
                           </Card>
                         ))}
+                      </div>
+                    </div>
+
+                    {/* PAGE VIEW — SIDE BY SIDE */}
+                    <div className="mb-12">
+                      <h3 className="text-xl md:text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                        <GitCompare className="h-6 w-6 mr-3 text-purple-600" />
+                        PAGE VIEW (SIDE‑BY‑SIDE)
+                      </h3>
+                      <div className="side-by-side-container grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                          <div className="text-sm text-slate-600 mb-2">Petitioner — RFO (Page {pageIndex+1}/{rfoPages.length || 1})</div>
+                          <PageView pages={rfoPages.slice(pageIndex, pageIndex+1)} />
+                        </div>
+                        <div>
+                          <div className="text-sm text-slate-600 mb-2">Respondent — FL‑320 Outline</div>
+                          <PageView pages={buildRespondentPages().slice(0,1)} />
+                        </div>
+                      </div>
+                      <div className="mt-3 flex items-center gap-2 no-print">
+                        <button className="text-xs px-2 py-1 border rounded" onClick={()=>setPageIndex(Math.max(0, pageIndex-1))}>Prev page</button>
+                        <div className="text-xs">{pageIndex+1} / {rfoPages.length||1}</div>
+                        <button className="text-xs px-2 py-1 border rounded" onClick={()=>setPageIndex(Math.min((rfoPages.length||1)-1, pageIndex+1))}>Next page</button>
                       </div>
                     </div>
 
