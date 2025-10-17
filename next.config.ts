@@ -7,6 +7,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig: NextConfig = {
   // Performance optimizations
   reactStrictMode: true,
+  
 
   // Optimize images
   images: {

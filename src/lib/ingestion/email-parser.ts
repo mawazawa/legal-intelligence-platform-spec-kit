@@ -243,3 +243,9 @@ export class EmailParser {
     return 14; // Default duration
   }
 }
+
+// Export convenience function
+export async function parseAllEmails(mboxPath: string): Promise<EmailEvent[]> {
+  const parser = new EmailParser(mboxPath);
+  return parser.parseMbox();
+}
