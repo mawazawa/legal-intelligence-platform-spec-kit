@@ -103,7 +103,29 @@ export default async function Page() {
         <Badge variant="secondary">Auto‑loaded from case‑financials/results</Badge>
       </div>
 
+      {fromPot.respondent && (
+        <div className="rounded-lg bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <div>
+            <div className="text-sm text-slate-600">Final (From‑the‑Pot Variant)</div>
+            <div className="text-2xl font-semibold">Respondent {toCurrency(fromPot.respondent)} · Petitioner {toCurrency(fromPot.petitioner)}</div>
+          </div>
+          <div className="text-sm text-slate-600">Total after Form 593 removal: <span className="font-medium">{toCurrency(fromPot.total)}</span></div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>From‑the‑Pot Variant (Latest)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-sm text-muted-foreground mb-2">Remove Respondent’s Form 593 from pot pre‑split (mirror Petitioner)</div>
+            <div>Respondent: <strong>{toCurrency(fromPot.respondent)}</strong></div>
+            <div>Petitioner: <strong>{toCurrency(fromPot.petitioner)}</strong></div>
+            <div className="text-xs mt-2">Total: {toCurrency(fromPot.total)}</div>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Petitioner Method (A)</CardTitle>
@@ -181,7 +203,10 @@ export default async function Page() {
                 <div>Sale price: {toCurrency(ledger.root.children[0].value.sale_price)} · Due to Seller: {toCurrency(ledger.root.children[0].value.due_to_seller)}</div>
                 <ul className="list-disc ml-5">
                   {ledger.root.children[0].items.map((it: any, idx: number) => (
-                    <li key={idx}>{it.label}: {toCurrency(it.amount)}</li>
+                    <li key={idx} className="mb-1 flex items-center gap-2">
+                      <span>{it.label}: <strong>{toCurrency(it.amount)}</strong></span>
+                      <span className="text-[10px] leading-none px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">source</span>
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -233,7 +258,7 @@ export default async function Page() {
                 ))}
               </ul>
             </details>
-            <div className="mt-3 text-xs text-muted-foreground">Sources: <Link className="underline" href="/api/case-financials/raw/schedule" target="_blank">schedule.md</Link> · <Link className="underline" href="/api/case-financials/raw/withholding" target="_blank">withholding-evidence.md</Link> · <Link className="underline" href="/api/case-financials/raw/schedule" target="_blank">SOD (see references in schedule)</Link> · <Link className="underline" href="/api/case-financials/raw/schedule" target="_blank">Closing extract</Link></div>
+            <div className="mt-3 text-xs text-muted-foreground">Sources: <Link className="underline" href="/api/case-financials/raw/schedule" target="_blank">schedule.md</Link> · <Link className="underline" href="/api/case-financials/raw/withholding" target="_blank">withholding-evidence.md</Link> · SOD (see references in schedule) · <Link className="underline" href="/api/case-financials/raw/closing" target="_blank">Closing extract</Link></div>
           </CardContent>
         </Card>
       )}
