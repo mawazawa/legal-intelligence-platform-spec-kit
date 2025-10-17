@@ -164,6 +164,10 @@ const OppositionFilingPage: React.FC = () => {
               <p><strong>Legal Significance:</strong> Once Petitioner took possession on November 16, 2024, she became responsible for all Property-related expenses, including mortgage payments, property taxes, insurance, and maintenance. Her claims for "Watts charges" and other expenses after this date are legally baseless.</p>
               
               <p><strong>Mortgage Payment Responsibility:</strong> Petitioner's claim that I failed to pay the mortgage "since December 2023" ignores the fact that she took possession in November 2024. Any mortgage payments due after November 16, 2024, were her responsibility, not mine.</p>
+              
+              <p><strong>Property Sale Timeline:</strong> The Property was listed for sale on February 15, 2025, and sold on May 30, 2025. During this entire period, Petitioner had exclusive possession and control of the Property. She cannot claim expenses against me for a period when she was exclusively using and benefiting from the Property.</p>
+              
+              <p><strong>Petitioner's Admission of Possession:</strong> Petitioner's own declaration establishes that she took possession on November 16, 2024. This admission is binding and cannot be contradicted by her later claims for expenses during her possession period.</p>
             </div>
 
             <div>
@@ -179,6 +183,10 @@ const OppositionFilingPage: React.FC = () => {
               <p><strong>Correct Calculation:</strong> The escrow proceeds of $280,355.83 already reflect the payment of all mortgage obligations, including the $77,779.88. To "add back" this amount would be double-counting and result in an inflated, fictional total.</p>
               
               <p><strong>Petitioner's Requested Distribution:</strong> She seeks 35% of $358,155.71 = $125,354.50, but this figure is based on the mathematically impossible "add back" of the $77,779.88.</p>
+              
+              <p><strong>Accounting Principles Violated:</strong> Petitioner's calculation violates basic accounting principles. When a debt is paid, it reduces the available proceeds. You cannot simultaneously pay a debt and add it back to create additional proceeds. This is equivalent to claiming you can spend money and still have it available.</p>
+              
+              <p><strong>Escrow Statement Analysis:</strong> The escrow statement clearly shows that $759,364.32 was paid to the mortgage company, which included the $77,779.88 in arrears. The net proceeds of $280,355.83 represent what remains after all obligations were satisfied. Petitioner's attempt to "add back" the $77,779.88 is mathematically impossible.</p>
             </div>
 
             <div>
@@ -188,6 +196,12 @@ const OppositionFilingPage: React.FC = () => {
               <p><strong>Petitioner's Own Timeline Contradiction:</strong> Her declaration shows she took possession on November 16, 2024, yet she claims Watts charges through that date. This is logically impossible - she cannot both owe Watts charges for exclusive use AND have taken possession on the same date.</p>
               
               <p><strong>Correct Watts Calculation:</strong> Watts charges should end on November 15, 2024, the day before she took possession. Any claims for November 16, 2024, and beyond are invalid.</p>
+              
+              <p><strong>Legal Authority:</strong> Watts v. Watts (1985) 171 Cal.App.3d 366 establishes that Watts charges are for exclusive use and possession. Once possession changes hands, the charges must end. Petitioner's own admission that she took possession on November 16, 2024, legally terminates any Watts charges as of that date.</p>
+              
+              <p><strong>Petitioner's Benefit During Possession:</strong> From November 16, 2024, to May 30, 2025, Petitioner had exclusive use and benefit of the Property. She cannot claim Watts charges against me for a period when she was exclusively using and benefiting from the Property.</p>
+              
+              <p><strong>Calculation Error:</strong> Petitioner's Watts charges calculation includes the period after she took possession, which is legally impossible. The correct calculation would end on November 15, 2024, resulting in significantly reduced charges.</p>
             </div>
 
             <div>
@@ -195,7 +209,16 @@ const OppositionFilingPage: React.FC = () => {
               <p><strong>Proportional Responsibility:</strong> Petitioner claims $13,694.62 in tax withholding and seeks my 65% share ($8,901.50). However, tax withholding is typically split proportionally based on ownership interests.</p>
               
               <p><strong>Petitioner's Admission:</strong> She states she will "take full responsibility" for the tax withholding but then seeks reimbursement. This is contradictory and unsupported by law.</p>
+              
+              <p><strong>Tax Liability Determination:</strong> The tax withholding amount should be determined based on the actual tax liability, not Petitioner's unilateral calculation. She provides no evidence of the actual tax liability or how the $13,694.62 figure was calculated.</p>
+              
+              <p><strong>Timing of Tax Obligation:</strong> Tax withholding typically occurs at the time of sale. Petitioner's claim for reimbursement of tax withholding that she allegedly paid is unsupported by documentation showing when and how this amount was determined.</p>
             </div>
+        </div>
+
+        {/* PAGE 4 - CONTINUATION OF RESPONDENT'S DECLARATION */}
+        <div className="page-break min-h-[11in] p-16">
+          <div className="text-sm leading-relaxed space-y-4">
 
             <div>
               <h3 className="font-semibold mb-2">6. ATTORNEY FEES SANCTIONS - NO EVIDENCE OF BAD FAITH</h3>
@@ -204,6 +227,12 @@ const OppositionFilingPage: React.FC = () => {
               <p><strong>Exercise of Legal Rights:</strong> My actions were consistent with exercising legal rights, not violating court orders. Disagreement with Petitioner's interpretation of orders does not constitute "willful disregard."</p>
               
               <p><strong>Petitioner's Own Delays:</strong> The record shows Petitioner caused significant delays in the Property sale process, yet she seeks sanctions against me for delays.</p>
+              
+              <p><strong>Legal Standard for Sanctions:</strong> Family Code section 271 requires a showing of conduct that "frustrates the policy of the law to promote settlement of litigation." Petitioner provides no evidence that my actions frustrated settlement or violated any court orders.</p>
+              
+              <p><strong>Petitioner's Cooperation Issues:</strong> The record demonstrates that Petitioner was uncooperative during the Property sale process, including delays in signing necessary documents and refusal to work with the realtor. These delays were caused by Petitioner, not me.</p>
+              
+              <p><strong>No Court Order Violations:</strong> Petitioner fails to identify any specific court orders that I allegedly violated. Her claim of "willful disregard" is unsupported by evidence and appears to be a tactic to shift blame for her own delays.</p>
             </div>
 
             <div>
@@ -213,7 +242,18 @@ const OppositionFilingPage: React.FC = () => {
               <p><strong>Normal Wear and Tear:</strong> The photos attached to her declaration appear to show normal wear and tear, not damage requiring $6,419 in repairs.</p>
               
               <p><strong>Petitioner's Use of Property:</strong> After taking possession on November 16, 2024, Petitioner used the Property for her own purposes. Any cleanup costs should be offset by her use and benefit.</p>
+              
+              <p><strong>Lack of Documentation:</strong> Petitioner provides no receipts, invoices, or other documentation to support her claimed cleanup costs. The amounts appear to be estimates without supporting evidence.</p>
+              
+              <p><strong>Condition Before Departure:</strong> Petitioner provides no evidence of the Property's condition before my departure. Without baseline documentation, her claims of damage are unsubstantiated.</p>
+              
+              <p><strong>Petitioner's Responsibility:</strong> As the party in possession from November 16, 2024, Petitioner was responsible for maintaining the Property. Any cleanup costs incurred during her possession period should be her responsibility.</p>
             </div>
+        </div>
+
+        {/* PAGE 5 - CONTINUATION OF RESPONDENT'S DECLARATION */}
+        <div className="page-break min-h-[11in] p-16">
+          <div className="text-sm leading-relaxed space-y-4">
 
             <div>
               <h3 className="font-semibold mb-2">8. COUNTER-CLAIMS AND OFFSETS</h3>

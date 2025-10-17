@@ -1,15 +1,13 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { buildCitations } from '@/lib/citations';
 import { parseAllEmails, type EmailEvent } from '@/lib/ingestion/email-parser';
-import fs from 'node:fs/promises';
-import path from 'node:path';
 
 async function readDeclaration(): Promise<{ content: string; source: string } | null> {
+  const fs = await import('node:fs/promises');
+  const path = await import('node:path');
   const candidates = [
     path.resolve(process.cwd(), 'RESPONSIVE_DECLARATION_FL320_FINAL.md'),
     path.resolve(process.cwd(), 'RESPONSIVE_DECLARATION_FL320.md'),
@@ -28,6 +26,8 @@ async function readDeclaration(): Promise<{ content: string; source: string } | 
 }
 
 async function readExhibits() {
+  const fs = await import('node:fs/promises');
+  const path = await import('node:path');
   try {
     const file = path.resolve(process.cwd(), '..', 'case-financials', 'exhibits', 'exhibits.json');
     const raw = await fs.readFile(file, 'utf8');
@@ -129,6 +129,8 @@ function annotateContent(
 }
 
 async function resolveMboxPath(): Promise<string> {
+  const fs = await import('node:fs/promises');
+  const path = await import('node:path');
   const mailDir = path.resolve(process.cwd(), '..', 'Mail');
   try {
     const entries = await fs.readdir(mailDir);

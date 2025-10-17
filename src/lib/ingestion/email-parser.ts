@@ -126,7 +126,7 @@ export class EmailParser {
     }
     
     // Financial discussions
-    if (subject.includes('payment') || subject.includes('invoice') || body.includes('payment'))) {
+    if (subject.includes('payment') || subject.includes('invoice') || body.includes('payment')) {
       return 'financial';
     }
 
@@ -226,4 +226,3 @@ export async function parseAllEmails(mboxPath: string): Promise<EmailEvent[]> {
   const parser = new EmailParser(mboxPath);
   return parser.parseMbox();
 }
-
