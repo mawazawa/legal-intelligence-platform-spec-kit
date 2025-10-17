@@ -8,7 +8,24 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Calculator, FileText, DollarSign, AlertTriangle, CheckCircle } from 'lucide-react';
+import { 
+  Calculator, 
+  FileText, 
+  DollarSign, 
+  AlertTriangle, 
+  CheckCircle, 
+  ChevronDown, 
+  ChevronRight,
+  Info,
+  Scale,
+  Receipt,
+  TrendingUp,
+  Users,
+  Building,
+  CreditCard,
+  FileCheck,
+  ExternalLink
+} from 'lucide-react';
 
 interface MortgageBreakdown {
   principal: number;
@@ -26,6 +43,10 @@ interface CostAllocation {
   rosannaShare: number;
   justification: string;
   legalBasis: string;
+  source: string;
+  icon: React.ReactNode;
+  color: string;
+  expanded?: boolean;
 }
 
 interface CalculationResult {
@@ -53,6 +74,11 @@ const HousingCostCalculator: React.FC = () => {
 
   const [allocationMethod, setAllocationMethod] = useState<'equal' | 'income' | 'usage'>('equal');
   const [incomeRatio, setIncomeRatio] = useState({ mathieu: 50, rosanna: 50 });
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    mortgageBreakdown: true,
+    costAllocations: false,
+    legalAnalysis: false
+  });
 
   const calculationResult = useMemo((): CalculationResult => {
     const mortgageBreakdown: MortgageBreakdown = {
@@ -71,7 +97,10 @@ const HousingCostCalculator: React.FC = () => {
         mathieuShare: (mortgageData.principal + mortgageData.interest) * 0.5,
         rosannaShare: (mortgageData.principal + mortgageData.interest) * 0.5,
         justification: 'Joint mortgage obligation - both parties equally responsible',
-        legalBasis: 'California Family Code § 2550 - Community property presumption'
+        legalBasis: 'California Family Code § 2550 - Community property presumption',
+        source: 'Lakeview Mortgage Statement, Lines 96-97',
+        icon: <Building className="h-4 w-4" />,
+        color: 'bg-blue-50 border-blue-200 text-blue-800'
       },
       {
         category: 'Property Taxes (Escrow)',
@@ -79,7 +108,10 @@ const HousingCostCalculator: React.FC = () => {
         mathieuShare: mortgageData.escrow * 0.5,
         rosannaShare: mortgageData.escrow * 0.5,
         justification: 'Property taxes are ongoing obligation regardless of foreclosure status',
-        legalBasis: 'California Revenue and Taxation Code § 2187 - Joint liability for property taxes'
+        legalBasis: 'California Revenue and Taxation Code § 2187 - Joint liability for property taxes',
+        source: 'Lakeview Mortgage Statement, Line 98',
+        icon: <Receipt className="h-4 w-4" />,
+        color: 'bg-green-50 border-green-200 text-green-800'
       },
       {
         category: 'Foreclosure-Related Fees',
@@ -87,7 +119,10 @@ const HousingCostCalculator: React.FC = () => {
         mathieuShare: mortgageData.fees * 0.5,
         rosannaShare: mortgageData.fees * 0.5,
         justification: 'Late fees and administrative costs due to joint delinquency',
-        legalBasis: 'California Civil Code § 1717 - Joint and several liability for contract damages'
+        legalBasis: 'California Civil Code § 1717 - Joint and several liability for contract damages',
+        source: 'Lakeview Mortgage Statement, Line 100',
+        icon: <AlertTriangle className="h-4 w-4" />,
+        color: 'bg-orange-50 border-orange-200 text-orange-800'
       },
       {
         category: 'Lender Paid Expenses (Legal/Inspection)',
@@ -95,7 +130,10 @@ const HousingCostCalculator: React.FC = () => {
         mathieuShare: mortgageData.lenderPaidExpenses * 0.5,
         rosannaShare: mortgageData.lenderPaidExpenses * 0.5,
         justification: 'Costs incurred due to joint mortgage delinquency',
-        legalBasis: 'California Family Code § 2550 - Community debt presumption'
+        legalBasis: 'California Family Code § 2550 - Community debt presumption',
+        source: 'Lakeview Mortgage Statement, Lines 64-82',
+        icon: <CreditCard className="h-4 w-4" />,
+        color: 'bg-purple-50 border-purple-200 text-purple-800'
       },
       {
         category: 'Overdue Payments (Accumulated)',
@@ -103,7 +141,10 @@ const HousingCostCalculator: React.FC = () => {
         mathieuShare: mortgageData.overduePayments * 0.5,
         rosannaShare: mortgageData.overduePayments * 0.5,
         justification: 'Accumulated missed payments - joint responsibility',
-        legalBasis: 'California Family Code § 2550 - Community property and debt division'
+        legalBasis: 'California Family Code § 2550 - Community property and debt division',
+        source: 'Lakeview Mortgage Statement, Line 101',
+        icon: <TrendingUp className="h-4 w-4" />,
+        color: 'bg-red-50 border-red-200 text-red-800'
       }
     ];
 
@@ -130,135 +171,212 @@ const HousingCostCalculator: React.FC = () => {
     }));
   };
 
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Housing Cost Allocation Calculator</h1>
-        <p className="text-muted-foreground">
-          Fair division of mortgage costs for FL-320 declaration
-        </p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="container mx-auto px-6 py-8 max-w-6xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <div className="p-3 bg-blue-100 rounded-full mr-4">
+              <Scale className="h-8 w-8 text-blue-600" />
+            </div>
+            <h1 className="text-4xl font-bold text-slate-800">Housing Cost Allocation</h1>
+          </div>
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            Interactive calculator for fair division of mortgage costs in FL-320 declaration
+          </p>
+        </div>
 
-      <Alert>
-        <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>
-          <strong>Legal Argument:</strong> The $95,962.46 mortgage reinstatement amount should be divided equally between both parties, 
-          not attributed solely to Respondent Mathieu Wauters. Only foreclosure-related fees ($4,717.95) represent additional costs 
-          beyond the regular mortgage obligation.
-        </AlertDescription>
-      </Alert>
+        {/* Key Insight Banner */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8">
+          <div className="flex items-start">
+            <div className="p-2 bg-blue-100 rounded-lg mr-4">
+              <Info className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">Legal Argument Summary</h3>
+              <p className="text-blue-800 leading-relaxed">
+                The <strong>$95,962.46</strong> mortgage reinstatement amount should be divided equally between both parties, 
+                not attributed solely to Respondent Mathieu Wauters. Only foreclosure-related fees 
+                (<strong>$4,717.95</strong>) represent additional costs beyond the regular mortgage obligation.
+              </p>
+            </div>
+          </div>
+        </div>
 
-      <Tabs defaultValue="calculator" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="calculator">Calculator</TabsTrigger>
-          <TabsTrigger value="breakdown">Cost Breakdown</TabsTrigger>
-          <TabsTrigger value="legal">Legal Analysis</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="calculator" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calculator className="h-5 w-5" />
+        {/* Main Calculator Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Input Panel */}
+          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
+              <CardTitle className="flex items-center">
+                <Calculator className="h-5 w-5 mr-2" />
                 Mortgage Data Input
               </CardTitle>
+              <p className="text-blue-100 text-sm">Source: Lakeview Mortgage Statement (05/20/2025)</p>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="principal">Principal Payment</Label>
-                  <Input
-                    id="principal"
-                    type="number"
-                    value={mortgageData.principal}
-                    onChange={(e) => handleInputChange('principal', parseFloat(e.target.value) || 0)}
-                  />
+            <CardContent className="p-6 space-y-6">
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="principal" className="text-sm font-medium text-slate-700">
+                    Principal Payment
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="principal"
+                      type="number"
+                      value={mortgageData.principal}
+                      onChange={(e) => handleInputChange('principal', parseFloat(e.target.value) || 0)}
+                      className="pl-8 text-lg font-mono"
+                    />
+                    <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">Source: Line 96</p>
                 </div>
-                <div>
-                  <Label htmlFor="interest">Interest Payment</Label>
-                  <Input
-                    id="interest"
-                    type="number"
-                    value={mortgageData.interest}
-                    onChange={(e) => handleInputChange('interest', parseFloat(e.target.value) || 0)}
-                  />
+
+                <div className="space-y-2">
+                  <Label htmlFor="interest" className="text-sm font-medium text-slate-700">
+                    Interest Payment
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="interest"
+                      type="number"
+                      value={mortgageData.interest}
+                      onChange={(e) => handleInputChange('interest', parseFloat(e.target.value) || 0)}
+                      className="pl-8 text-lg font-mono"
+                    />
+                    <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">Source: Line 97</p>
                 </div>
-                <div>
-                  <Label htmlFor="escrow">Escrow (Property Taxes & Insurance)</Label>
-                  <Input
-                    id="escrow"
-                    type="number"
-                    value={mortgageData.escrow}
-                    onChange={(e) => handleInputChange('escrow', parseFloat(e.target.value) || 0)}
-                  />
+
+                <div className="space-y-2">
+                  <Label htmlFor="escrow" className="text-sm font-medium text-slate-700">
+                    Escrow (Property Taxes & Insurance)
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="escrow"
+                      type="number"
+                      value={mortgageData.escrow}
+                      onChange={(e) => handleInputChange('escrow', parseFloat(e.target.value) || 0)}
+                      className="pl-8 text-lg font-mono"
+                    />
+                    <Receipt className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">Source: Line 98</p>
                 </div>
-                <div>
-                  <Label htmlFor="fees">Late Fees & Administrative Costs</Label>
-                  <Input
-                    id="fees"
-                    type="number"
-                    value={mortgageData.fees}
-                    onChange={(e) => handleInputChange('fees', parseFloat(e.target.value) || 0)}
-                  />
+
+                <div className="space-y-2">
+                  <Label htmlFor="fees" className="text-sm font-medium text-slate-700">
+                    Late Fees & Administrative Costs
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="fees"
+                      type="number"
+                      value={mortgageData.fees}
+                      onChange={(e) => handleInputChange('fees', parseFloat(e.target.value) || 0)}
+                      className="pl-8 text-lg font-mono"
+                    />
+                    <AlertTriangle className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">Source: Line 100</p>
                 </div>
-                <div>
-                  <Label htmlFor="lenderPaidExpenses">Lender Paid Expenses (Legal/Inspection)</Label>
-                  <Input
-                    id="lenderPaidExpenses"
-                    type="number"
-                    value={mortgageData.lenderPaidExpenses}
-                    onChange={(e) => handleInputChange('lenderPaidExpenses', parseFloat(e.target.value) || 0)}
-                  />
+
+                <div className="space-y-2">
+                  <Label htmlFor="lenderPaidExpenses" className="text-sm font-medium text-slate-700">
+                    Lender Paid Expenses (Legal/Inspection)
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="lenderPaidExpenses"
+                      type="number"
+                      value={mortgageData.lenderPaidExpenses}
+                      onChange={(e) => handleInputChange('lenderPaidExpenses', parseFloat(e.target.value) || 0)}
+                      className="pl-8 text-lg font-mono"
+                    />
+                    <CreditCard className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">Source: Lines 64-82</p>
                 </div>
-                <div>
-                  <Label htmlFor="overduePayments">Overdue Payments (Accumulated)</Label>
-                  <Input
-                    id="overduePayments"
-                    type="number"
-                    value={mortgageData.overduePayments}
-                    onChange={(e) => handleInputChange('overduePayments', parseFloat(e.target.value) || 0)}
-                  />
+
+                <div className="space-y-2">
+                  <Label htmlFor="overduePayments" className="text-sm font-medium text-slate-700">
+                    Overdue Payments (Accumulated)
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="overduePayments"
+                      type="number"
+                      value={mortgageData.overduePayments}
+                      onChange={(e) => handleInputChange('overduePayments', parseFloat(e.target.value) || 0)}
+                      className="pl-8 text-lg font-mono"
+                    />
+                    <TrendingUp className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">Source: Line 101</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
-                Calculation Summary
+          {/* Results Panel */}
+          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
+              <CardTitle className="flex items-center">
+                <Users className="h-5 w-5 mr-2" />
+                Fair Allocation Results
               </CardTitle>
+              <p className="text-green-100 text-sm">Equal division methodology (50/50)</p>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Total Mortgage Amount</Label>
-                  <div className="text-2xl font-bold">${calculationResult.summary.totalMortgageAmount.toLocaleString()}</div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Agreed Allocation</Label>
-                  <div className="text-2xl font-bold text-green-600">${calculationResult.summary.agreedAmount.toLocaleString()}</div>
-                </div>
+            <CardContent className="p-6 space-y-6">
+              {/* Total Amount */}
+              <div className="text-center p-6 bg-slate-50 rounded-xl">
+                <p className="text-sm text-slate-600 mb-2">Total Mortgage Amount</p>
+                <p className="text-3xl font-bold text-slate-800">
+                  ${calculationResult.summary.totalMortgageAmount.toLocaleString()}
+                </p>
               </div>
-              
+
+              {/* Individual Allocations */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Mathieu Wauters Share</Label>
-                  <div className="text-xl font-semibold">${calculationResult.summary.mathieuTotalResponsibility.toLocaleString()}</div>
-                  <Badge variant="outline">50% Equal Responsibility</Badge>
+                <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
+                  <div className="flex items-center justify-center mb-2">
+                    <Users className="h-4 w-4 text-blue-600 mr-1" />
+                    <p className="text-sm font-medium text-blue-800">Mathieu Wauters</p>
+                  </div>
+                  <p className="text-2xl font-bold text-blue-900">
+                    ${calculationResult.summary.mathieuTotalResponsibility.toLocaleString()}
+                  </p>
+                  <Badge variant="outline" className="mt-2 text-xs">50% Equal Responsibility</Badge>
                 </div>
-                <div className="space-y-2">
-                  <Label>Rosanna Alvero Share</Label>
-                  <div className="text-xl font-semibold">${calculationResult.summary.rosannaTotalResponsibility.toLocaleString()}</div>
-                  <Badge variant="outline">50% Equal Responsibility</Badge>
+
+                <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
+                  <div className="flex items-center justify-center mb-2">
+                    <Users className="h-4 w-4 text-green-600 mr-1" />
+                    <p className="text-sm font-medium text-green-800">Rosanna Alvero</p>
+                  </div>
+                  <p className="text-2xl font-bold text-green-900">
+                    ${calculationResult.summary.rosannaTotalResponsibility.toLocaleString()}
+                  </p>
+                  <Badge variant="outline" className="mt-2 text-xs">50% Equal Responsibility</Badge>
                 </div>
               </div>
 
+              {/* Disputed Amount Alert */}
               {calculationResult.summary.disputedAmount > 0 && (
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
+                <Alert className="border-orange-200 bg-orange-50">
+                  <AlertTriangle className="h-4 w-4 text-orange-600" />
+                  <AlertDescription className="text-orange-800">
                     <strong>Disputed Amount:</strong> ${calculationResult.summary.disputedAmount.toLocaleString()} 
                     - This represents the difference between total mortgage amount and fair allocation.
                   </AlertDescription>
@@ -266,103 +384,159 @@ const HousingCostCalculator: React.FC = () => {
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
 
-        <TabsContent value="breakdown" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+        {/* Detailed Cost Breakdown */}
+        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm mb-8">
+          <CardHeader 
+            className="bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-t-lg cursor-pointer"
+            onClick={() => toggleSection('costAllocations')}
+          >
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <FileText className="h-5 w-5 mr-2" />
                 Detailed Cost Breakdown
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </div>
+              {expandedSections.costAllocations ? 
+                <ChevronDown className="h-5 w-5" /> : 
+                <ChevronRight className="h-5 w-5" />
+              }
+            </CardTitle>
+            <p className="text-slate-200 text-sm">Click to expand detailed calculations</p>
+          </CardHeader>
+          {expandedSections.costAllocations && (
+            <CardContent className="p-6">
               <div className="space-y-4">
                 {calculationResult.costAllocations.map((allocation, index) => (
-                  <div key={index} className="border rounded-lg p-4 space-y-2">
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-semibold">{allocation.category}</h3>
-                      <Badge variant="secondary">${allocation.totalAmount.toLocaleString()}</Badge>
+                  <div key={index} className={`border rounded-xl p-4 ${allocation.color}`}>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center">
+                        {allocation.icon}
+                        <h3 className="font-semibold ml-2">{allocation.category}</h3>
+                      </div>
+                      <Badge variant="secondary" className="text-sm font-mono">
+                        ${allocation.totalAmount.toLocaleString()}
+                      </Badge>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <div className="bg-white/50 rounded-lg p-3">
+                        <Label className="text-xs font-medium opacity-70">Mathieu Wauters</Label>
+                        <div className="font-bold text-lg">${allocation.mathieuShare.toLocaleString()}</div>
+                      </div>
+                      <div className="bg-white/50 rounded-lg p-3">
+                        <Label className="text-xs font-medium opacity-70">Rosanna Alvero</Label>
+                        <div className="font-bold text-lg">${allocation.rosannaShare.toLocaleString()}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2 text-sm">
                       <div>
-                        <Label>Mathieu Wauters</Label>
-                        <div className="font-medium">${allocation.mathieuShare.toLocaleString()}</div>
+                        <strong>Source:</strong> {allocation.source}
                       </div>
                       <div>
-                        <Label>Rosanna Alvero</Label>
-                        <div className="font-medium">${allocation.rosannaShare.toLocaleString()}</div>
+                        <strong>Justification:</strong> {allocation.justification}
                       </div>
-                    </div>
-                    
-                    <div className="text-sm text-muted-foreground">
-                      <strong>Justification:</strong> {allocation.justification}
-                    </div>
-                    
-                    <div className="text-sm text-muted-foreground">
-                      <strong>Legal Basis:</strong> {allocation.legalBasis}
+                      <div>
+                        <strong>Legal Basis:</strong> {allocation.legalBasis}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             </CardContent>
-          </Card>
-        </TabsContent>
+          )}
+        </Card>
 
-        <TabsContent value="legal" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Legal Analysis & Citations</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div className="border-l-4 border-blue-500 pl-4">
-                  <h3 className="font-semibold">California Family Code § 2550</h3>
-                  <p className="text-sm text-muted-foreground">
-                    "Except as otherwise provided by law, in a proceeding for dissolution of marriage, 
-                    the court shall divide the community estate equally between the parties."
-                  </p>
-                </div>
-                
-                <div className="border-l-4 border-green-500 pl-4">
-                  <h3 className="font-semibold">Community Property Presumption</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Mortgage payments made during marriage are presumed to be community property 
-                    unless proven otherwise. Both parties are jointly liable for community debts.
-                  </p>
-                </div>
-                
-                <div className="border-l-4 border-orange-500 pl-4">
-                  <h3 className="font-semibold">Joint and Several Liability</h3>
-                  <p className="text-sm text-muted-foreground">
-                    California Civil Code § 1717 establishes that both parties to a contract 
-                    are jointly and severally liable for damages, including foreclosure costs.
-                  </p>
-                </div>
-                
-                <div className="border-l-4 border-red-500 pl-4">
-                  <h3 className="font-semibold">Property Tax Liability</h3>
-                  <p className="text-sm text-muted-foreground">
-                    California Revenue and Taxation Code § 2187 provides that property taxes 
-                    are a joint obligation of all property owners, regardless of marital status.
-                  </p>
-                </div>
+        {/* Legal Analysis Section */}
+        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader 
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-t-lg cursor-pointer"
+            onClick={() => toggleSection('legalAnalysis')}
+          >
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Scale className="h-5 w-5 mr-2" />
+                Legal Analysis & Citations
               </div>
-              
-              <Alert>
-                <CheckCircle className="h-4 w-4" />
-                <AlertDescription>
-                  <strong>Conclusion:</strong> The mortgage reinstatement amount of $95,962.46 should be divided equally 
-                  between both parties. Only the foreclosure-related fees ($4,717.95) represent additional costs 
-                  beyond the regular mortgage obligation that both parties would have incurred regardless of 
-                  foreclosure proceedings.
-                </AlertDescription>
-              </Alert>
+              {expandedSections.legalAnalysis ? 
+                <ChevronDown className="h-5 w-5" /> : 
+                <ChevronRight className="h-5 w-5" />
+              }
+            </CardTitle>
+            <p className="text-indigo-200 text-sm">Click to expand legal basis and citations</p>
+          </CardHeader>
+          {expandedSections.legalAnalysis && (
+            <CardContent className="p-6">
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <div className="flex items-center mb-3">
+                      <FileCheck className="h-5 w-5 text-blue-600 mr-2" />
+                      <h3 className="font-semibold text-blue-900">California Family Code § 2550</h3>
+                    </div>
+                    <p className="text-sm text-blue-800 leading-relaxed">
+                      "Except as otherwise provided by law, in a proceeding for dissolution of marriage, 
+                      the court shall divide the community estate equally between the parties."
+                    </p>
+                  </div>
+                  
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                    <div className="flex items-center mb-3">
+                      <Users className="h-5 w-5 text-green-600 mr-2" />
+                      <h3 className="font-semibold text-green-900">Community Property Presumption</h3>
+                    </div>
+                    <p className="text-sm text-green-800 leading-relaxed">
+                      Mortgage payments made during marriage are presumed to be community property 
+                      unless proven otherwise. Both parties are jointly liable for community debts.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+                    <div className="flex items-center mb-3">
+                      <AlertTriangle className="h-5 w-5 text-orange-600 mr-2" />
+                      <h3 className="font-semibold text-orange-900">Joint and Several Liability</h3>
+                    </div>
+                    <p className="text-sm text-orange-800 leading-relaxed">
+                      California Civil Code § 1717 establishes that both parties to a contract 
+                      are jointly and severally liable for damages, including foreclosure costs.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div className="flex items-center mb-3">
+                      <Receipt className="h-5 w-5 text-red-600 mr-2" />
+                      <h3 className="font-semibold text-red-900">Property Tax Liability</h3>
+                    </div>
+                    <p className="text-sm text-red-800 leading-relaxed">
+                      California Revenue and Taxation Code § 2187 provides that property taxes 
+                      are a joint obligation of all property owners, regardless of marital status.
+                    </p>
+                  </div>
+                </div>
+                
+                <Alert className="border-emerald-200 bg-emerald-50">
+                  <CheckCircle className="h-4 w-4 text-emerald-600" />
+                  <AlertDescription className="text-emerald-800">
+                    <strong>Legal Conclusion:</strong> The mortgage reinstatement amount of $95,962.46 should be divided equally 
+                    between both parties. Only the foreclosure-related fees ($4,717.95) represent additional costs 
+                    beyond the regular mortgage obligation that both parties would have incurred regardless of 
+                    foreclosure proceedings.
+                  </AlertDescription>
+                </Alert>
+              </div>
             </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+          )}
+        </Card>
+
+        {/* Footer */}
+        <div className="text-center mt-8 p-6 bg-white/50 rounded-xl">
+          <p className="text-slate-600 text-sm">
+            This calculator provides a comprehensive analysis for FL-320 declaration purposes. 
+            All calculations are based on the Lakeview Mortgage Statement dated 05/20/2025.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
