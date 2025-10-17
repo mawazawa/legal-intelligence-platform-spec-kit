@@ -47,6 +47,97 @@ export default async function ResponsiveDeclarationPage() {
     byActor[e.actor] = (byActor[e.actor] || 0) + 1;
   }
 
+  // Inline annotation: add bracketed footnote markers and append references
+  function annotate(content: string) {
+    let annotated = content;
+    type Ref = { kind: 'exhibit' | 'email' | 'graph'; label: string; detail: string };
+    const refs: Ref[] = [];
+    let emailIdx = 0, exhibitIdx = 0, graphIdx = 0;
+
+    const addExhibitRef = (titleMatch: (ex: any) => boolean, description: string) => {
+      const ex = exhibits.find(titleMatch);
+      if (!ex) return null;
+      const marker = `[X${++exhibitIdx}]`;
+      refs.push({ kind: 'exhibit', label: marker, detail: `Exhibit ${ex.no}: ${ex.title} — ${ex.path}. ${description}` });
+      return marker;
+    };
+
+    const pickEmailByBucket = (bucket: string, extra?: string) => {
+      const c = emailCitations.find((c) => (c.id || '').startsWith(bucket + '_'));
+      if (!c) return null;
+      const marker = `[E${++emailIdx}]`;
+      refs.push({ kind: 'email', label: marker, detail: `${c.title} (${c.date || ''}) — ${c.detail}${c.file ? ` — ${c.file}` : ''}${extra ? ` — ${extra}` : ''}` });
+      return marker;
+    };
+
+    const addGraphRef = (title: string) => {
+      const g = graphCitations[0];
+      if (!g) return null;
+      const marker = `[G${++graphIdx}]`;
+      refs.push({ kind: 'graph', label: marker, detail: `${title}: ${g.title} (${g.date || ''}) — ${g.detail}` });
+      return marker;
+    };
+
+    const insertAfterFirst = (regex: RegExp, marker: string) => {
+      annotated = annotated.replace(regex, (m) => `${m} ${marker}`);
+    };
+
+    // Net proceeds reference → Closing Statement
+    const closingMarker = addExhibitRef(
+      (ex) => (ex.type || '').includes('closing/statement') || /closing statement/i.test(ex.title || ''),
+      'Net proceeds and settlement line items'
+    );
+    if (closingMarker) {
+      insertAfterFirst(/\$?280,355\.83(?!\s*\[X\d+\])/i, closingMarker);
+    }
+
+    // Mortgage payoff reference → Lender payoff
+    const payoffMarker = addExhibitRef(
+      (ex) => (ex.type || '').includes('lender/payoff') || /payoff/i.test(ex.title || ''),
+      'Mortgage payoff satisfied in escrow'
+    );
+    if (payoffMarker) {
+      insertAfterFirst(/payoff|mortgage payoff|\$?759,364\.32(?!\s*\[X\d+\])/i, payoffMarker);
+    }
+
+    // SOD 65/35 allocation → Judgment/SOD
+    const sodMarker = addExhibitRef(
+      (ex) => /statement.*decision|judgment/i.test(ex.title || ''),
+      'Allocation per court order (65% / 35%)'
+    );
+    if (sodMarker) {
+      insertAfterFirst(/65%|35%|statement of decision(?!\s*\[X\d+\])/i, sodMarker);
+    }
+
+    // Mortgage relief (emails)
+    const mrelief = pickEmailByBucket('mortgage_relief', 'California Mortgage Relief');
+    if (mrelief) insertAfterFirst(/mortgage relief|\$?49,262\.84(?!\s*\[E\d+\])/i, mrelief);
+
+    // Continuances (emails)
+    const cont = pickEmailByBucket('continuance');
+    if (cont) insertAfterFirst(/continuance|postpone|reschedule|adjourn(?!\s*\[E\d+\])/i, cont);
+
+    // Counsel diligence (emails)
+    const counsel = pickEmailByBucket('counsel_referral', 'Counsel referral chain');
+    if (counsel) insertAfterFirst(/berman|proos|anderson|macias|paralegal(?!\s*\[E\d+\])/i, counsel);
+
+    // Appraisal emails
+    const appr = pickEmailByBucket('appraisal');
+    if (appr) insertAfterFirst(/appraisal|3525\s*8th|baldino(?!\s*\[E\d+\])/i, appr);
+
+    // Graph (if present) — attach to first occurrence of "timeline" or "events"
+    const gmark = addGraphRef('Graph event');
+    if (gmark) insertAfterFirst(/timeline|events?(?!\s*\[G\d+\])/i, gmark);
+
+    if (!refs.length) return content;
+
+    const lines = [annotated.trim(), '', '---', '', '## References'];
+    refs.forEach((r) => lines.push(`- ${r.label} ${r.detail}`));
+    return lines.join('\n');
+  }
+
+  const annotatedContent = decl ? annotate(decl.content) : null;
+
   return (
     <DashboardLayout>
       <div className="p-6 mx-auto max-w-5xl">
@@ -62,7 +153,7 @@ export default async function ResponsiveDeclarationPage() {
           <section className="lg:col-span-2 rounded-lg border bg-white shadow-sm print:shadow-none print:border-0 print-pleading">
             <div className="p-6 prose prose-slate max-w-none">
               {decl ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{decl.content}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{annotatedContent || decl.content}</ReactMarkdown>
               ) : (
                 <div className="text-slate-600">Declaration file not found. Please add <code>RESPONSIVE_DECLARATION_FL320_FINAL.md</code> to the project root.</div>
               )}
