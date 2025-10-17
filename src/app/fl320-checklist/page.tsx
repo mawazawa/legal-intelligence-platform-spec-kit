@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -233,38 +233,7 @@ const FL320ChecklistPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showCompleted, setShowCompleted] = useState(true);
 
-  // Parse markdown content to extract checklist items
-  const parsedChecklist = useMemo(() => {
-    const lines = markdownContent.split('\n');
-    const items: ChecklistItem[] = [];
-    let currentCategory = '';
-    
-    for (const line of lines) {
-      if (line.startsWith('## ')) {
-        currentCategory = line.replace('## ', '').toLowerCase();
-        continue;
-      }
-      
-      if (line.includes('- [ ]') || line.includes('- [x]')) {
-        const isCompleted = line.includes('- [x]');
-        const titleMatch = line.match(/\*\*(.*?)\*\*/);
-        const title = titleMatch ? titleMatch[1] : line.replace(/^- \[[ x]\]\s*\*\*/, '').replace(/\*\*.*/, '');
-        const description = line.replace(/^- \[[ x]\]\s*\*\*.*?\*\*\s*-\s*/, '');
-        
-        items.push({
-          id: `item-${items.length}`,
-          title,
-          description,
-          status: isCompleted ? 'completed' : 'pending',
-          priority: 'medium',
-          category: 'form' as const,
-          notes: ''
-        });
-      }
-    }
-    
-    return items;
-  }, [markdownContent]);
+  // Removed unused parsedChecklist - using hardcoded checklist items instead
 
   const toggleItemStatus = (itemId: string) => {
     setChecklistItems(prev => prev.map(item => {
@@ -276,15 +245,7 @@ const FL320ChecklistPage: React.FC = () => {
     }));
   };
 
-  const updateMarkdownCheckbox = (lineIndex: number, isChecked: boolean) => {
-    const lines = markdownContent.split('\n');
-    const line = lines[lineIndex];
-    if (line.includes('- [ ]') || line.includes('- [x]')) {
-      const newLine = isChecked ? line.replace('- [ ]', '- [x]') : line.replace('- [x]', '- [ ]');
-      lines[lineIndex] = newLine;
-      setMarkdownContent(lines.join('\n'));
-    }
-  };
+  // Removed unused updateMarkdownCheckbox function
 
   const printChecklist = () => {
     window.print();

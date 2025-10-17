@@ -23,29 +23,9 @@ jest.mock('@/components/ui/label', () => ({
   Label: ({ children, ...props }: any) => <label data-testid="label" {...props}>{children}</label>,
 }));
 
-// Mock the Textarea component - this should exist after our fix
-jest.mock('@/components/ui/textarea', () => ({
-  Textarea: ({ ...props }: any) => <textarea data-testid="textarea" {...props} />,
-}));
+// Textarea component removed - using native textarea element instead
 
-// Mock external dependencies
-jest.mock('jspdf', () => ({
-  __esModule: true,
-  default: jest.fn().mockImplementation(() => ({
-    addImage: jest.fn(),
-    addPage: jest.fn(),
-    save: jest.fn(),
-  })),
-}));
-
-jest.mock('html2canvas', () => ({
-  __esModule: true,
-  default: jest.fn().mockResolvedValue({
-    toDataURL: jest.fn().mockReturnValue('data:image/png;base64,mock'),
-    height: 1000,
-    width: 800,
-  }),
-}));
+// PDF generation dependencies removed - using browser print-to-PDF instead
 
 jest.mock('lucide-react', () => ({
   FileText: () => <div data-testid="file-text-icon" />,
@@ -82,15 +62,15 @@ describe('FL320ChecklistPage', () => {
     expect(screen.getByText('Declaration of Thomas J. Rotert')).toBeInTheDocument();
   });
 
-  test('has PDF generation button', () => {
+  test('has print button for PDF generation', () => {
     render(<FL320ChecklistPage />);
-    const downloadButton = screen.getByRole('button', { name: /download/i });
-    expect(downloadButton).toBeInTheDocument();
+    const printButton = screen.getByRole('button', { name: /print.*save as pdf/i });
+    expect(printButton).toBeInTheDocument();
   });
 
-  test('has print button', () => {
+  test('has print functionality', () => {
     render(<FL320ChecklistPage />);
-    const printButton = screen.getByRole('button', { name: /print/i });
+    const printButton = screen.getByRole('button', { name: /print.*save as pdf/i });
     expect(printButton).toBeInTheDocument();
   });
 
