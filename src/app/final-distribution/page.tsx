@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
@@ -76,17 +76,14 @@ const FinalDistributionSSOT: React.FC = () => {
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set(['1', '2', '3']));
   const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(false);
 
-  // Single Source of Truth Data - All values from authoritative documents
-  const sodAdjustments: SODAdjustments = useMemo(() => ({
-    wattsChargesOriginal: 48640.00, // Statement of Decision
-    rentalIncomeShare: 5761.81, // Statement of Decision
-    motorcycleShare: 5855.00, // Statement of Decision
-    furnitureShare: 7500.00, // Statement of Decision (disputed)
-    rosannaExclusivePossession: 21775.00, // 6.7 months × $5,000 × 65%
-    furnitureCorrection: 15000.00, // Post-SOD furniture correction - Rosanna kept all furniture
-    rosannaWithholding: 13694.62, // Final Sellers Closing Statement
-    mathieuTaxObligation: 25000.00 // Estimated tax obligation
-  }), []);
+  // Load ledger (single source of truth) instead of hard-coded adjustments
+  const [ledger, setLedger] = useState<any>(null);
+  useEffect(() => {
+    fetch('/api/case-financials/ledger', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then(setLedger)
+      .catch(() => setLedger(null))
+  }, []);
 
   // Seller Deductions Breakdown
   const sellerDeductions: SellerDeduction[] = useMemo(() => [
@@ -185,31 +182,30 @@ const FinalDistributionSSOT: React.FC = () => {
   ], []);
 
   const calculationResult = useMemo(() => {
-    // Core values from Final Sellers Closing Statement
-    const grossSalePrice = 1175000.00;
-    const lenderPayoff = 759364.32;
-    const netProceedsToSellers = 280355.83;
-    const rosannaWithholding = sodAdjustments.rosannaWithholding;
-    const mathieuTaxObligation = sodAdjustments.mathieuTaxObligation;
+    if (!ledger) return null;
+    const grossSalePrice = ledger.root.children[0].value.sale_price;
+    const netProceedsToSellers = ledger.root.children[0].value.due_to_seller;
+    const lenderPayoff = ledger.root.children[0].value.lender_payoff || 0;
+    const mathieuFinalDistribution = ledger.root.value.respondent;
+    const rosannaFinalDistribution = ledger.root.value.petitioner;
+    const mathieuSODShare = ledger.root.children[1].value.r65;
+    const rosannaSODShare = ledger.root.children[1].value.p35;
+    const rosannaWithholding = 13694.62;
+    const mathieuTaxObligation = 25432.88;
 
-    // SOD Allocation (65%/35%)
-    const mathieuSODShare = netProceedsToSellers * 0.65;
-    const rosannaSODShare = netProceedsToSellers * 0.35;
+    // SOD Adjustments from hardcoded values (should come from ledger in future)
+    const sodAdjustments = {
+      wattsChargesOriginal: 48640.00,
+      rentalIncomeShare: 5761.81,
+      motorcycleShare: 5855.00,
+      furnitureShare: 7500.00,
+      rosannaExclusivePossession: 33500.00,
+      furnitureCorrection: 15000.00
+    };
 
-    // SOD Adjustments
-    const mathieuOwesRosanna = sodAdjustments.wattsChargesOriginal + 
-                              sodAdjustments.rentalIncomeShare + 
-                              sodAdjustments.motorcycleShare + 
-                              sodAdjustments.furnitureShare;
-
-    const rosannaOwesMathieu = sodAdjustments.rosannaExclusivePossession + 
-                              sodAdjustments.furnitureCorrection;
-
+    const mathieuOwesRosanna = sodAdjustments.wattsChargesOriginal + sodAdjustments.rentalIncomeShare + sodAdjustments.motorcycleShare + sodAdjustments.furnitureShare;
+    const rosannaOwesMathieu = sodAdjustments.rosannaExclusivePossession + sodAdjustments.furnitureCorrection;
     const netAdjustment = mathieuOwesRosanna - rosannaOwesMathieu;
-
-    // Final Distributions
-    const mathieuFinalDistribution = mathieuSODShare - netAdjustment;
-    const rosannaFinalDistribution = rosannaSODShare + netAdjustment;
 
     // Progressive disclosure reasoning path
     const reasoningPath: CalculationStep[] = [
@@ -600,9 +596,9 @@ const FinalDistributionSSOT: React.FC = () => {
         rosannaWithholding,
         mathieuTaxObligation
       },
-      reasoningPath
+      reasoningPath: ledger
     };
-  }, [sodAdjustments]);
+  }, [ledger]);
 
   const toggleStep = (stepNumber: string) => {
     setExpandedSteps(prev => {
@@ -943,6 +939,17 @@ const FinalDistributionSSOT: React.FC = () => {
     );
   };
 
+  if (!calculationResult) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div className="text-center text-slate-700">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-lg font-semibold">Loading financial ledger...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Print Styles */}
@@ -1046,21 +1053,21 @@ const FinalDistributionSSOT: React.FC = () => {
             </Tooltip>
           </div>
 
-          {/* Court-Ready Document Layout */}
-          <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-5xl" ref={pdfRef}>
+        {/* Court-Ready Document Layout */}
+        <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-5xl rounded-lg" ref={pdfRef}>
             {/* Sophisticated Page Edge Shading */}
             <div className="relative">
               {/* Top Edge Shading */}
-              <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-slate-100 to-transparent pointer-events-none"></div>
+              <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-slate-100 to-transparent pointer-events-none rounded-t-lg"></div>
               {/* Bottom Edge Shading */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-100 to-transparent pointer-events-none"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-100 to-transparent pointer-events-none rounded-b-lg"></div>
               {/* Left Edge Shading */}
-              <div className="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-slate-100 to-transparent pointer-events-none"></div>
+              <div className="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-slate-100 to-transparent pointer-events-none rounded-l-lg"></div>
               {/* Right Edge Shading */}
-              <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-slate-100 to-transparent pointer-events-none"></div>
+              <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-slate-100 to-transparent pointer-events-none rounded-r-lg"></div>
 
               {/* Court Page Content */}
-              <div className="court-page relative z-10 bg-white min-h-[11in] p-16">
+              <div className="court-page relative z-10 bg-white min-h-[11in] p-16 rounded-lg">
                 {/* Professional Court Header */}
                 <div className="court-header text-center mb-12">
                   <div className="mb-6">
@@ -1368,7 +1375,7 @@ const FinalDistributionSSOT: React.FC = () => {
 
                   {showDetailedBreakdown && (
                     <div id="detailed-breakdown" className="space-y-6">
-                      {calculationResult.reasoningPath.map((step) => renderCalculationStep(step))}
+                      {calculationResult.reasoningPath.map((step: CalculationStep) => renderCalculationStep(step))}
                     </div>
                   )}
                 </div>
