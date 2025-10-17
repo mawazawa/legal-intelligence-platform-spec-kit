@@ -277,6 +277,7 @@ export default async function Page() {
         <CardContent>
           <ul className="list-disc ml-6 text-sm">
             <li><a className="text-blue-600 underline" href="/api/case-financials/onepager" target="_blank" rel="noreferrer">One‑pager PDF</a></li>
+            <li><a className="text-blue-600 underline" href="/case-financials/report" target="_blank" rel="noreferrer">Computation Report (print‑ready)</a></li>
             <li><a className="text-blue-600 underline" href="/api/case-financials/raw/schedule" target="_blank" rel="noreferrer">schedule.md (raw)</a></li>
             <li><a className="text-blue-600 underline" href="/api/case-financials/raw/results" target="_blank" rel="noreferrer">results.json</a></li>
             <li><a className="text-blue-600 underline" href="/api/case-financials/raw/withholding" target="_blank" rel="noreferrer">withholding-evidence.md</a></li>

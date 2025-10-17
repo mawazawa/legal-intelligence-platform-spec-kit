@@ -34,3 +34,23 @@ body {
 .soft-shadow {
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 1px rgba(15, 23, 42, 0.04);
 }
+
+/* Print layout helpers */
+.paper {
+  background: #fff;
+  margin: 0 auto;
+  padding: 1.0in; /* comfortable margins */
+  max-width: 8.5in;
+  min-height: 11in;
+  box-shadow: 0 10px 30px rgba(15,23,42,0.08);
+  border: 1px solid rgba(15,23,42,0.06);
+}
+.no-break {
+  break-inside: avoid;
+}
+
+@media print {
+  body { background: #fff; }
+  .paper { box-shadow: none; border: none; padding: 0.6in; }
+  .no-print { display: none !important; }
+}
