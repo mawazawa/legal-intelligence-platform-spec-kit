@@ -3,6 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2 } from 'lucide-react';
+import { PageView } from '@/components/case/PageView';
 
 interface RespondentViewProps {
   fl320Content: {
@@ -24,6 +25,43 @@ const RespondentView: React.FC<RespondentViewProps> = ({ fl320Content, ledger })
       </div>
     );
   }
+
+  // Build a minimal computed outline from the ledger for page view
+  const d2s = (ledger as any)?.root?.children?.[0]?.value?.due_to_seller as number | undefined;
+  const r65 = (ledger as any)?.root?.children?.[1]?.value?.r65 as number | undefined;
+  const p35 = (ledger as any)?.root?.children?.[1]?.value?.p35 as number | undefined;
+  const fr = (ledger as any)?.root?.value?.respondent as number | undefined;
+  const fp = (ledger as any)?.root?.value?.petitioner as number | undefined;
+  const cn = (ledger as any)?.root?.children?.[1]?.value?.constructive_net as number | undefined;
+  const outlinePages: string[] = [
+    [
+      'RESPONSIVE DECLARATION (FL-320) — Computation Outline',
+      '',
+      'From‑the‑Pot Final Distribution (ledger-based):',
+      `  Respondent: ${fmt(fr)}`,
+      `  Petitioner: ${fmt(fp)}`,
+      '  Split: 65% / 35% per Statement of Decision',
+      '',
+      'Key Corrections:',
+      '  • Do not add arrears back to net proceeds; they were already paid at close.',
+      '  • Apply 65/35 to constructive net, then share arrears equally.',
+      '  • Mirror Form 593 treatment for both parties for symmetry.',
+      '',
+      'Citations: Statement of Decision (65/35, Watts, items), Closing Statement (Due to Seller).',
+    ].join('\n'),
+    [
+      'CALCULATION SNAPSHOT',
+      '',
+      `Net proceeds (Due to Seller): ${fmt(d2s)}`,
+      `Constructive net: ${fmt(cn)}`,
+      `SOD 65% (Respondent): ${fmt(r65)}`,
+      `SOD 35% (Petitioner): ${fmt(p35)}`,
+      '',
+      'Adjustments (selected):',
+      '  • Watts fixed; $122/mo cutoff; symmetry credit.',
+      '  • Household items flip (+$15,000 to Respondent).',
+    ].join('\n'),
+  ];
 
   return (
     <div
@@ -121,6 +159,17 @@ const RespondentView: React.FC<RespondentViewProps> = ({ fl320Content, ledger })
                 </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {ledger && (
+        <Card className="border-blue-200">
+          <CardHeader>
+            <CardTitle className="text-blue-700">FL‑320 — PAGE VIEW (Computed Outline)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <PageView pages={outlinePages} />
           </CardContent>
         </Card>
       )}
