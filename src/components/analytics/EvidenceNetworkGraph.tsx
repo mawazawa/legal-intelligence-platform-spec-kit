@@ -66,7 +66,7 @@ interface EvidenceEdge {
 }
 
 interface EvidenceNetworkGraphProps {
-  evidenceData: any[];
+  evidenceData?: any[];
   onNodeClick?: (node: EvidenceNode) => void;
   onEdgeClick?: (edge: EvidenceEdge) => void;
 }

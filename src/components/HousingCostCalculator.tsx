@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -686,7 +686,7 @@ const HousingCostCalculator: React.FC = () => {
       `}</style>
       
       <TooltipProvider>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 cv-auto">
         {/* Export/Print Controls */}
         <div className="fixed top-4 right-4 z-50 flex gap-2 no-print">
           <Tooltip>
@@ -893,4 +893,4 @@ const HousingCostCalculator: React.FC = () => {
   );
 };
 
-export default HousingCostCalculator;
+export default memo(HousingCostCalculator);
