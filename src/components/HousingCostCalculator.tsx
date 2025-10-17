@@ -23,7 +23,8 @@ import {
   Building,
   CreditCard,
   FileCheck,
-  HelpCircle
+  HelpCircle,
+  Landmark, // New Icon
 } from 'lucide-react';
 
 interface MortgageBreakdown {
@@ -57,6 +58,12 @@ interface CalculationResult {
     rosannaTotalResponsibility: number;
     disputedAmount: number;
     agreedAmount: number;
+    totalSaleProceeds: number;
+    rosannaWithholding: number;
+    mathieuTaxObligation: number;
+    netProceedsBeforeSplit: number;
+    mathieuFinalDistribution: number;
+    rosannaFinalDistribution: number;
   };
 }
 
@@ -71,8 +78,15 @@ const HousingCostCalculator: React.FC = () => {
     totalReinstatement: 95962.46
   });
 
+  const [taxData, setTaxData] = useState({
+    totalSaleProceeds: 1250000, // Hypothetical value, to be confirmed from closing statement
+    rosannaWithholding: 20812.50, // 3.33% of her 50% share of $1.25M
+    mathieuTaxObligation: 25000, // As per user's input
+  });
+
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     mortgageBreakdown: true,
+    taxWithholding: true,
     costAllocations: false,
     legalAnalysis: false
   });
@@ -148,6 +162,10 @@ const HousingCostCalculator: React.FC = () => {
     const mathieuTotal = costAllocations.reduce((sum, item) => sum + item.mathieuShare, 0);
     const rosannaTotal = costAllocations.reduce((sum, item) => sum + item.rosannaShare, 0);
 
+    const netProceedsBeforeSplit = taxData.totalSaleProceeds - taxData.rosannaWithholding - taxData.mathieuTaxObligation - mortgageData.totalReinstatement;
+    const mathieuFinalDistribution = (netProceedsBeforeSplit / 2);
+    const rosannaFinalDistribution = (netProceedsBeforeSplit / 2);
+
     return {
       mortgageBreakdown,
       costAllocations,
@@ -156,13 +174,26 @@ const HousingCostCalculator: React.FC = () => {
         mathieuTotalResponsibility: mathieuTotal,
         rosannaTotalResponsibility: rosannaTotal,
         disputedAmount: mortgageData.totalReinstatement - (mathieuTotal + rosannaTotal),
-        agreedAmount: mathieuTotal + rosannaTotal
+        agreedAmount: mathieuTotal + rosannaTotal,
+        totalSaleProceeds: taxData.totalSaleProceeds,
+        rosannaWithholding: taxData.rosannaWithholding,
+        mathieuTaxObligation: taxData.mathieuTaxObligation,
+        netProceedsBeforeSplit: netProceedsBeforeSplit,
+        mathieuFinalDistribution: mathieuFinalDistribution,
+        rosannaFinalDistribution: rosannaFinalDistribution,
       }
     };
-  }, [mortgageData]);
+  }, [mortgageData, taxData]);
 
   const handleInputChange = (field: string, value: number) => {
     setMortgageData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleTaxInputChange = (field: string, value: number) => {
+    setTaxData(prev => ({
       ...prev,
       [field]: value
     }));
@@ -215,6 +246,7 @@ const HousingCostCalculator: React.FC = () => {
         {/* Main Calculator Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Input Panel */}
+          <div className="space-y-8">
           <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
             <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
               <CardTitle className="flex items-center">
@@ -390,7 +422,116 @@ const HousingCostCalculator: React.FC = () => {
             </CardContent>
           </Card>
 
+          {/* Tax Withholding Input */}
+          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardHeader 
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg cursor-pointer"
+              onClick={() => toggleSection('taxWithholding')}
+            >
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Landmark className="h-5 w-5 mr-2" />
+                  Sale Proceeds & Tax Withholding
+                </div>
+                {expandedSections.taxWithholding ? 
+                  <ChevronDown className="h-5 w-5" /> : 
+                  <ChevronRight className="h-5 w-5" />
+                }
+              </CardTitle>
+              <p className="text-purple-100 text-sm">Source: Final Closing Statement & User Input</p>
+            </CardHeader>
+            {expandedSections.taxWithholding && (
+            <CardContent className="p-6 space-y-6">
+              <div className="grid grid-cols-1 gap-4">
+                {/* Total Sale Proceeds */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="totalSaleProceeds" className="text-sm font-medium text-slate-700">
+                      Total Sale Proceeds
+                    </Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">The gross amount received from the sale of the property before any deductions.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="totalSaleProceeds"
+                      type="number"
+                      value={taxData.totalSaleProceeds}
+                      onChange={(e) => handleTaxInputChange('totalSaleProceeds', parseFloat(e.target.value) || 0)}
+                      className="pl-8 text-lg font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <DollarSign className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">Source: Final Closing Statement</p>
+                </div>
+                {/* Rosanna's Withholding */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="rosannaWithholding" className="text-sm font-medium text-slate-700">
+                      Rosanna&apos;s FTB Withholding
+                    </Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">Amount withheld and sent to the Franchise Tax Board due to non-submission of Form 593. Typically 3.33% of her 50% share of the sale price.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="rosannaWithholding"
+                      type="number"
+                      value={taxData.rosannaWithholding}
+                      onChange={(e) => handleTaxInputChange('rosannaWithholding', parseFloat(e.target.value) || 0)}
+                      className="pl-8 text-lg font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <Landmark className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">Source: Email analysis & Final Closing Statement</p>
+                </div>
+                {/* Mathieu's Tax Obligation */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="mathieuTaxObligation" className="text-sm font-medium text-slate-700">
+                      Mathieu&apos;s Estimated Tax Obligation
+                    </Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">User-provided estimate of tax liability from the sale, to be deducted from proceeds for an equal distribution argument.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="mathieuTaxObligation"
+                      type="number"
+                      value={taxData.mathieuTaxObligation}
+                      onChange={(e) => handleTaxInputChange('mathieuTaxObligation', parseFloat(e.target.value) || 0)}
+                      className="pl-8 text-lg font-bold bg-white border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <FileText className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-500">Source: User Input</p>
+                </div>
+              </div>
+            </CardContent>
+            )}
+            </Card>
+          </div>
+
           {/* Results Panel */}
+          <div className="space-y-8">
           <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
             <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
               <CardTitle className="flex items-center">
@@ -471,6 +612,78 @@ const HousingCostCalculator: React.FC = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Final Distribution Panel */}
+          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-t-lg">
+              <CardTitle className="flex items-center">
+                <DollarSign className="h-5 w-5 mr-2" />
+                Final Net Distribution
+              </CardTitle>
+              <p className="text-gray-100 text-sm">After mortgage reinstatement and tax obligations</p>
+            </CardHeader>
+            <CardContent className="p-6 space-y-6">
+              {/* Total Amount */}
+              <div className="text-center p-6 bg-slate-50 rounded-xl">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <p className="text-sm text-slate-600">Net Proceeds for Equal Split</p>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-slate-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs">Total Sale Proceeds minus mortgage reinstatement and both parties&apos; tax obligations.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <p className="text-4xl font-black text-slate-800">
+                  ${calculationResult.summary.netProceedsBeforeSplit.toLocaleString()}
+                </p>
+              </div>
+
+              {/* Individual Allocations */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
+                  <div className="flex items-center justify-center mb-2">
+                    <Users className="h-4 w-4 text-blue-600 mr-1" />
+                    <p className="text-sm font-medium text-blue-800">Mathieu Wauters</p>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 text-blue-400 cursor-help ml-1" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">50% of the Net Proceeds for Equal Split. This is the final cash amount received after his estimated tax is accounted for.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <p className="text-3xl font-black text-blue-900">
+                    ${calculationResult.summary.mathieuFinalDistribution.toLocaleString()}
+                  </p>
+                  <Badge variant="outline" className="mt-2 text-xs">50% of Net</Badge>
+                </div>
+
+                <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
+                  <div className="flex items-center justify-center mb-2">
+                    <Users className="h-4 w-4 text-green-600 mr-1" />
+                    <p className="text-sm font-medium text-green-800">Rosanna Alvero</p>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 text-green-400 cursor-help ml-1" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">50% of the Net Proceeds for Equal Split. This is the final cash amount received after her FTB withholding is accounted for.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <p className="text-3xl font-black text-green-900">
+                    ${calculationResult.summary.rosannaFinalDistribution.toLocaleString()}
+                  </p>
+                  <Badge variant="outline" className="mt-2 text-xs">50% of Net</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         </div>
 
         {/* Visual Separator */}
@@ -607,14 +820,21 @@ const HousingCostCalculator: React.FC = () => {
                     </p>
                   </div>
                 </div>
+
+                <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 mt-6">
+                  <div className="flex items-center mb-3">
+                    <Landmark className="h-5 w-5 text-purple-600 mr-2" />
+                    <h3 className="font-semibold text-purple-900">Tax Withholding from Community Asset</h3>
+                  </div>
+                  <p className="text-sm text-purple-800 leading-relaxed">
+                    Tax liabilities arising from the sale of a community property asset are a community debt. Therefore, both parties&apos; tax obligations should be settled from the sale proceeds before the final, equal division of the remaining net proceeds.
+                  </p>
+                </div>
                 
-                <Alert className="border-emerald-200 bg-emerald-50">
+                <Alert className="border-emerald-200 bg-emerald-50 mt-6">
                   <CheckCircle className="h-4 w-4 text-emerald-600" />
                   <AlertDescription className="text-emerald-800">
-                    <strong>Legal Conclusion:</strong> The mortgage reinstatement amount of $95,962.46 should be divided equally 
-                    between both parties. Only the foreclosure-related fees ($4,717.95) represent additional costs 
-                    beyond the regular mortgage obligation that both parties would have incurred regardless of 
-                    foreclosure proceedings.
+                    <strong>Legal Conclusion:</strong> The mortgage reinstatement amount of $95,962.46, along with both parties&apos; tax obligations, should be paid from the gross sale proceeds. The remaining net proceeds should then be divided equally.
                   </AlertDescription>
                 </Alert>
               </div>
