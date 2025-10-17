@@ -22,6 +22,7 @@ import {
   Scale,
   GitCompare
 } from 'lucide-react';
+import { typography, tx, textColors } from '@/styles/typography';
 
 export function DashboardHome() {
   const caseMetrics = [
@@ -128,10 +129,10 @@ export function DashboardHome() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Case Dashboard</h1>
-          <p className="text-slate-600 mt-1">Mathieu Wauters v. Rosanna Alvero (FDI-21-794666)</p>
+          <h1 className={tx(typography.heading.h1, textColors.primary)}>Case Dashboard</h1>
+          <p className={tx(typography.body.medium, textColors.secondary, 'mt-1')}>Mathieu Wauters v. Rosanna Alvero (FDI-21-794666)</p>
         </div>
-        <Badge variant="outline" className="text-lg px-4 py-2">
+        <Badge variant="outline" className={tx(typography.body.large, 'px-4 py-2')}>
           <Clock className="h-4 w-4 mr-2" />
           Active
         </Badge>
@@ -140,9 +141,9 @@ export function DashboardHome() {
       {/* Critical Alert */}
       <Alert className="border-red-200 bg-red-50">
         <AlertTriangle className="h-4 w-4 text-red-600" />
-        <AlertDescription className="text-red-800">
+        <AlertDescription className={tx(typography.body.medium, 'text-red-800')}>
           <strong>Critical Finding:</strong> $13,694.62 withheld due to incomplete Form 593.
-          <Link href="/tax-withholding" className="underline ml-2 font-semibold">
+          <Link href="/tax-withholding" className={tx(typography.body.medium, 'underline ml-2 font-semibold')}>
             View Analysis →
           </Link>
         </AlertDescription>
@@ -158,9 +159,9 @@ export function DashboardHome() {
                   {metric.icon}
                 </div>
               </div>
-              <h3 className="text-2xl font-black text-slate-900">{metric.value}</h3>
-              <p className="text-sm font-semibold text-slate-700">{metric.title}</p>
-              <p className="text-xs text-slate-500 mt-1">{metric.subtitle}</p>
+              <h3 className={tx(typography.heading.h2, textColors.primary)}>{metric.value}</h3>
+              <p className={tx(typography.label.medium, textColors.primary)}>{metric.title}</p>
+              <p className={tx(typography.caption.medium, textColors.tertiary, 'mt-1')}>{metric.subtitle}</p>
             </CardContent>
           </Card>
         ))}
@@ -168,7 +169,7 @@ export function DashboardHome() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-xl font-bold text-slate-900 mb-4">Quick Actions</h2>
+        <h2 className={tx(typography.heading.h2, textColors.primary, 'mb-4')}>Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {quickActions.map((action, index) => (
             <Link key={index} href={action.href}>
@@ -182,11 +183,11 @@ export function DashboardHome() {
                       <Badge className="bg-green-500 text-white">{action.badge}</Badge>
                     )}
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                  <h3 className={tx(typography.heading.h3, textColors.primary, 'mb-2 group-hover:text-blue-600 transition-colors')}>
                     {action.title}
                   </h3>
-                  <p className="text-sm text-slate-600 mb-3">{action.description}</p>
-                  <div className="flex items-center text-blue-600 text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                  <p className={tx(typography.body.medium, textColors.secondary, 'mb-3')}>{action.description}</p>
+                  <div className={tx(typography.label.medium, 'flex items-center text-blue-600 group-hover:translate-x-1 transition-transform')}>
                     Open Tool <ArrowRight className="h-4 w-4 ml-1" />
                   </div>
                 </CardContent>
@@ -214,17 +215,17 @@ export function DashboardHome() {
                     <div className="mt-0.5">{activity.icon}</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <p className="font-semibold text-slate-900">{activity.title}</p>
-                        <Badge variant="outline" className="text-xs">{activity.date}</Badge>
+                        <p className={tx(typography.label.medium, textColors.primary)}>{activity.title}</p>
+                        <Badge variant="outline" className={typography.caption.small}>{activity.date}</Badge>
                       </div>
-                      <p className="text-sm text-slate-600 mt-1">{activity.description}</p>
+                      <p className={tx(typography.body.medium, textColors.secondary, 'mt-1')}>{activity.description}</p>
                     </div>
                   </div>
                 ))}
               </div>
               <Link
                 href="/timeline"
-                className="flex items-center justify-center mt-4 text-blue-600 hover:text-blue-700 font-semibold text-sm"
+                className={tx(typography.label.medium, 'flex items-center justify-center mt-4 text-blue-600 hover:text-blue-700')}
               >
                 View Full Timeline <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
@@ -244,24 +245,24 @@ export function DashboardHome() {
             <CardContent className="p-6 space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-slate-700">Mathieu Wauters</span>
-                  <span className="text-xs font-semibold text-green-600">65%</span>
+                  <span className={tx(typography.label.medium, textColors.primary)}>Mathieu Wauters</span>
+                  <span className={tx(typography.caption.medium, 'text-green-600')}>65%</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div className="h-full bg-green-500 w-[65%]"></div>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">$182,231.29 received</p>
+                <p className={tx(typography.caption.small, textColors.tertiary, 'mt-1')}>$182,231.29 received</p>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-slate-700">Rosanna Alvero</span>
-                  <span className="text-xs font-semibold text-orange-600">35%</span>
+                  <span className={tx(typography.label.medium, textColors.primary)}>Rosanna Alvero</span>
+                  <span className={tx(typography.caption.medium, 'text-orange-600')}>35%</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div className="h-full bg-orange-500 w-[35%]"></div>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">$84,429.92 after withholding</p>
+                <p className={tx(typography.caption.small, textColors.tertiary, 'mt-1')}>$84,429.92 after withholding</p>
               </div>
             </CardContent>
           </Card>
@@ -270,12 +271,12 @@ export function DashboardHome() {
             <CardContent className="p-6">
               <div className="flex items-center mb-3">
                 <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                <h3 className="font-semibold text-green-900">Form 593 Status</h3>
+                <h3 className={tx(typography.label.medium, 'text-green-900')}>Form 593 Status</h3>
               </div>
-              <p className="text-sm text-green-800 mb-2">
+              <p className={tx(typography.body.medium, 'text-green-800 mb-2')}>
                 ✓ Your Form 593 properly completed
               </p>
-              <p className="text-sm text-green-800">
+              <p className={tx(typography.body.medium, 'text-green-800')}>
                 ✓ No withholding on your proceeds
               </p>
             </CardContent>
@@ -285,12 +286,12 @@ export function DashboardHome() {
             <CardContent className="p-6">
               <div className="flex items-center mb-3">
                 <AlertTriangle className="h-5 w-5 text-red-600 mr-2" />
-                <h3 className="font-semibold text-red-900">Respondent Issue</h3>
+                <h3 className={tx(typography.label.medium, 'text-red-900')}>Respondent Issue</h3>
               </div>
-              <p className="text-sm text-red-800 mb-2">
+              <p className={tx(typography.body.medium, 'text-red-800 mb-2')}>
                 ✗ Rosanna&apos;s Form 593 incomplete
               </p>
-              <p className="text-sm text-red-800">
+              <p className={tx(typography.body.medium, 'text-red-800')}>
                 ✗ $13,694.62 withheld by FTB
               </p>
             </CardContent>
