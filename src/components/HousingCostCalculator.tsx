@@ -8,8 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+// Removed PDF generation dependencies - using browser print-to-PDF instead
 import {
   Calculator,
   FileText,
@@ -169,7 +168,7 @@ interface CalculationResult {
 
 const HousingCostCalculator: React.FC = () => {
   const pdfRef = useRef<HTMLDivElement>(null);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  // Removed PDF generation state - using browser print instead
   
   const [closingData, setClosingData] = useState<ClosingData>({
     salePrice: 1175000.00, // From Final Sellers Closing Statement
@@ -716,47 +715,6 @@ const HousingCostCalculator: React.FC = () => {
     }));
   };
 
-  const generatePDF = async () => {
-    if (!pdfRef.current) return;
-    
-    setIsGeneratingPDF(true);
-    try {
-      const canvas = await html2canvas(pdfRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff'
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      
-      let position = 0;
-      
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      
-      const fileName = `Housing_Cost_Calculation_${new Date().toISOString().split('T')[0]}.pdf`;
-      pdf.save(fileName);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-    } finally {
-      setIsGeneratingPDF(false);
-    }
-  };
-
   const printCalculation = () => {
     window.print();
   };
@@ -794,20 +752,17 @@ const HousingCostCalculator: React.FC = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                onClick={generatePDF}
-                disabled={isGeneratingPDF}
+                onClick={printCalculation}
+                disabled={false}
                 className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                 size="sm"
               >
-                {isGeneratingPDF ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
-                ) : (
-                  <Download className="h-4 w-4" />
-                )}
+                <FileText className="h-4 w-4 mr-2" />
+                Print / Save as PDF
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Export to PDF for court filing</p>
+              <p>Print calculation or save as PDF</p>
             </TooltipContent>
           </Tooltip>
           

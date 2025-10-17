@@ -3,6 +3,8 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
+import { PageView } from '@/components/case/PageView';
+import { splitPages } from './pageUtils';
 
 interface PetitionerViewProps {
   rfoContent: {
@@ -21,6 +23,8 @@ const PetitionerView: React.FC<PetitionerViewProps> = ({ rfoContent }) => {
       </div>
     );
   }
+
+  const pages = splitPages(rfoContent.text)
 
   return (
     <div
@@ -60,6 +64,17 @@ const PetitionerView: React.FC<PetitionerViewProps> = ({ rfoContent }) => {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Page View (component rendering; not a PDF viewer) */}
+      <Card className="border-red-200">
+        <CardHeader>
+          <CardTitle className="text-red-700">RFO — PAGE VIEW</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PageView pages={pages.slice(0, 1)} />
+          <div className="mt-2 text-xs text-slate-500">Showing first page for brevity. See Comparison tab for side‑by‑side navigation.</div>
         </CardContent>
       </Card>
 
