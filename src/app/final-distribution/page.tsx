@@ -566,6 +566,21 @@ const FinalDistributionSSOT: React.FC = () => {
              <Tooltip>
                <TooltipTrigger asChild>
                  <Button
+                   onClick={() => window.open('/analytics/claims', '_blank')}
+                   className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                   size="sm"
+                 >
+                   <FileText className="h-4 w-4 mr-2" />
+                   Claims Analysis
+                 </Button>
+               </TooltipTrigger>
+               <TooltipContent>
+                 <p>Analyze opposing party claims with evidence</p>
+               </TooltipContent>
+             </Tooltip>
+             <Tooltip>
+               <TooltipTrigger asChild>
+                 <Button
                    onClick={printCalculation}
                    className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                    size="sm"
