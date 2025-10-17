@@ -1,4 +1,6 @@
-import { parseAllEmails, EmailEvent } from '@/lib/ingestion/email-parser';
+import { parseAllEmails, type EmailEvent } from '@/lib/ingestion/email-parser';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 function normalizeSubject(subject: string): string {
   let s = (subject || '').toLowerCase();
@@ -12,12 +14,23 @@ function parseDate(d: string): number {
   return isNaN(t) ? 0 : t;
 }
 
+async function resolveMboxPath(): Promise<string> {
+  const mailDir = path.resolve(process.cwd(), '..', 'Mail');
+  try {
+    const entries = await fs.readdir(mailDir);
+    const mbox = entries.find((f) => f.endsWith('.mbox'));
+    if (mbox) return path.join(mailDir, mbox);
+  } catch {}
+  return path.join(mailDir, 'LEGAL-DIVORCE STUFF-EVIDENCE.mbox');
+}
+
 export async function getEmailStats() {
-  const emails = await parseAllEmails();
+  const mboxPath = await resolveMboxPath();
+  const emails = await parseAllEmails(mboxPath);
   // Threading by normalized subject
   const threads = new Map<string, EmailEvent[]>();
-  for (const e of emails) {
-    const key = normalizeSubject(e.metadata.subject || '');
+  for (const e of emails as EmailEvent[]) {
+    const key = normalizeSubject(e.subject || '');
     const arr = threads.get(key) || [];
     arr.push(e);
     threads.set(key, arr);
@@ -42,9 +55,9 @@ export async function getEmailStats() {
     }
   }
 
-  for (const e of emails) {
+  for (const e of emails as EmailEvent[]) {
     countsByActor[e.actor] = (countsByActor[e.actor] || 0) + 1;
-    const text = `${e.description} ${e.snippet}`.toLowerCase();
+    const text = `${e.subject} ${e.body}`.toLowerCase();
     if (/(continuance|postpone|reschedule|adjourn)/i.test(text)) {
       continuancesByActor[e.actor] = (continuancesByActor[e.actor] || 0) + 1;
     }
@@ -58,4 +71,3 @@ export async function getEmailStats() {
 
   return { countsByActor, continuancesByActor, avgDaysByActor };
 }
-

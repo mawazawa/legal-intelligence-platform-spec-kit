@@ -162,7 +162,7 @@ interface HeatmapData {
 }
 
 interface EvidenceHeatmapProps {
-  evidenceData: any[];
+  evidenceData?: any[];
   onCellClick?: (data: HeatmapData) => void;
 }
 
@@ -182,6 +182,8 @@ const EvidenceHeatmap: React.FC<EvidenceHeatmapProps> = ({
 
   // Initialize heatmap data
   useEffect(() => {
+    if (!evidenceData) return;
+    
     const data: HeatmapData[] = evidenceData.map((item) => ({
       id: item.id,
       category: item.category,

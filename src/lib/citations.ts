@@ -1,5 +1,6 @@
 import path from 'node:path';
-import { parseAllEmails, EmailEvent } from '@/lib/ingestion/email-parser';
+import fs from 'node:fs/promises';
+import { parseAllEmails, type EmailEvent } from '@/lib/ingestion/email-parser';
 
 export interface Citation {
   id: string;
@@ -13,14 +14,21 @@ export interface Citation {
 function matchEmailsByKeywords(emails: EmailEvent[], keywords: string[]): EmailEvent[] {
   const k = keywords.map((w) => w.toLowerCase());
   return emails.filter((e) => {
-    const hay = `${e.metadata.subject} ${e.description} ${e.snippet}`.toLowerCase();
+    const hay = `${e.subject} ${e.body} ${e.snippet}`.toLowerCase();
     return k.some((kw) => hay.includes(kw));
   });
 }
 
 export async function buildCitations() {
   // Parse emails from local mbox files
-  const emails = await parseAllEmails();
+  const mailDir = path.resolve(process.cwd(), '..', 'Mail');
+  let mboxPath = path.join(mailDir, 'LEGAL-DIVORCE STUFF-EVIDENCE.mbox');
+  try {
+    const entries = await fs.readdir(mailDir);
+    const mbox = entries.find((f) => f.endsWith('.mbox'));
+    if (mbox) mboxPath = path.join(mailDir, mbox);
+  } catch {}
+  const emails = await parseAllEmails(mboxPath);
 
   // Heuristic keyword buckets tied to the declaration claims
   const buckets: Record<string, string[]> = {
@@ -36,11 +44,11 @@ export async function buildCitations() {
     const matches = matchEmailsByKeywords(emails, kws).slice(0, 10);
     matches.forEach((m, i) => {
       emailCitations.push({
-        id: `${bucket}_${i}_${m.metadata.messageId || m.externalId}`,
+        id: `${bucket}_${i}_${m.id}`,
         type: 'email',
-        title: m.metadata.subject || 'Email',
+        title: m.subject || 'Email',
         date: m.date,
-        detail: `${m.metadata.from} → ${m.metadata.to?.join(', ')} | ${m.snippet}`,
+        detail: `${m.from} → ${m.to?.join(', ')} | ${m.snippet}`,
         file: path.relative(process.cwd(), m.sourcePath),
       });
     });

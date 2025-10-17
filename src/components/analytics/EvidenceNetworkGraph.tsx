@@ -92,6 +92,8 @@ const EvidenceNetworkGraph: React.FC<EvidenceNetworkGraphProps> = ({
 
   // Initialize network data
   useEffect(() => {
+    if (!evidenceData) return;
+    
     const networkNodes: EvidenceNode[] = evidenceData.map((item, index) => ({
       id: item.id,
       label: item.title,

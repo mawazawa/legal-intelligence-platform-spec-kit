@@ -155,7 +155,7 @@ interface SentimentAnalysis {
 }
 
 interface PredictiveModelsProps {
-  evidenceData: any[];
+  evidenceData?: any[];
   onPredictionClick?: (prediction: PredictionModel) => void;
 }
 
@@ -171,6 +171,8 @@ const PredictiveModels: React.FC<PredictiveModelsProps> = ({
 
   // Initialize predictive models
   useEffect(() => {
+    if (!evidenceData) return;
+    
     const models: PredictionModel[] = [
       {
         id: 'outcome-001',
@@ -229,6 +231,8 @@ const PredictiveModels: React.FC<PredictiveModelsProps> = ({
 
   // Initialize sentiment analysis
   useEffect(() => {
+    if (!evidenceData) return;
+    
     const sentiment: SentimentAnalysis[] = [
       {
         id: 'sent-001',

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { parseAllEmails } from '@/lib/ingestion/email-parser';
+import { parseAllEmails, EmailParser, type EmailEvent } from '@/lib/ingestion/email-parser';
+import path from 'node:path';
+import fs from 'node:fs/promises';
 import { getNeo4jClient } from '@/lib/neo4j';
 import { getVoyageClient, VoyageEmbeddingClient } from '@/lib/embeddings/voyage';
 import { getSupabaseClient } from '@/lib/search/supabase';
@@ -32,23 +34,35 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export const runtime = 'nodejs';
+
+async function resolveMboxPath(): Promise<string> {
+  const mailDir = path.resolve(process.cwd(), '..', 'Mail');
+  try {
+    const entries = await fs.readdir(mailDir);
+    const mbox = entries.find((f) => f.endsWith('.mbox'));
+    if (mbox) return path.join(mailDir, mbox);
+  } catch {}
+  // Fallback to a common filename if listing fails
+  return path.join(mailDir, 'LEGAL-DIVORCE STUFF-EVIDENCE.mbox');
+}
+
 async function parseEmails() {
   const startTime = Date.now();
   
   try {
-    // Parse emails from mbox files
-    const emailEvents = await parseAllEmails();
+    // Parse emails from first available mbox file
+    const mboxPath = await resolveMboxPath();
+    const emailEvents = await parseAllEmails(mboxPath);
     
-    // Detect continuances
-    const parser = new (await import('@/lib/ingestion/email-parser')).EmailParser();
-    const continuances = parser.detectContinuances(emailEvents);
-    const delayAnalysis = parser.analyzeDelays(emailEvents);
+    // Continuances (best-effort)
+    const parser = new EmailParser(mboxPath);
+    const continuances = await parser.extractContinuances();
     
     const result = {
       totalEmails: emailEvents.length,
       continuances: continuances.length,
-      delayAnalysis,
-      events: emailEvents.slice(0, 10), // Return first 10 for preview
+      events: (emailEvents as EmailEvent[]).slice(0, 10), // Return first 10 for preview
       processingTime: Date.now() - startTime
     };
     
@@ -64,7 +78,8 @@ async function embedEmails() {
   
   try {
     // Parse emails
-    const emailEvents = await parseAllEmails();
+    const mboxPath = await resolveMboxPath();
+    const emailEvents = await parseAllEmails(mboxPath);
     
     // Create chunks for embedding
     const voyageClient = getVoyageClient();
@@ -97,7 +112,8 @@ async function upsertEmails() {
   
   try {
     // Parse emails
-    const emailEvents = await parseAllEmails();
+    const mboxPath = await resolveMboxPath();
+    const emailEvents = await parseAllEmails(mboxPath);
     
     // Connect to Neo4j
     const neo4jClient = getNeo4jClient();
@@ -134,7 +150,9 @@ async function upsertEmails() {
     const supabaseClient = getSupabaseClient();
     let upsertedChunks = 0;
     
-    for (const result of embeddingResults) {
+    for (let i = 0; i < embeddingResults.length; i++) {
+      const result = embeddingResults[i];
+      const sourceChunk = chunks[i];
       // Upsert document
       const document = await supabaseClient.upsertDocument({
         external_id: result.metadata.externalId,
@@ -147,7 +165,7 @@ async function upsertEmails() {
       await supabaseClient.upsertChunk({
         document_id: document.id,
         chunk_index: result.metadata.chunkIndex,
-        content: result.content,
+        content: sourceChunk.content,
         embedding: result.embedding,
         external_id: result.id
       });

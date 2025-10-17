@@ -5,7 +5,9 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { buildCitations } from '@/lib/citations';
-import { parseAllEmails } from '@/lib/ingestion/email-parser';
+import { parseAllEmails, type EmailEvent } from '@/lib/ingestion/email-parser';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 async function readDeclaration(): Promise<{ content: string; source: string } | null> {
   const candidates = [
@@ -126,17 +128,28 @@ function annotateContent(
   return annotatedWithRefs;
 }
 
+async function resolveMboxPath(): Promise<string> {
+  const mailDir = path.resolve(process.cwd(), '..', 'Mail');
+  try {
+    const entries = await fs.readdir(mailDir);
+    const mbox = entries.find((f) => f.endsWith('.mbox'));
+    if (mbox) return path.join(mailDir, mbox);
+  } catch {}
+  return path.join(mailDir, 'LEGAL-DIVORCE STUFF-EVIDENCE.mbox');
+}
+
 async function gatherData() {
+  const mboxPath = await resolveMboxPath();
   const [decl, exhibits, citations, emails] = await Promise.all([
     readDeclaration(),
     readExhibits(),
     buildCitations(),
-    parseAllEmails(),
+    parseAllEmails(mboxPath),
   ]);
 
-  const continuanceCount = emails.filter((e) => /continuance|postpone|reschedule|adjourn/i.test(`${e.description} ${e.snippet}`)).length;
+  const continuanceCount = (emails as EmailEvent[]).filter((e) => /continuance|postpone|reschedule|adjourn/i.test(`${e.subject} ${e.body}`)).length;
   const byActor: Record<string, number> = {};
-  emails.forEach((e) => {
+  (emails as EmailEvent[]).forEach((e) => {
     byActor[e.actor] = (byActor[e.actor] ?? 0) + 1;
   });
 

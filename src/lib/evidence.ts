@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { parseAllEmails, EmailEvent } from '@/lib/ingestion/email-parser';
+import { parseAllEmails, type EmailEvent } from '@/lib/ingestion/email-parser';
 
 export type ClaimKey =
   | 'mortgage_relief'
@@ -58,7 +58,14 @@ export async function readExhibits() {
 }
 
 export async function buildEvidenceClusters() {
-  const emails = await parseAllEmails();
+  const mailDir = path.resolve(process.cwd(), '..', 'Mail');
+  let mboxPath = path.join(mailDir, 'LEGAL-DIVORCE STUFF-EVIDENCE.mbox');
+  try {
+    const entries = await fs.readdir(mailDir);
+    const mbox = entries.find((f) => f.endsWith('.mbox'));
+    if (mbox) mboxPath = path.join(mailDir, mbox);
+  } catch {}
+  const emails = await parseAllEmails(mboxPath);
   const exhibits = await readExhibits();
 
   const emailMatchers: Record<ClaimKey, string[]> = {
@@ -86,12 +93,12 @@ export async function buildEvidenceClusters() {
 
   for (const claim of claims) {
     // Emails
-    const eMatches = emails.filter((e) => hasAny(`${e.metadata.subject} ${e.snippet} ${e.description}`, emailMatchers[claim]));
+    const eMatches = (emails as EmailEvent[]).filter((e) => hasAny(`${e.subject} ${e.snippet} ${e.body}`, emailMatchers[claim]));
     cells.push({
       claim,
       type: 'emails',
       count: eMatches.length,
-      samples: eMatches.slice(0, 5).map((m) => ({ title: m.metadata.subject || 'Email', date: m.date, note: m.snippet, path: m.sourcePath }))
+      samples: eMatches.slice(0, 5).map((m) => ({ title: m.subject || 'Email', date: m.date, note: m.snippet, path: m.sourcePath }))
     });
 
     // Exhibits (documents)
@@ -135,4 +142,3 @@ export async function buildEvidenceClusters() {
 
   return { cells, suggestions };
 }
-

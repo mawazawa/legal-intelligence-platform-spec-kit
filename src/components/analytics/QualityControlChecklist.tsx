@@ -107,7 +107,7 @@ interface QualityCheckItem {
 }
 
 interface QualityControlChecklistProps {
-  evidenceData: any[];
+  evidenceData?: any[];
   onChecklistComplete?: (results: QualityCheckItem[]) => void;
 }
 
@@ -123,6 +123,8 @@ const QualityControlChecklist: React.FC<QualityControlChecklistProps> = ({
 
   // Initialize checklist items
   useEffect(() => {
+    if (!evidenceData) return;
+    
     const items: QualityCheckItem[] = [
       // Legal Checks
       {

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ResponsiveDeclarationDocument } from '@/components/filings/ResponsiveDeclarationDocument';
 import RotertDeclarationDocument from '@/components/filings/RotertDeclarationDocument';
 import MPADocument from '@/components/filings/MPADocument';
+import PrintScaler from '@/components/print/PrintScaler';
 
 const sections = [
   { id: 'responsive', label: 'Responsive Declaration' },
@@ -35,7 +36,9 @@ const CourtFilingsPage = () => {
           <p className="text-slate-600 text-sm">Full annotated responsive declaration rendered on pleading paper.</p>
         </div>
         <Suspense fallback={<div className="text-sm text-slate-600">Loading declaration…</div>}>
-          <ResponsiveDeclarationDocument layout="pleading" showSidebars={false} />
+          <PrintScaler targetPages={10}>
+            <ResponsiveDeclarationDocument layout="pleading" showSidebars={false} />
+          </PrintScaler>
         </Suspense>
       </section>
 
@@ -45,7 +48,9 @@ const CourtFilingsPage = () => {
           <p className="text-slate-600 text-sm">Counsel’s supporting declaration outlining intended testimony and rebuttal points.</p>
         </div>
         <Suspense fallback={<div className="text-sm text-slate-600">Loading Rotert declaration…</div>}>
-          <RotertDeclarationDocument />
+          <PrintScaler targetPages={10}>
+            <RotertDeclarationDocument />
+          </PrintScaler>
         </Suspense>
       </section>
 
@@ -55,7 +60,9 @@ const CourtFilingsPage = () => {
           <p className="text-slate-600 text-sm">Legal argument summary aligned with the responsive declaration.</p>
         </div>
         <Suspense fallback={<div className="text-sm text-slate-600">Loading memorandum…</div>}>
-          <MPADocument />
+          <PrintScaler targetPages={10}>
+            <MPADocument />
+          </PrintScaler>
         </Suspense>
       </section>
 
