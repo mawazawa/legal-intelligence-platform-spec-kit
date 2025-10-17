@@ -1,0 +1,881 @@
+{
+  "metadata": {
+    "generated_at": "2025-10-17T08:19:54.463447",
+    "total_persons": 42,
+    "total_emails_analyzed": 7169,
+    "extraction_date": "2025-10-17"
+  },
+  "persons": [
+    {
+      "name": "A. Wauters",
+      "email": "arnaudwauters7@gmail.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Family Member",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Family member of Mathieu Wauters",
+      "category": "family_members"
+    },
+    {
+      "name": "Brett Berman",
+      "email": "brett@bermanfamilylaw.com",
+      "phone": "N/A",
+      "role": "Attorney",
+      "context": "Family Law Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Lawyer",
+      "notes": "Berman Family Law - Family law attorney specializing in divorce and family matters",
+      "category": "legal_professionals"
+    },
+    {
+      "name": "De Meyer Sylvie",
+      "email": "demeyersylvie@telenet.be",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Family Member",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Family member - appears to be Belgian family connection",
+      "category": "family_members"
+    },
+    {
+      "name": "Dylan Rotert",
+      "email": "dylanrotert@gmail.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Personal Contact",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Personal contact of Mathieu Wauters",
+      "category": "other"
+    },
+    {
+      "name": "Eileen Eib",
+      "email": "EEib@sftc.org",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Court Personnel",
+      "professional_background": "Court Staff",
+      "company_affiliation": "San Francisco Superior Court",
+      "notes": "Court staff member at San Francisco Superior Court",
+      "category": "court_personnel"
+    },
+    {
+      "name": "Eric Proos",
+      "email": "eproos@ejplawoffice.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "EJ Law Office",
+      "notes": "Attorney at EJ Law Office",
+      "category": "other"
+    },
+    {
+      "name": "Ethlie Vare",
+      "email": "N/A",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Unknown",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Name extracted from emails but no additional context found",
+      "category": "other"
+    },
+    {
+      "name": "Liezel Sarzaba",
+      "email": "N/A",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Real Estate Professional",
+      "professional_background": "Real Estate Agent",
+      "company_affiliation": "Compass Real Estate",
+      "notes": "Real estate agent at Compass Real Estate",
+      "category": "real_estate_professionals"
+    },
+    {
+      "name": "Mathieu Wauters",
+      "email": "mathieuwauters@gmail.com",
+      "phone": "347-574-3963",
+      "role": "N/A",
+      "context": "Primary Contact",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Primary email account holder - main person in the email archive",
+      "category": "family_members"
+    },
+    {
+      "name": "Piyawan Chitsamran",
+      "email": "baconstudiony@gmail.com, giftgilnyc@gmail.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Personal Contact",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Personal contact with multiple email addresses",
+      "category": "other"
+    },
+    {
+      "name": "Richard White",
+      "email": "N/A",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Unknown",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Name extracted from emails but no additional context found",
+      "category": "other"
+    },
+    {
+      "name": "Robyn Macias",
+      "email": "Robyn@bermanfamilylaw.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Berman Family Law",
+      "notes": "Attorney at Berman Family Law firm",
+      "category": "other"
+    },
+    {
+      "name": "Ron Melendez",
+      "email": "ron@stephanieyounger.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Real Estate Professional",
+      "professional_background": "Real Estate Agent",
+      "company_affiliation": "Compass Real Estate",
+      "notes": "Real estate agent at Compass Real Estate - Listing Partner",
+      "category": "real_estate_professionals"
+    },
+    {
+      "name": "Rosey Alvero",
+      "email": "roseyalvero@gmail.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Personal Contact",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Personal contact - appears frequently in emails (3",
+      "category": "other"
+    },
+    {
+      "name": "Ryan Anderson",
+      "email": "ryan@sojourn.club",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Personal Contact",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Personal contact",
+      "category": "other"
+    },
+    {
+      "name": "Solomon Friedman",
+      "email": "cpa1164@gmail.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Financial Professional",
+      "professional_background": "CPA",
+      "company_affiliation": "Unknown",
+      "notes": "Certified Public Accountant",
+      "category": "financial_professionals"
+    },
+    {
+      "name": "Steve Watterson",
+      "email": "N/A",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Unknown",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Name extracted from emails but no additional context found",
+      "category": "other"
+    },
+    {
+      "name": "Tom Rotert",
+      "email": "tjrotert@gmail.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Personal Contact",
+      "professional_background": "Unknown",
+      "company_affiliation": "Unknown",
+      "notes": "Personal contact - related to Dylan Rotert",
+      "category": "other"
+    },
+    {
+      "name": "Victoria McLaughlin",
+      "email": "victoria@mclaughlinfamilylawfirm.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "McLaughlin Family Law Firm",
+      "notes": "Attorney at McLaughlin Family Law Firm",
+      "category": "other"
+    },
+    {
+      "name": "Gregory Wauters",
+      "email": "gregory_wauters_1@hotmail.com, gregorywauters@pageexecutive.com, gregorywauters@telenet.be, gregw@telenet.be, gregwaut@gmail.com, gregwauters@icloud.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Family Member",
+      "professional_background": "Executive",
+      "company_affiliation": "Page Executive",
+      "notes": "Family member - appears to be in executive recruitment",
+      "category": "family_members"
+    },
+    {
+      "name": "Jean-Jacques Wauters",
+      "email": "jj.wauters@pandora.be, jj.wauters@telenet.be, tjoky1@gmail.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Family Member",
+      "professional_background": "Unknown",
+      "company_affiliation": "Pandora",
+      "notes": "Family member - appears to work at Pandora",
+      "category": "family_members"
+    },
+    {
+      "name": "Pamela Wilson",
+      "email": "pamela.wilson@compass.com, pamela@stephanieyounger.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Real Estate Professional",
+      "professional_background": "Real Estate Agent",
+      "company_affiliation": "Compass Real Estate",
+      "notes": "Real estate agent at Compass Real Estate",
+      "category": "real_estate_professionals"
+    },
+    {
+      "name": "Selam Gezahegn",
+      "email": "sgezahegn@simonlaw.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Simon Law",
+      "notes": "Attorney at Simon Law firm",
+      "category": "other"
+    },
+    {
+      "name": "Jenny Jantzen",
+      "email": "dse_na2@docusign.net, jenny.jantzen@compass.com, jenny@stephanieyounger.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Real Estate Professional",
+      "professional_background": "Real Estate Agent",
+      "company_affiliation": "Compass Real Estate",
+      "notes": "Real estate agent at Compass Real Estate",
+      "category": "real_estate_professionals"
+    },
+    {
+      "name": "Channing Hoo",
+      "email": "channing.hoo@jud.ca.gov",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Court Personnel",
+      "professional_background": "Judge",
+      "company_affiliation": "California Superior Court",
+      "notes": "Judge at California Superior Court",
+      "category": "court_personnel"
+    },
+    {
+      "name": "Callista Steel",
+      "email": "csteel@simonlaw.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Simon Law",
+      "notes": "Attorney at Simon Law firm",
+      "category": "other"
+    },
+    {
+      "name": "Toriana Holmes",
+      "email": "tholmes@laughlinlegal.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Laughlin Legal",
+      "notes": "Attorney at Laughlin Legal firm",
+      "category": "other"
+    },
+    {
+      "name": "Lindsay Friedman",
+      "email": "lindsay@foodprints.co, lindsay@thechange.be",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Business Owner",
+      "professional_background": "Entrepreneur",
+      "company_affiliation": "Foodprints/The Change",
+      "notes": "Entrepreneur with businesses in food and change management",
+      "category": "business_professionals"
+    },
+    {
+      "name": "Gail Baptista",
+      "email": "gbaptista@simonlaw.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Simon Law",
+      "notes": "Attorney at Simon Law firm",
+      "category": "other"
+    },
+    {
+      "name": "Akira Robinson",
+      "email": "akira.robinson@gmail.com, akira@akithelabel.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Business Owner",
+      "professional_background": "Entrepreneur",
+      "company_affiliation": "Akithe Label",
+      "notes": "Entrepreneur with fashion label business",
+      "category": "business_professionals"
+    },
+    {
+      "name": "Melinda Cook",
+      "email": "chartwellescrow.notification@zixmessagecenter.com, dse_na2@docusign.net, mcook@chartwellescrow.com, notifications@qualia.com, teamcook@chartwellescrow.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Escrow Professional",
+      "professional_background": "Escrow Officer",
+      "company_affiliation": "Chartwell Escrow",
+      "notes": "Escrow officer at Chartwell Escrow",
+      "category": "other"
+    },
+    {
+      "name": "Michelle Steigerwald",
+      "email": "michelle@csyfamilylaw.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "CSY Family Law",
+      "notes": "Attorney at CSY Family Law firm",
+      "category": "other"
+    },
+    {
+      "name": "Vonnie Briggs",
+      "email": "vonnie@csyfamilylaw.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "CSY Family Law",
+      "notes": "Attorney at CSY Family Law firm",
+      "category": "other"
+    },
+    {
+      "name": "Leslie Gomez",
+      "email": "lgomez@sftc.org",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Court Personnel",
+      "professional_background": "Court Staff",
+      "company_affiliation": "San Francisco Superior Court",
+      "notes": "Court staff member at San Francisco Superior Court",
+      "category": "court_personnel"
+    },
+    {
+      "name": "Melissa Garcia",
+      "email": "melissa.garcia@jud.ca.gov",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Court Personnel",
+      "professional_background": "Court Staff",
+      "company_affiliation": "California Superior Court",
+      "notes": "Court staff member at California Superior Court",
+      "category": "court_personnel"
+    },
+    {
+      "name": "Ashwin Sharma",
+      "email": "ashwin@immigrationfirm.net",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Immigration Firm",
+      "notes": "Immigration attorney",
+      "category": "other"
+    },
+    {
+      "name": "Larry Ginsberg",
+      "email": "lginsberg@harris-ginsberg.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Harris-Ginsberg",
+      "notes": "Attorney at Harris-Ginsberg law firm",
+      "category": "other"
+    },
+    {
+      "name": "David Simon",
+      "email": "dsimon@simonlaw.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Simon Law",
+      "notes": "Attorney at Simon Law firm",
+      "category": "other"
+    },
+    {
+      "name": "Marilyn Baum",
+      "email": "mbaum@simonlaw.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Simon Law",
+      "notes": "Attorney at Simon Law firm",
+      "category": "other"
+    },
+    {
+      "name": "Shane Singh",
+      "email": "ssingh@simonlaw.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Attorney",
+      "professional_background": "Attorney",
+      "company_affiliation": "Simon Law",
+      "notes": "Attorney at Simon Law firm",
+      "category": "other"
+    },
+    {
+      "name": "Joshua Gaunya",
+      "email": "jgaunya@dppre.com, josh.gaunya@compass.com, josh@deasypenner.com",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Real Estate Professional",
+      "professional_background": "Real Estate Agent",
+      "company_affiliation": "Compass Real Estate",
+      "notes": "Real estate agent at Compass Real Estate",
+      "category": "real_estate_professionals"
+    },
+    {
+      "name": "Brisa Cabrera",
+      "email": "brisa.cabrera@compass.com, brisa@stephanieyounger.com, dse_na2@docusign.net",
+      "phone": "N/A",
+      "role": "N/A",
+      "context": "Real Estate Professional",
+      "professional_background": "Real Estate Agent",
+      "company_affiliation": "Compass Real Estate",
+      "notes": "Real estate agent at Compass Real Estate",
+      "category": "real_estate_professionals"
+    }
+  ],
+  "professional_networks": {
+    "legal_professionals": [
+      {
+        "name": "Brett Berman",
+        "email": "brett@bermanfamilylaw.com",
+        "phone": "N/A",
+        "role": "Attorney",
+        "context": "Family Law Attorney",
+        "professional_background": "Attorney",
+        "company_affiliation": "Lawyer",
+        "notes": "Berman Family Law - Family law attorney specializing in divorce and family matters",
+        "category": "legal_professionals"
+      }
+    ],
+    "real_estate_professionals": [
+      {
+        "name": "Liezel Sarzaba",
+        "email": "N/A",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Real Estate Professional",
+        "professional_background": "Real Estate Agent",
+        "company_affiliation": "Compass Real Estate",
+        "notes": "Real estate agent at Compass Real Estate",
+        "category": "real_estate_professionals"
+      },
+      {
+        "name": "Ron Melendez",
+        "email": "ron@stephanieyounger.com",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Real Estate Professional",
+        "professional_background": "Real Estate Agent",
+        "company_affiliation": "Compass Real Estate",
+        "notes": "Real estate agent at Compass Real Estate - Listing Partner",
+        "category": "real_estate_professionals"
+      },
+      {
+        "name": "Pamela Wilson",
+        "email": "pamela.wilson@compass.com, pamela@stephanieyounger.com",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Real Estate Professional",
+        "professional_background": "Real Estate Agent",
+        "company_affiliation": "Compass Real Estate",
+        "notes": "Real estate agent at Compass Real Estate",
+        "category": "real_estate_professionals"
+      },
+      {
+        "name": "Jenny Jantzen",
+        "email": "dse_na2@docusign.net, jenny.jantzen@compass.com, jenny@stephanieyounger.com",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Real Estate Professional",
+        "professional_background": "Real Estate Agent",
+        "company_affiliation": "Compass Real Estate",
+        "notes": "Real estate agent at Compass Real Estate",
+        "category": "real_estate_professionals"
+      },
+      {
+        "name": "Joshua Gaunya",
+        "email": "jgaunya@dppre.com, josh.gaunya@compass.com, josh@deasypenner.com",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Real Estate Professional",
+        "professional_background": "Real Estate Agent",
+        "company_affiliation": "Compass Real Estate",
+        "notes": "Real estate agent at Compass Real Estate",
+        "category": "real_estate_professionals"
+      },
+      {
+        "name": "Brisa Cabrera",
+        "email": "brisa.cabrera@compass.com, brisa@stephanieyounger.com, dse_na2@docusign.net",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Real Estate Professional",
+        "professional_background": "Real Estate Agent",
+        "company_affiliation": "Compass Real Estate",
+        "notes": "Real estate agent at Compass Real Estate",
+        "category": "real_estate_professionals"
+      }
+    ],
+    "court_personnel": [
+      {
+        "name": "Eileen Eib",
+        "email": "EEib@sftc.org",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Court Personnel",
+        "professional_background": "Court Staff",
+        "company_affiliation": "San Francisco Superior Court",
+        "notes": "Court staff member at San Francisco Superior Court",
+        "category": "court_personnel"
+      },
+      {
+        "name": "Channing Hoo",
+        "email": "channing.hoo@jud.ca.gov",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Court Personnel",
+        "professional_background": "Judge",
+        "company_affiliation": "California Superior Court",
+        "notes": "Judge at California Superior Court",
+        "category": "court_personnel"
+      },
+      {
+        "name": "Leslie Gomez",
+        "email": "lgomez@sftc.org",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Court Personnel",
+        "professional_background": "Court Staff",
+        "company_affiliation": "San Francisco Superior Court",
+        "notes": "Court staff member at San Francisco Superior Court",
+        "category": "court_personnel"
+      },
+      {
+        "name": "Melissa Garcia",
+        "email": "melissa.garcia@jud.ca.gov",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Court Personnel",
+        "professional_background": "Court Staff",
+        "company_affiliation": "California Superior Court",
+        "notes": "Court staff member at California Superior Court",
+        "category": "court_personnel"
+      }
+    ],
+    "financial_professionals": [
+      {
+        "name": "Solomon Friedman",
+        "email": "cpa1164@gmail.com",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Financial Professional",
+        "professional_background": "CPA",
+        "company_affiliation": "Unknown",
+        "notes": "Certified Public Accountant",
+        "category": "financial_professionals"
+      }
+    ],
+    "business_professionals": [
+      {
+        "name": "Lindsay Friedman",
+        "email": "lindsay@foodprints.co, lindsay@thechange.be",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Business Owner",
+        "professional_background": "Entrepreneur",
+        "company_affiliation": "Foodprints/The Change",
+        "notes": "Entrepreneur with businesses in food and change management",
+        "category": "business_professionals"
+      },
+      {
+        "name": "Akira Robinson",
+        "email": "akira.robinson@gmail.com, akira@akithelabel.com",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Business Owner",
+        "professional_background": "Entrepreneur",
+        "company_affiliation": "Akithe Label",
+        "notes": "Entrepreneur with fashion label business",
+        "category": "business_professionals"
+      }
+    ],
+    "family_members": [
+      {
+        "name": "A. Wauters",
+        "email": "arnaudwauters7@gmail.com",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Family Member",
+        "professional_background": "Unknown",
+        "company_affiliation": "Unknown",
+        "notes": "Family member of Mathieu Wauters",
+        "category": "family_members"
+      },
+      {
+        "name": "De Meyer Sylvie",
+        "email": "demeyersylvie@telenet.be",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Family Member",
+        "professional_background": "Unknown",
+        "company_affiliation": "Unknown",
+        "notes": "Family member - appears to be Belgian family connection",
+        "category": "family_members"
+      },
+      {
+        "name": "Mathieu Wauters",
+        "email": "mathieuwauters@gmail.com",
+        "phone": "347-574-3963",
+        "role": "N/A",
+        "context": "Primary Contact",
+        "professional_background": "Unknown",
+        "company_affiliation": "Unknown",
+        "notes": "Primary email account holder - main person in the email archive",
+        "category": "family_members"
+      },
+      {
+        "name": "Gregory Wauters",
+        "email": "gregory_wauters_1@hotmail.com, gregorywauters@pageexecutive.com, gregorywauters@telenet.be, gregw@telenet.be, gregwaut@gmail.com, gregwauters@icloud.com",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Family Member",
+        "professional_background": "Executive",
+        "company_affiliation": "Page Executive",
+        "notes": "Family member - appears to be in executive recruitment",
+        "category": "family_members"
+      },
+      {
+        "name": "Jean-Jacques Wauters",
+        "email": "jj.wauters@pandora.be, jj.wauters@telenet.be, tjoky1@gmail.com",
+        "phone": "N/A",
+        "role": "N/A",
+        "context": "Family Member",
+        "professional_background": "Unknown",
+        "company_affiliation": "Pandora",
+        "notes": "Family member - appears to work at Pandora",
+        "category": "family_members"
+      }
+    ]
+  },
+  "communication_patterns": {
+    "top_communicators": [
+      {
+        "sender": "Rosey Alvero <roseyalvero@gmail.com>",
+        "count": 1559
+      },
+      {
+        "sender": "Mathieu Wauters <mathieuwauters@gmail.com>",
+        "count": 1290
+      },
+      {
+        "sender": "\"Capital One\" <capitalone@notification.capitalone.com>",
+        "count": 944
+      },
+      {
+        "sender": "Chase <no.reply.alerts@chase.com>",
+        "count": 863
+      },
+      {
+        "sender": "Chase Credit Journey <no.reply.alerts@chase.com>",
+        "count": 262
+      },
+      {
+        "sender": "Robinhood <noreply@robinhood.com>",
+        "count": 224
+      },
+      {
+        "sender": "\"Solomon Friedman, CPA\" <cpa1164@gmail.com>",
+        "count": 180
+      },
+      {
+        "sender": "Rosanna Alvero <roseyalvero@gmail.com>",
+        "count": 145
+      },
+      {
+        "sender": "=?UTF-8?B?U3luY2hyb255IEJhbms=?= <notice@servicing.Synchronyfinancial.com>",
+        "count": 129
+      },
+      {
+        "sender": "\"Apple Card Support\" <no_reply@post.applecard.apple>",
+        "count": 128
+      }
+    ],
+    "email_domains": [
+      {
+        "domain": "gmail.com>",
+        "count": 3508
+      },
+      {
+        "domain": "chase.com>",
+        "count": 1129
+      },
+      {
+        "domain": "notification.capitalone.com>",
+        "count": 1007
+      },
+      {
+        "domain": "robinhood.com>",
+        "count": 262
+      },
+      {
+        "domain": "servicing.synchronyfinancial.com>",
+        "count": 129
+      },
+      {
+        "domain": "post.applecard.apple>",
+        "count": 128
+      },
+      {
+        "domain": "gmail.com",
+        "count": 98
+      },
+      {
+        "domain": "stripe.com>",
+        "count": 89
+      },
+      {
+        "domain": "info6.citi.com>",
+        "count": 72
+      },
+      {
+        "domain": "found.com>",
+        "count": 61
+      }
+    ],
+    "subject_keywords": [
+      {
+        "keyword": "your",
+        "count": 2525
+      },
+      {
+        "keyword": "mathieu",
+        "count": 1254
+      },
+      {
+        "keyword": "wauters",
+        "count": 952
+      },
+      {
+        "keyword": "invitation",
+        "count": 941
+      },
+      {
+        "keyword": "credit",
+        "count": 692
+      },
+      {
+        "keyword": "account",
+        "count": 690
+      },
+      {
+        "keyword": "payment",
+        "count": 565
+      },
+      {
+        "keyword": "card",
+        "count": 483
+      },
+      {
+        "keyword": "30pm",
+        "count": 424
+      },
+      {
+        "keyword": "been",
+        "count": 391
+      },
+      {
+        "keyword": "report",
+        "count": 387
+      },
+      {
+        "keyword": "balance",
+        "count": 378
+      },
+      {
+        "keyword": "change",
+        "count": 347
+      },
+      {
+        "keyword": "2018",
+        "count": 338
+      },
+      {
+        "keyword": "statement",
+        "count": 312
+      },
+      {
+        "keyword": "there",
+        "count": 303
+      },
+      {
+        "keyword": "gmail",
+        "count": 299
+      },
+      {
+        "keyword": "mathieuwauters",
+        "count": 297
+      },
+      {
+        "keyword": "ready",
+        "count": 251
+      },
+      {
+        "keyword": "transfer",
+        "count": 247
+      }
+    ]
+  },
+  "insights": {
+    "legal_firms": [
+      "Simon Law",
+      "EJ Law Office",
+      "Berman Family Law",
+      "Lawyer",
+      "McLaughlin Family Law Firm",
+      "CSY Family Law"
+    ],
+    "real_estate_teams": [
+      "Compass Real Estate"
+    ],
+    "court_connections": [
+      "San Francisco Superior Court",
+      "California Superior Court"
+    ],
+    "financial_institutions": []
+  }
+}
