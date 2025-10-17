@@ -30,6 +30,7 @@ interface NavItem {
 const navigation: NavItem[] = [
   { name: 'Dashboard', href: '/', icon: <LayoutDashboard className="h-5 w-5" /> },
   { name: 'RFO Opposition Filing', href: '/rfo-opposition', icon: <FileCheck className="h-5 w-5" />, badge: 'NEW' },
+  { name: 'Responsive Declaration', href: '/responsive-declaration', icon: <FileText className="h-5 w-5" />, badge: 'NEW' },
   { name: 'RFO Comparison', href: '/rfo-comparison', icon: <GitCompare className="h-5 w-5" />, badge: 'NEW' },
   { name: 'Final Distribution', href: '/final-distribution', icon: <Scale className="h-5 w-5" /> },
   { name: 'FL-320 Checklist', href: '/fl320-checklist', icon: <FileText className="h-5 w-5" /> },
