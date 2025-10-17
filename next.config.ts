@@ -36,26 +36,52 @@ const nextConfig: NextConfig = {
       '@radix-ui/react-tooltip',
       '@radix-ui/react-label'
     ],
-    // Enable React Compiler for automatic memoization
-    reactCompiler: true,
+    // Disable React Compiler for now to avoid build issues
+    reactCompiler: false,
   },
 
+  // Production-only optimizations
+  ...(process.env.NODE_ENV === 'production' && {
+    compress: true,
+    poweredByHeader: false,
+  }),
+
   // Webpack optimizations
-  webpack: (config, { isServer }) => {
-    // Optimize bundle splitting
-    if (!isServer) {
+  webpack: (config, { isServer, dev }) => {
+    // Optimize bundle splitting (production only)
+    if (!isServer && !dev) {
       config.optimization = {
         ...config.optimization,
+        moduleIds: 'deterministic',
+        runtimeChunk: 'single',
         splitChunks: {
           chunks: 'all',
+          maxInitialRequests: 25,
+          minSize: 20000,
           cacheGroups: {
             default: false,
             vendors: false,
-            // Vendor chunk for node_modules
+            // Framework chunk (React, Next.js)
+            framework: {
+              name: 'framework',
+              chunks: 'all',
+              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+              priority: 40,
+              enforce: true,
+            },
+            // Recharts chunk (heavy library)
+            recharts: {
+              name: 'recharts',
+              test: /[\\/]node_modules[\\/]recharts[\\/]/,
+              chunks: 'all',
+              priority: 35,
+              enforce: true,
+            },
+            // Vendor chunk for other node_modules
             vendor: {
               name: 'vendor',
               chunks: 'all',
-              test: /node_modules/,
+              test: /[\\/]node_modules[\\/]/,
               priority: 20,
             },
             // Commons chunk for shared code
