@@ -14,6 +14,7 @@
     "test": "jest",
     "check": "npm run typecheck && npm run lint && npm test",
     "ci": "npm run check && npm run build",
+    "exhibits:build": "node scripts/build-exhibits.mjs",
     "clean": "rm -rf .next coverage"
   },
   "dependencies": {
