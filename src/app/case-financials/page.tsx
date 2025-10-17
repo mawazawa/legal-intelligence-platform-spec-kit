@@ -3,6 +3,7 @@ import path from 'node:path'
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import Link from 'next/link'
 
 function toCurrency(n: number | undefined) {
   if (typeof n !== 'number' || Number.isNaN(n)) return '—'
@@ -62,6 +63,8 @@ function extractAmounts(line: string) {
 export default async function Page() {
   const md = await loadScheduleMd()
   const results = await loadResultsJson()
+  const ledgerRes = await fetch('http://localhost:3000/api/case-financials/ledger', { cache: 'no-store' }).catch(() => null)
+  const ledger = ledgerRes && ledgerRes.ok ? await ledgerRes.json() : null
 
   // Defaults
   let petitionerA = { respondent: undefined as number | undefined, petitioner: undefined as number | undefined }
@@ -165,6 +168,60 @@ export default async function Page() {
         </CardContent>
       </Card>
 
+      {ledger && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Computation Explorer (with sources)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-sm mb-2">Final (From‑the‑Pot): <strong>{toCurrency(ledger.root?.value?.respondent)}</strong> to Respondent · <strong>{toCurrency(ledger.root?.value?.petitioner)}</strong> to Petitioner · Total {toCurrency(ledger.root?.value?.total)}</div>
+            <details className="mb-2" open>
+              <summary className="cursor-pointer font-medium">Closing Statement Build‑up</summary>
+              <div className="pl-4 mt-2">
+                <div>Sale price: {toCurrency(ledger.root.children[0].value.sale_price)} · Due to Seller: {toCurrency(ledger.root.children[0].value.due_to_seller)}</div>
+                <ul className="list-disc ml-5">
+                  {ledger.root.children[0].items.map((it: any, idx: number) => (
+                    <li key={idx}>{it.label}: {toCurrency(it.amount)}</li>
+                  ))}
+                </ul>
+              </div>
+            </details>
+            <details className="mb-2">
+              <summary className="cursor-pointer font-medium">SOD Constructive Net and 65/35</summary>
+              <div className="pl-4 mt-2">Constructive net: {toCurrency(ledger.root.children[1].value.constructive_net)} · R 65%: {toCurrency(ledger.root.children[1].value.r65)} · P 35%: {toCurrency(ledger.root.children[1].value.p35)}</div>
+            </details>
+            <details className="mb-2">
+              <summary className="cursor-pointer font-medium">Equal Sharing of Arrears</summary>
+              <div className="pl-4 mt-2">Total arrears: {toCurrency(ledger.root.children[2].value.arrears_total)} → Each: {toCurrency(ledger.root.children[2].value.each)}</div>
+            </details>
+            <details className="mb-2">
+              <summary className="cursor-pointer font-medium">SOD Payouts (to Petitioner)</summary>
+              <ul className="list-disc ml-9 mt-2">
+                {ledger.root.children[3].items.map((it: any, idx: number) => (
+                  <li key={idx}>{it.label}: {toCurrency(it.amount)}</li>
+                ))}
+              </ul>
+            </details>
+            <details className="mb-2">
+              <summary className="cursor-pointer font-medium">Symmetry & Possession Adjustments</summary>
+              <ul className="list-disc ml-9 mt-2">
+                {ledger.root.children[4].items.map((it: any, idx: number) => (
+                  <li key={idx}>{it.label}: {toCurrency(it.amount)}</li>
+                ))}
+              </ul>
+            </details>
+            <details>
+              <summary className="cursor-pointer font-medium">Remove Respondent Form 593 from Pot</summary>
+              <ul className="list-disc ml-9 mt-2">
+                {ledger.root.children[5].items.map((it: any, idx: number) => (
+                  <li key={idx}>{it.label}{it.amount ? `: ${toCurrency(it.amount)}` : ''}</li>
+                ))}
+              </ul>
+            </details>
+            <div className="mt-3 text-xs text-muted-foreground">Sources: <Link className="underline" href="/api/case-financials/raw/schedule" target="_blank">schedule.md</Link> · <Link className="underline" href="/api/case-financials/raw/withholding" target="_blank">withholding-evidence.md</Link> · <Link className="underline" href="/api/case-financials/raw/schedule" target="_blank">SOD (see references in schedule)</Link> · <Link className="underline" href="/api/case-financials/raw/schedule" target="_blank">Closing extract</Link></div>
+          </CardContent>
+        </Card>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Downloads</CardTitle>
