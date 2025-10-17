@@ -1,6 +1,17 @@
-import { parse } from 'mailparser';
+// Email parser - server-side only
+// This file uses Node.js APIs and cannot run in edge runtime
 import { readFileSync } from 'fs';
 import { join } from 'path';
+
+// Lazy import mailparser to avoid bundling issues
+let parseEmail: any = null;
+async function getMailParser() {
+  if (!parseEmail) {
+    const mailparser = await import('mailparser');
+    parseEmail = mailparser.simpleParser;
+  }
+  return parseEmail;
+}
 
 export interface EmailEvent {
   id: string;
@@ -53,9 +64,10 @@ export class EmailParser {
   async parseMbox(): Promise<EmailEvent[]> {
     const mboxContent = readFileSync(this.mboxPath, 'utf-8');
     const emails = this.splitMbox(mboxContent);
-    
+
     const events: EmailEvent[] = [];
-    
+    const parse = await getMailParser();
+
     for (const email of emails) {
       try {
         const parsed = await parse(email);
@@ -67,7 +79,7 @@ export class EmailParser {
         console.warn('Failed to parse email:', error);
       }
     }
-    
+
     return events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
 
