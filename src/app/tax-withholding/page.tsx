@@ -1,3 +1,4 @@
+import { DashboardLayout } from '@/components/DashboardLayout';
 import TaxWithholdingAnalysis from '@/components/TaxWithholdingAnalysis';
 
 export const metadata = {
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function TaxWithholdingPage() {
-  return <TaxWithholdingAnalysis />;
+  return (
+    <DashboardLayout>
+      <TaxWithholdingAnalysis />
+    </DashboardLayout>
+  );
 }

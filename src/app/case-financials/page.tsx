@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import React from 'react'
+import { DashboardLayout } from '@/components/DashboardLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
@@ -97,6 +98,7 @@ export default async function Page() {
   const total = results?.method_add_back?.total ?? results?.inputs?.sale?.actual_net_to_trust
 
   return (
+    <DashboardLayout>
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Case Financials — Calculator Breakdown</h1>
@@ -276,5 +278,6 @@ export default async function Page() {
         </CardContent>
       </Card>
     </div>
+    </DashboardLayout>
   )
 }
