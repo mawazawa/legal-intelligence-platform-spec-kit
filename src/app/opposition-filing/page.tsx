@@ -262,7 +262,18 @@ const OppositionFilingPage: React.FC = () => {
               <p><strong>Offset for Petitioner's Use:</strong> Petitioner's use of the Property from November 16, 2024, to May 30, 2025, should offset any Watts charges she claims against me.</p>
               
               <p><strong>Petitioner's Delays:</strong> Petitioner's own actions caused delays in the Property sale process, including her refusal to cooperate with the realtor and her delays in signing necessary documents.</p>
+              
+              <p><strong>Email Evidence of Cooperation:</strong> My email communications with Ron Melendez, the listing realtor, demonstrate my good faith efforts to cooperate with the Property sale. These communications contradict Petitioner's claims of non-cooperation and willful disregard of court orders.</p>
+              
+              <p><strong>Petitioner's Unreasonable Demands:</strong> Email evidence shows Petitioner made unreasonable demands during the sale process, including insisting on expensive realtor services against the will of the property owner, creating unnecessary delays and costs.</p>
+              
+              <p><strong>Furniture Fraud Evidence:</strong> Documentary evidence establishes that Petitioner instructed my new wife Piyawan that all jointly purchased furniture must stay in the Property, then charged me $2,000+ for hauling it away while keeping the furniture for herself. This constitutes unjust enrichment and fraud.</p>
             </div>
+        </div>
+
+        {/* PAGE 6 - CONTINUATION OF RESPONDENT'S DECLARATION */}
+        <div className="page-break min-h-[11in] p-16">
+          <div className="text-sm leading-relaxed space-y-4">
 
             <div>
               <h3 className="font-semibold mb-2">9. LEGAL ANALYSIS</h3>
@@ -271,6 +282,16 @@ const OppositionFilingPage: React.FC = () => {
               <p><strong>Family Code Section 271:</strong> Attorney fees sanctions require a showing of conduct that "frustrates the policy of the law to promote settlement of litigation." My actions were consistent with exercising legal rights, not frustrating settlement.</p>
               
               <p><strong>Watts Charges Law:</strong> Watts charges are for exclusive use and possession. Once Petitioner took possession, the charges should end. Her claims for charges after possession are legally unsupportable.</p>
+              
+              <p><strong>Add-Back Methodology Legal Error:</strong> Petitioner's "add-back" methodology has no legal precedent in California family law. This scheme violates basic accounting principles and creates an impermissible windfall to the non-paying spouse. No California case law supports adding back paid debts to create artificial proceeds.</p>
+              
+              <p><strong>Double-Counting Prohibition:</strong> California law prohibits double-counting of debts and credits in property division. Petitioner's methodology violates this fundamental principle by both deducting the $77,779.88 from net proceeds AND adding it back to inflate her share.</p>
+              
+              <p><strong>Equitable Distribution Principles:</strong> Petitioner's requested distribution violates California's equitable distribution principles. She seeks to convert her 35% ownership interest into 95%+ of the actual distribution through mathematical manipulation and inflated claims.</p>
+              
+              <p><strong>Watts v. Watts (1985) 171 Cal.App.3d 366:</strong> This case establishes that Watts charges are for exclusive use and possession and must end when possession changes. Petitioner's own admission that she took possession on November 16, 2024, legally terminates any Watts charges as of that date.</p>
+              
+              <p><strong>Expert Testimony Scrutiny:</strong> Petitioner's claim of $4,500/month fair rental value requires scrutiny. The actual rental market for 3525 8th Avenue, Los Angeles, CA 90018 must be verified through comparable properties and market analysis.</p>
             </div>
 
             <div>
@@ -282,13 +303,81 @@ const OppositionFilingPage: React.FC = () => {
               <p><strong>Offset Claims:</strong> I request that any Watts charges be calculated only through November 15, 2024, and that Petitioner's use of the Property from November 16, 2024, to May 30, 2025, be offset against any charges.</p>
               
               <p><strong>Attorney Fees:</strong> I request that this Court deny Petitioner's request for attorney fees sanctions and instead order her to pay my attorney fees for this unnecessary motion.</p>
+              
+              <p><strong>Disclosure of Missing Funds:</strong> I request that Petitioner be ordered to disclose the disposition of the $137,245.52 that is unaccounted for in her distribution calculations. This amount represents nearly half of the escrow proceeds and must be explained.</p>
+              
+              <p><strong>Furniture Fraud Correction:</strong> I request that the Court correct the furniture payment order based on evidence that Petitioner kept the furniture after instructing that it must stay in the Property. This constitutes unjust enrichment and requires correction.</p>
+              
+              <p><strong>Interest Rate Verification:</strong> I request that Petitioner be required to provide detailed calculations for all interest charges, including the specific dates used and whether simple or compound interest was applied.</p>
+              
+              <p><strong>Market Value Verification:</strong> I request that Petitioner be required to provide comparable rental properties to support her claimed $4,500/month fair rental value for Watts charges calculations.</p>
             </div>
+        </div>
+
+        {/* PAGE 7 - CONTINUATION OF RESPONDENT'S DECLARATION */}
+        <div className="page-break min-h-[11in] p-16">
+          <div className="text-sm leading-relaxed space-y-4">
 
             <div>
               <h3 className="font-semibold mb-2">11. CONCLUSION</h3>
               <p>Petitioner's Request for Order is based on fundamental mathematical errors and legal misstatements. The core flaw - attempting to both deduct and add back the same $77,779.88 - renders her entire calculation invalid. Her claims for Watts charges after taking possession, attorney fees sanctions without evidence of bad faith, and cleanup costs without proof of damage are all legally unsupportable.</p>
               
               <p>I respectfully request that this Court deny Petitioner's Request for Order and order the escrow proceeds divided according to the Judgment without the mathematical errors and legal deficiencies contained in Petitioner's motion.</p>
+              
+              <p><strong>Summary of Critical Issues:</strong> Petitioner's motion attempts to convert her 35% ownership interest into 95%+ of the actual distribution through: (1) mathematical manipulation using an impermissible "add-back" methodology; (2) inflated Watts charges extending beyond her possession date; (3) excessive attorney fees sanctions without evidence of bad faith; (4) unsubstantiated cleanup costs; and (5) failure to account for $137,245.52 in missing funds.</p>
+              
+              <p><strong>Evidence Supporting My Position:</strong> Email communications with the realtor demonstrate my good faith cooperation. Documentary evidence proves Petitioner's furniture fraud. Legal analysis shows no California precedent for the "add-back" methodology. Petitioner's own admission of possession on November 16, 2024, terminates Watts charges as of that date.</p>
+              
+              <p><strong>Requested Relief:</strong> I request that this Court deny Petitioner's motion in its entirety and order distribution according to the Judgment: 65% to me ($182,231.29) and 35% to Petitioner ($98,124.54), with legitimate offsets applied fairly and transparently.</p>
+            </div>
+        </div>
+
+        {/* PAGE 8 - CONTINUATION OF RESPONDENT'S DECLARATION */}
+        <div className="page-break min-h-[11in] p-16">
+          <div className="text-sm leading-relaxed space-y-4">
+
+            <div>
+              <h3 className="font-semibold mb-2">12. DETAILED FINANCIAL ANALYSIS</h3>
+              <p><strong>Petitioner's Mathematical Scheme:</strong> Petitioner's "add-back" methodology violates basic accounting principles and California law. She attempts to:</p>
+              <ul className="list-disc ml-6 space-y-1">
+                <li>Claim the mortgage company was paid $759,364.32 at closing</li>
+                <li>Identify $77,779.88 as "unpaid mortgage/escrow" costs</li>
+                <li>"Add back" this $77,779.88 to net proceeds to create artificial total of $358,155.71</li>
+                <li>Take 35% of the inflated amount ($125,354.50)</li>
+                <li>Then deduct the same $77,779.88 from my 65% share</li>
+                <li><strong>Result: She gets $27,229.96 more than her rightful 35% share</strong></li>
+              </ul>
+              
+              <p><strong>Correct Distribution Calculation:</strong> The escrow proceeds of $280,355.83 already reflect payment of all mortgage obligations. The correct distribution is:</p>
+              <ul className="list-disc ml-6 space-y-1">
+                <li>My 65% share: $182,231.29</li>
+                <li>Petitioner's 35% share: $98,124.54</li>
+                <li>Any legitimate offsets should be applied proportionally</li>
+              </ul>
+              
+              <p><strong>Petitioner's Windfall:</strong> Through her mathematical manipulation, Petitioner seeks to convert her 35% ownership interest into 95%+ of the actual distribution, representing a theft of approximately $82,619 from my rightful share.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-2">13. EVIDENCE OF COOPERATION</h3>
+              <p><strong>Email Communications with Realtor:</strong> My email correspondence with Ron Melendez, the listing realtor, demonstrates consistent good faith efforts to cooperate with the Property sale process. These communications contradict Petitioner's claims of non-cooperation and willful disregard of court orders.</p>
+              
+              <p><strong>Timeline of Cooperation:</strong> The email evidence shows my active participation in the sale process, including responding to realtor inquiries, providing necessary information, and attempting to resolve issues that arose during the sale.</p>
+              
+              <p><strong>Petitioner's Unreasonable Demands:</strong> Email evidence establishes that Petitioner made unreasonable demands during the sale process, including insisting on expensive realtor services against the will of the property owner, creating unnecessary delays and costs.</p>
+              
+              <p><strong>Good Faith Efforts:</strong> Despite financial hardship, I made good faith efforts to cooperate with the Property sale, including attempting loan modifications and communicating with the lender about payment arrangements.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-2">14. FURNITURE FRAUD DOCUMENTATION</h3>
+              <p><strong>Petitioner's Instructions:</strong> Documentary evidence establishes that Petitioner instructed my new wife Piyawan that all jointly purchased furniture must stay in the Property. This instruction was given after the court ordered me to pay Petitioner $7,500 for furniture.</p>
+              
+              <p><strong>Subsequent Actions:</strong> Despite instructing that furniture must stay, Petitioner then charged me $2,000+ for hauling the furniture away and kept the furniture for herself. This constitutes unjust enrichment and fraud.</p>
+              
+              <p><strong>Financial Impact:</strong> Petitioner received both the $7,500 court-ordered payment AND kept furniture worth approximately $15,000, representing a $22,500 windfall at my expense.</p>
+              
+              <p><strong>Legal Remedy:</strong> This fraud requires correction by reversing the furniture payment order and requiring Petitioner to account for the furniture she retained.</p>
             </div>
 
             <div className="mt-12">
@@ -302,6 +391,7 @@ const OppositionFilingPage: React.FC = () => {
                 </div>
               </div>
             </div>
+        </div>
           </div>
         </div>
 
