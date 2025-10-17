@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { AlertCircle } from 'lucide-react';
 
 interface PetitionerViewProps {
@@ -35,7 +34,7 @@ const PetitionerView: React.FC<PetitionerViewProps> = ({ rfoContent }) => {
         <CardHeader>
           <CardTitle className="text-red-700 flex items-center gap-2">
             <AlertCircle className="h-5 w-5" />
-            PETITIONER'S REQUEST FOR ORDER
+            PETITIONER&apos;S REQUEST FOR ORDER
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -56,7 +55,7 @@ const PetitionerView: React.FC<PetitionerViewProps> = ({ rfoContent }) => {
                 <div>• Property division with add-back of mortgage arrears</div>
                 <div>• Additional Watts charges with interest</div>
                 <div>• Tax withholding credit allocation</div>
-                <div>• Attorney's fees and costs</div>
+                <div>• Attorney&apos;s fees and costs</div>
                 <div>• Cleanup and repair cost reimbursement</div>
               </div>
             </div>
@@ -67,7 +66,7 @@ const PetitionerView: React.FC<PetitionerViewProps> = ({ rfoContent }) => {
       {/* Calculation Methodology */}
       <Card className="border-red-200">
         <CardHeader>
-          <CardTitle className="text-red-700">PETITIONER'S CALCULATION METHODOLOGY</CardTitle>
+          <CardTitle className="text-red-700">PETITIONER&apos;S CALCULATION METHODOLOGY</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

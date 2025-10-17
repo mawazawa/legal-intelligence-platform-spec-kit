@@ -34,7 +34,7 @@ const RFOComparisonPage: React.FC = () => {
   const [respondentFL320, setRespondentFL320] = useState<RFOContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>('petitioner');
-  const [ledger, setLedger] = useState<any>(null);
+  const [ledger, setLedger] = useState<Record<string, unknown> | null>(null);
 
   // Load documents
   useEffect(() => {

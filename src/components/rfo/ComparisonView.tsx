@@ -28,7 +28,11 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ comparisonPoints }) => 
   const togglePoint = (pointId: string) => {
     setExpandedPoints(prev => {
       const newSet = new Set(prev);
-      newSet.has(pointId) ? newSet.delete(pointId) : newSet.add(pointId);
+      if (newSet.has(pointId)) {
+        newSet.delete(pointId);
+      } else {
+        newSet.add(pointId);
+      }
       return newSet;
     });
   };
@@ -73,13 +77,13 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ comparisonPoints }) => 
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-red-50 p-4 rounded border border-red-200">
-              <h4 className="font-semibold text-red-700 mb-2">PETITIONER'S CLAIM</h4>
+              <h4 className="font-semibold text-red-700 mb-2">PETITIONER&apos;S CLAIM</h4>
               <p className="text-sm text-slate-700 leading-relaxed mb-3">
                 Petitioner claims Respondent owes additional amounts by adding back $77,779.88 mortgage
                 arrears to net proceeds ($280,355.83 + $77,779.88 = $358,155.71) before dividing 65/35.
               </p>
               <div className="text-xs text-slate-600 bg-red-100 p-3 rounded">
-                <strong>Petitioner's Calculation:</strong><br/>
+                <strong>Petitioner&apos;s Calculation:</strong><br/>
                 • Net proceeds: $358,155.71 (with add-back)<br/>
                 • Petitioner (35%): $116,453.00<br/>
                 • Respondent (65%): $163,902.83<br/>
@@ -87,13 +91,13 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ comparisonPoints }) => 
               </div>
             </div>
             <div className="bg-blue-50 p-4 rounded border border-blue-200">
-              <h4 className="font-semibold text-blue-700 mb-2">RESPONDENT'S REBUTTAL</h4>
+              <h4 className="font-semibold text-blue-700 mb-2">RESPONDENT&apos;S REBUTTAL</h4>
               <p className="text-sm text-slate-700 leading-relaxed mb-3">
                 Respondent argues that mortgage arrears were already paid from sale proceeds and cannot be
                 double-counted. The correct calculation should use actual net proceeds of $280,355.83.
               </p>
               <div className="text-xs text-slate-600 bg-blue-100 p-3 rounded">
-                <strong>Respondent's Calculation:</strong><br/>
+                <strong>Respondent&apos;s Calculation:</strong><br/>
                 • Net proceeds: $280,355.83 (actual)<br/>
                 • Petitioner (35%): $98,124.54<br/>
                 • Respondent (65%): $182,231.29<br/>
@@ -131,14 +135,14 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ comparisonPoints }) => 
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-3">
                   <div className="bg-red-50 p-3 rounded border border-red-200">
-                    <h5 className="text-sm font-semibold text-red-700 mb-2">PETITIONER'S CLAIM</h5>
+                    <h5 className="text-sm font-semibold text-red-700 mb-2">PETITIONER&apos;S CLAIM</h5>
                     <p className="text-xs text-slate-700">{point.petitionerClaim}</p>
                     <div className="text-xs text-slate-500 mt-2">
                       <strong>Reference:</strong> {point.pageRefs.petitioner}
                     </div>
                   </div>
                   <div className="bg-blue-50 p-3 rounded border border-blue-200">
-                    <h5 className="text-sm font-semibold text-blue-700 mb-2">RESPONDENT'S REBUTTAL</h5>
+                    <h5 className="text-sm font-semibold text-blue-700 mb-2">RESPONDENT&apos;S REBUTTAL</h5>
                     <p className="text-xs text-slate-700">{point.respondentRebuttal}</p>
                     <div className="text-xs text-slate-500 mt-2">
                       <strong>Reference:</strong> {point.pageRefs.respondent}

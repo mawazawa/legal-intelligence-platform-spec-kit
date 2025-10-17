@@ -10,7 +10,7 @@ interface RespondentViewProps {
     meta: Record<string, unknown>;
     pages: number;
   } | null;
-  ledger: any;
+  ledger: Record<string, unknown> | null;
 }
 
 const RespondentView: React.FC<RespondentViewProps> = ({ fl320Content, ledger }) => {
@@ -37,7 +37,7 @@ const RespondentView: React.FC<RespondentViewProps> = ({ fl320Content, ledger })
         <CardHeader>
           <CardTitle className="text-blue-700 flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5" />
-            RESPONDENT'S RESPONSIVE DECLARATION (FL-320)
+            RESPONDENT&apos;S RESPONSIVE DECLARATION (FL-320)
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -69,7 +69,7 @@ const RespondentView: React.FC<RespondentViewProps> = ({ fl320Content, ledger })
       {/* Correct Calculation */}
       <Card className="border-blue-200">
         <CardHeader>
-          <CardTitle className="text-blue-700">RESPONDENT'S CORRECT CALCULATION</CardTitle>
+          <CardTitle className="text-blue-700">RESPONDENT&apos;S CORRECT CALCULATION</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -88,8 +88,8 @@ const RespondentView: React.FC<RespondentViewProps> = ({ fl320Content, ledger })
             </div>
             <div className="bg-blue-100 p-4 rounded border border-blue-200">
               <strong>Step 4:</strong> Account for tax obligations<br/>
-              <span className="ml-4">Petitioner's withholding: $13,694.62</span><br/>
-              <span className="ml-4">Respondent's estimated tax: $25,432.88</span>
+              <span className="ml-4">Petitioner&apos;s withholding: $13,694.62</span><br/>
+              <span className="ml-4">Respondent&apos;s estimated tax: $25,432.88</span>
             </div>
           </div>
         </CardContent>
@@ -106,9 +106,9 @@ const RespondentView: React.FC<RespondentViewProps> = ({ fl320Content, ledger })
               <div>
                 <h4 className="font-semibold text-blue-700 mb-2">FROM LEDGER</h4>
                 <div className="text-sm text-slate-700 space-y-1">
-                  <div><strong>Net Proceeds:</strong> {fmt(ledger?.root?.children?.[0]?.value?.due_to_seller)}</div>
-                  <div><strong>Respondent (65%):</strong> {fmt(ledger?.root?.value?.respondent)}</div>
-                  <div><strong>Petitioner (35%):</strong> {fmt(ledger?.root?.value?.petitioner)}</div>
+                  <div><strong>Net Proceeds:</strong> {fmt((ledger as any)?.root?.children?.[0]?.value?.due_to_seller)}</div>
+                  <div><strong>Respondent (65%):</strong> {fmt((ledger as any)?.root?.value?.respondent)}</div>
+                  <div><strong>Petitioner (35%):</strong> {fmt((ledger as any)?.root?.value?.petitioner)}</div>
                 </div>
               </div>
               <div>
