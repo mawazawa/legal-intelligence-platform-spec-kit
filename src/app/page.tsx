@@ -30,6 +30,11 @@ const ClaimsAnalysisPage = lazy(() => import('@/app/analytics/claims/page'));
 const ContinuancesPage = lazy(() => import('@/app/analytics/continuances/page'));
 const CommunicationsPage = lazy(() => import('@/app/analytics/communications/page'));
 const EvidenceMatrixPage = lazy(() => import('@/app/analytics/evidence-matrix/page'));
+const SideBySideDeclarations = lazy(() => import('@/components/declarations/SideBySideDeclarations'));
+const EvidenceNetworkGraph = lazy(() => import('@/components/analytics/EvidenceNetworkGraph'));
+const EvidenceHeatmap = lazy(() => import('@/components/analytics/EvidenceHeatmap'));
+const PredictiveModels = lazy(() => import('@/components/analytics/PredictiveModels'));
+const QualityControlChecklist = lazy(() => import('@/components/analytics/QualityControlChecklist'));
 
 interface NavSection {
   id: string;
@@ -66,6 +71,7 @@ const navigationSections: NavSection[] = [
     title: 'Legal Filings',
     icon: <FileText className="h-5 w-5" />,
     subsections: [
+      { id: 'side-by-side-declarations', title: 'Side-by-Side Declarations', component: SideBySideDeclarations },
       { id: 'court-filing', title: 'Court Filing Package', component: CourtFilingPage },
       { id: 'rfo-comparison', title: 'RFO Comparison', component: RFOComparisonPage },
       { id: 'responsive-declaration', title: 'Responsive Declaration', component: ResponsiveDeclarationPage },
@@ -77,6 +83,10 @@ const navigationSections: NavSection[] = [
     title: 'Analytics & Evidence',
     icon: <BarChart3 className="h-5 w-5" />,
     subsections: [
+      { id: 'evidence-network', title: 'Evidence Network Graph', component: EvidenceNetworkGraph },
+      { id: 'evidence-heatmap', title: 'Evidence Heatmap', component: EvidenceHeatmap },
+      { id: 'predictive-models', title: 'Predictive Models', component: PredictiveModels },
+      { id: 'quality-control', title: 'Quality Control Checklist', component: QualityControlChecklist },
       { id: 'rfo-analysis', title: 'RFO Analysis', component: RFOAnalysisPage },
       { id: 'claims', title: 'Claims Analysis', component: ClaimsAnalysisPage },
       { id: 'continuances', title: 'Continuances', component: ContinuancesPage },

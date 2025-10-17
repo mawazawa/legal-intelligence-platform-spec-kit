@@ -29,6 +29,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Perceived performance: avoid rendering offscreen content until scrolled into view */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1000px 2000px;
+}
+
 /* Typographic polish */
 .tabular-nums {
   font-variant-numeric: tabular-nums;

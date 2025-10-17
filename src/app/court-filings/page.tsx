@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { ResponsiveDeclarationDocument } from '@/components/filings/ResponsiveDeclarationDocument';
 import RotertDeclarationDocument from '@/components/filings/RotertDeclarationDocument';
@@ -29,31 +29,37 @@ const CourtFilingsPage = () => {
         </nav>
       </header>
 
-      <section id="responsive" className="space-y-4">
+      <section id="responsive" className="space-y-4 cv-auto">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight">Responsive Declaration (FL-320)</h2>
           <p className="text-slate-600 text-sm">Full annotated responsive declaration rendered on pleading paper.</p>
         </div>
-        <ResponsiveDeclarationDocument layout="pleading" showSidebars={false} />
+        <Suspense fallback={<div className="text-sm text-slate-600">Loading declaration…</div>}>
+          <ResponsiveDeclarationDocument layout="pleading" showSidebars={false} />
+        </Suspense>
       </section>
 
-      <section id="rotert" className="space-y-4 page-break">
+      <section id="rotert" className="space-y-4 page-break cv-auto">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight">Declaration of Thomas J. Rotert</h2>
           <p className="text-slate-600 text-sm">Counsel’s supporting declaration outlining intended testimony and rebuttal points.</p>
         </div>
-        <RotertDeclarationDocument />
+        <Suspense fallback={<div className="text-sm text-slate-600">Loading Rotert declaration…</div>}>
+          <RotertDeclarationDocument />
+        </Suspense>
       </section>
 
-      <section id="mpa" className="space-y-4 page-break">
+      <section id="mpa" className="space-y-4 page-break cv-auto">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight">Memorandum of Points and Authorities</h2>
           <p className="text-slate-600 text-sm">Legal argument summary aligned with the responsive declaration.</p>
         </div>
-        <MPADocument />
+        <Suspense fallback={<div className="text-sm text-slate-600">Loading memorandum…</div>}>
+          <MPADocument />
+        </Suspense>
       </section>
 
-      <section id="evidence" className="space-y-6 page-break">
+      <section id="evidence" className="space-y-6 page-break cv-auto">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight">Evidence & Analytics</h2>
           <p className="text-slate-600 text-sm">Direct access to data visualizations and comparison dashboards supporting the filings.</p>

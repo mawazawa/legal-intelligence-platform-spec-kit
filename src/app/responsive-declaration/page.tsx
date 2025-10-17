@@ -4,7 +4,7 @@ import { ResponsiveDeclarationDocument } from '@/components/filings/ResponsiveDe
 
 const ResponsiveDeclarationPage = () => {
   return (
-    <div className="p-6 mx-auto max-w-6xl space-y-6">
+    <div className="p-6 mx-auto max-w-6xl space-y-6 cv-auto">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Responsive Declaration (FL-320)</h1>
