@@ -4,19 +4,26 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Calculator, 
-  TrendingUp, 
-  Calendar, 
-  Mail, 
+import { typography } from '@/styles/typography';
+import {
+  Calculator,
+  TrendingUp,
+  Calendar,
+  Mail,
   DollarSign,
   AlertTriangle,
   CheckCircle,
   FileText,
   Download,
-  Scale
+  Scale,
+  Target,
+  Award,
+  Info,
+  ExternalLink,
+  Sparkles,
+  ShieldCheck
 } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell, LineChart, Line, CartesianGrid } from 'recharts';
 
 interface RFOAnalysisData {
   mathematicalErrors: {
