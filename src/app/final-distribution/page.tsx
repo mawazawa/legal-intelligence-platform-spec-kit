@@ -88,7 +88,7 @@ interface NegotiableParameter {
 const FinalDistributionSSOT: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('calculation');
   const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(false);
-  const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
+  // const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
   const [negotiableParams, setNegotiableParams] = useState<NegotiableParameter[]>([
     {
       id: 'commission-rate',
@@ -546,24 +546,39 @@ const FinalDistributionSSOT: React.FC = () => {
   // Calculation Content Renderer
   const renderCalculationContent = () => (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Export/Print Controls */}
-      <div className="fixed top-20 right-4 z-50 flex gap-2 no-print">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              onClick={printCalculation}
-              className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-              size="sm"
-            >
-              <FileText className="h-4 w-4 mr-2" />
-              Print / Save as PDF
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Print calculation or save as PDF</p>
-          </TooltipContent>
-        </Tooltip>
-      </div>
+           {/* Export/Print Controls */}
+           <div className="fixed top-20 right-4 z-50 flex gap-2 no-print">
+             <Tooltip>
+               <TooltipTrigger asChild>
+                 <Button
+                   onClick={() => window.open('/analytics/continuances', '_blank')}
+                   className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                   size="sm"
+                 >
+                   <Scale className="h-4 w-4 mr-2" />
+                   Continuances Analysis
+                 </Button>
+               </TooltipTrigger>
+               <TooltipContent>
+                 <p>View continuances attribution analysis</p>
+               </TooltipContent>
+             </Tooltip>
+             <Tooltip>
+               <TooltipTrigger asChild>
+                 <Button
+                   onClick={printCalculation}
+                   className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                   size="sm"
+                 >
+                   <FileText className="h-4 w-4 mr-2" />
+                   Print / Save as PDF
+                 </Button>
+               </TooltipTrigger>
+               <TooltipContent>
+                 <p>Print calculation or save as PDF</p>
+               </TooltipContent>
+             </Tooltip>
+           </div>
 
       {/* Court-Ready Document Layout */}
       <div className="court-document bg-white shadow-2xl mx-auto my-8 max-w-4xl" ref={printRef}>
@@ -839,7 +854,7 @@ const FinalDistributionSSOT: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h2 className="text-2xl font-bold text-slate-800 mb-4">Side-by-Side Comparison</h2>
-          <p className="text-slate-600">This tab will show a comparison between the petitioner's proposed calculation and the respondent's correct calculation.</p>
+          <p className="text-slate-600">This tab will show a comparison between the petitioner&apos;s proposed calculation and the respondent&apos;s correct calculation.</p>
         </div>
       </div>
     </div>
@@ -890,101 +905,101 @@ const FinalDistributionSSOT: React.FC = () => {
   );
 
   // Helper Functions
-  const renderCalculationStep = (step: CalculationStep) => (
-    <div key={step.stepNumber} className="bg-white border border-slate-200 rounded-lg p-6">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-4 border-2 border-blue-300">
-            <span className="text-sm font-bold text-blue-700">{step.stepNumber}</span>
-          </div>
-          <div>
-            <h4 className="text-lg font-bold text-slate-800">{step.stepName}</h4>
-            <p className="text-sm text-slate-600">{step.explanation}</p>
-          </div>
-        </div>
-        <div className="text-right">
-          <div className="text-2xl font-black text-slate-900">
-            ${step.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
-          </div>
-          {step.formula && (
-            <div className="text-xs text-slate-500 mt-1 font-mono bg-slate-50 px-2 py-1 rounded">
-              {step.formula}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Document Sources */}
-      {step.sources && step.sources.length > 0 && (
-        <div className="mb-4">
-          <h5 className="text-sm font-bold text-slate-700 mb-2">DOCUMENT SOURCES:</h5>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {step.sources.map((source, sourceIndex) => (
-              <div key={sourceIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-xs">
-                <div className="font-bold text-slate-700">{source.documentName}</div>
-                <div className="text-slate-600">{source.documentDate}</div>
-                {source.sectionName && (
-                  <div className="text-slate-600">{source.sectionName}</div>
-                )}
-                {source.excerpt && (
-                  <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Sub-steps */}
-      {step.subSteps && step.subSteps.length > 0 && (
-        <div className="mt-4 pl-8 border-l-2 border-slate-200">
-          <h6 className="text-sm font-bold text-slate-700 mb-3">SUPPORTING CALCULATIONS:</h6>
-          <div className="space-y-3">
-            {step.subSteps.map((subStep, subIndex) => (
-              <div key={subIndex} className="bg-slate-50 border border-slate-200 rounded p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 bg-slate-200 rounded-full flex items-center justify-center mr-3 border border-slate-300">
-                      <span className="text-xs font-bold text-slate-700">{subStep.stepNumber}</span>
-                    </div>
-                    <div>
-                      <h6 className="text-sm font-bold text-slate-800">{subStep.stepName}</h6>
-                      <p className="text-xs text-slate-600">{subStep.explanation}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-slate-900">
-                      ${subStep.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Sub-step Sources */}
-                {subStep.sources && subStep.sources.length > 0 && (
-                  <div className="mt-3">
-                    <div className="grid grid-cols-1 gap-2">
-                      {subStep.sources.map((source, sourceIndex) => (
-                        <div key={sourceIndex} className="bg-white border border-slate-200 rounded p-2 text-xs">
-                          <div className="font-semibold text-slate-700">{source.documentName}</div>
-                          <div className="text-slate-600">{source.documentDate}</div>
-                          {source.sectionName && (
-                            <div className="text-slate-600">{source.sectionName}</div>
-                          )}
-                          {source.excerpt && (
-                            <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  // const renderCalculationStep = (step: CalculationStep) => (
+  //   <div key={step.stepNumber} className="bg-white border border-slate-200 rounded-lg p-6">
+  //     <div className="flex items-start justify-between mb-4">
+  //       <div className="flex items-center">
+  //         <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-4 border-2 border-blue-300">
+  //           <span className="text-sm font-bold text-blue-700">{step.stepNumber}</span>
+  //         </div>
+  //         <div>
+  //           <h4 className="text-lg font-bold text-slate-800">{step.stepName}</h4>
+  //           <p className="text-sm text-slate-600">{step.explanation}</p>
+  //         </div>
+  //       </div>
+  //       <div className="text-right">
+  //         <div className="text-2xl font-black text-slate-900">
+  //           ${step.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
+  //         </div>
+  //         {step.formula && (
+  //           <div className="text-xs text-slate-500 mt-1 font-mono bg-slate-50 px-2 py-1 rounded">
+  //             {step.formula}
+  //           </div>
+  //         )}
+  //       </div>
+  //     </div>
+  //
+  //     {/* Document Sources */}
+  //     {step.sources && step.sources.length > 0 && (
+  //       <div className="mb-4">
+  //         <h5 className="text-sm font-bold text-slate-700 mb-2">DOCUMENT SOURCES:</h5>
+  //         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+  //           {step.sources.map((source, sourceIndex) => (
+  //             <div key={sourceIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-xs">
+  //               <div className="font-bold text-slate-700">{source.documentName}</div>
+  //               <div className="text-slate-600">{source.documentDate}</div>
+  //               {source.sectionName && (
+  //                 <div className="text-slate-600">{source.sectionName}</div>
+  //               )}
+  //               {source.excerpt && (
+  //                 <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
+  //               )}
+  //             </div>
+  //           ))}
+  //         </div>
+  //       </div>
+  //     )}
+  //
+  //     {/* Sub-steps */}
+  //     {step.subSteps && step.subSteps.length > 0 && (
+  //       <div className="mt-4 pl-8 border-l-2 border-slate-200">
+  //         <h6 className="text-sm font-bold text-slate-700 mb-3">SUPPORTING CALCULATIONS:</h6>
+  //         <div className="space-y-3">
+  //           {step.subSteps.map((subStep, subIndex) => (
+  //             <div key={subIndex} className="bg-slate-50 border border-slate-200 rounded p-4">
+  //               <div className="flex items-start justify-between">
+  //                 <div className="flex items-center">
+  //                   <div className="w-6 h-6 bg-slate-200 rounded-full flex items-center justify-center mr-3 border border-slate-300">
+  //                     <span className="text-xs font-bold text-slate-700">{subStep.stepNumber}</span>
+  //                   </div>
+  //                   <div>
+  //                     <h6 className="text-sm font-bold text-slate-800">{subStep.stepName}</h6>
+  //                     <p className="text-xs text-slate-600">{subStep.explanation}</p>
+  //                   </div>
+  //                 </div>
+  //                 <div className="text-right">
+  //                   <div className="text-lg font-bold text-slate-900">
+  //                     ${subStep.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '—'}
+  //                   </div>
+  //                 </div>
+  //               </div>
+  //               
+  //               {/* Sub-step Sources */}
+  //               {subStep.sources && subStep.sources.length > 0 && (
+  //                 <div className="mt-3">
+  //                   <div className="grid grid-cols-1 gap-2">
+  //                     {subStep.sources.map((source, sourceIndex) => (
+  //                       <div key={sourceIndex} className="bg-white border border-slate-200 rounded p-2 text-xs">
+  //                         <div className="font-semibold text-slate-700">{source.documentName}</div>
+  //                         <div className="text-slate-600">{source.documentDate}</div>
+  //                         {source.sectionName && (
+  //                           <div className="text-slate-600">{source.sectionName}</div>
+  //                         )}
+  //                         {source.excerpt && (
+  //                           <div className="text-slate-600 mt-1 italic">&quot;{source.excerpt}&quot;</div>
+  //                         )}
+  //                       </div>
+  //                     ))}
+  //                   </div>
+  //                 </div>
+  //               )}
+  //             </div>
+  //           ))}
+  //         </div>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 
   const renderSellerDeduction = (deduction: SellerDeduction, index: number) => (
     <div key={deduction.id} className="bg-white border border-slate-200 rounded-lg p-6">
