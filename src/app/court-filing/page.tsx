@@ -371,7 +371,7 @@ const CourtFilingPage: React.FC = () => {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-8 print:bg-white print:p-0">
         <div className="max-w-7xl mx-auto" ref={printRef}>
           {/* Header */}
           <div className="mb-8 sm:mb-12">
@@ -712,7 +712,7 @@ const CourtFilingPage: React.FC = () => {
           </Card>
 
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-4 mb-8">
+          <div className="flex justify-end space-x-4 mb-8 print:hidden">
             <Button
               variant="outline"
               className="border-slate-300"
