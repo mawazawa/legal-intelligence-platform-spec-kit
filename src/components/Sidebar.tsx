@@ -38,6 +38,8 @@ const navigation: NavItem[] = [
   { name: 'Case Financials', href: '/case-financials', icon: <FileText className="h-5 w-5" /> },
   { name: 'Case Timeline', href: '/timeline', icon: <Clock className="h-5 w-5" /> },
   { name: 'Document Evidence', href: '/documents', icon: <FolderOpen className="h-5 w-5" /> },
+  { name: 'Intake (Dropzone)', href: '/intake', icon: <FolderOpen className="h-5 w-5" />, badge: 'NEW' },
+  { name: 'Exhibit Packet', href: '/exhibits/packet', icon: <FileText className="h-5 w-5" />, badge: 'NEW' },
   { name: 'Scorecards', href: '/scorecards', icon: <BarChart3 className="h-5 w-5" /> },
 ];
 
