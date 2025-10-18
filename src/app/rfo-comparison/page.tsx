@@ -147,7 +147,7 @@ const RFOComparisonPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center text-slate-700">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
           <p className="text-lg font-semibold">Loading RFO comparison...</p>
@@ -190,7 +190,7 @@ const RFOComparisonPage: React.FC = () => {
       `}</style>
 
       <TooltipProvider>
-        <div ref={printRef} className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div ref={printRef} className="min-h-screen bg-gray-50">
           {/* Print Button */}
           <div className="fixed top-4 right-4 z-50 no-print">
             <Tooltip>

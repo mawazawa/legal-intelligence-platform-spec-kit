@@ -4,6 +4,7 @@
 import React, { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Printer, Download } from 'lucide-react';
+import ExhibitDEmailCommunications from './exhibits/Exhibit_D_Email_Communications';
 
 const OppositionFilingPage: React.FC = () => {
   const printRef = useRef<HTMLDivElement>(null);
@@ -20,17 +21,17 @@ const OppositionFilingPage: React.FC = () => {
           <Printer className="h-4 w-4 mr-2" />
           Print Filing
         </Button>
-        <Button variant="outline">
+        <Button variant="outline" onClick={() => window.open('/rfo-comparison', '_blank')}>
           <Download className="h-4 w-4 mr-2" />
-          Download PDF
+          Side-by-Side RFO Comparison
         </Button>
       </div>
 
       {/* Court Filing */}
-      <div ref={printRef} className="legal-document min-h-screen p-16">
+      <div ref={printRef} className="legal-document min-h-screen bg-gray-50 py-8">
 
         {/* PAGE 1 - COVER PAGE */}
-        <div className="page-break min-h-[11in] flex flex-col justify-center items-center text-center">
+        <div className="letter-page page-break min-h-[11in] flex flex-col justify-center items-center text-center">
           <div className="max-w-4xl">
             <h1 className="text-3xl font-bold mb-8">SUPERIOR COURT OF CALIFORNIA</h1>
             <h2 className="text-2xl font-semibold mb-4">COUNTY OF LOS ANGELES</h2>
@@ -61,7 +62,7 @@ const OppositionFilingPage: React.FC = () => {
         </div>
 
         {/* PAGE 2 - TABLE OF CONTENTS */}
-        <div className="page-break min-h-[11in] p-16">
+        <div className="letter-page page-break min-h-[11in]">
           <h2 className="text-2xl font-bold mb-8 text-center">TABLE OF CONTENTS</h2>
           
           <div className="space-y-4 text-sm">
@@ -143,7 +144,7 @@ const OppositionFilingPage: React.FC = () => {
         </div>
 
         {/* PAGE 3 - RESPONDENT'S DECLARATION - PLEADING PAPER FORMAT */}
-        <div className="page-break">
+        <div className="letter-page page-break">
           <div className="page-content">
             {/* Page Header with Case Info */}
             <div className="text-[10pt] mb-4">
@@ -326,108 +327,28 @@ const OppositionFilingPage: React.FC = () => {
             </div>
 
             {/* Visual Enhancement for Mathematical Analysis */}
-            <div className="mt-6 p-6 bg-gradient-to-r from-red-50 to-yellow-50 rounded-xl shadow-xl">
-              <h4 className="text-xl font-bold text-red-800 mb-4 flex items-center">
-                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            <div className="mt-6 p-4 border-l-4 border-red-500 bg-red-50">
+              <h4 className="text-lg font-bold text-red-800 mb-2">
                 Mathematical Impossibility Exposed
               </h4>
-
-              <div className="bg-white p-4 rounded-lg shadow-inner mb-4">
-                <p className="text-sm font-semibold text-gray-700 mb-2">Petitioner's Flawed Formula:</p>
-                <div className="bg-red-100 p-3 rounded font-mono text-center">
-                  <p className="text-red-800">Available Funds = (Gross Sale - Debt Paid) + Debt Paid</p>
-                  <p className="text-sm text-gray-600 mt-2">[v] Simplifies to [v]</p>
-                  <p className="text-red-900 font-bold">Available Funds = Gross Sale</p>
-                  <p className="text-xs text-red-700 mt-2">[WARNING] This would mean NO debts were ever paid!</p>
-                </div>
-              </div>
+              <p className="text-sm text-gray-700 mb-2">Petitioner's Flawed Formula:</p>
+              <p className="text-sm font-mono text-red-800">Available Funds = (Gross Sale - Debt Paid) + Debt Paid</p>
+              <p className="text-xs text-gray-600 mt-1">[Simplifies to]</p>
+              <p className="text-sm font-bold text-red-900">Available Funds = Gross Sale</p>
+              <p className="text-xs text-red-700 mt-1">[WARNING] This would mean NO debts were ever paid!</p>
+              <p className="text-xs text-gray-600 mt-2 italic">See Exhibit A for detailed visual analysis.</p>
             </div>
 
-            {/* Interactive Distribution Breakdown */}
-            <div className="mt-6 p-6 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 rounded-xl shadow-2xl">
-              <h4 className="text-xl font-bold text-indigo-800 mb-4 flex items-center">
-                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                Distribution Analysis - Visual Breakdown
+            {/* Distribution Analysis Reference */}
+            <div className="mt-6 p-4 border-l-4 border-blue-500 bg-blue-50">
+              <h4 className="text-lg font-bold text-blue-800 mb-2">
+                Distribution Analysis
               </h4>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-green-100 p-4 rounded-lg border-2 border-green-400">
-                  <h5 className="font-bold text-green-800 mb-3">[OK] Correct Legal Distribution</h5>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Total Proceeds:</span>
-                      <span className="font-mono font-bold">$280,355.83</span>
-                    </div>
-                    <div className="h-px bg-green-300 my-2"></div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Petitioner (35%):</span>
-                      <span className="font-mono text-green-700">$98,124.54</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Respondent (65%):</span>
-                      <span className="font-mono text-green-700">$182,231.29</span>
-                    </div>
-                  </div>
-                  <div className="mt-3 bg-green-200 p-2 rounded text-center">
-                    <span className="text-xs font-semibold text-green-900">Fair & Legal</span>
-                  </div>
-                </div>
-
-                <div className="bg-red-100 p-4 rounded-lg border-2 border-red-400">
-                  <h5 className="font-bold text-red-800 mb-3">[X] Petitioner's Manipulation</h5>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Fictional Total:</span>
-                      <span className="font-mono font-bold text-red-600">$358,155.71</span>
-                    </div>
-                    <div className="h-px bg-red-300 my-2"></div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Petitioner Claims:</span>
-                      <span className="font-mono text-red-700">$125,354.50</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Leaves Respondent:</span>
-                      <span className="font-mono text-red-700">$104,451.41</span>
-                    </div>
-                  </div>
-                  <div className="mt-3 bg-red-200 p-2 rounded text-center">
-                    <span className="text-xs font-semibold text-red-900">+$27,229.96 Theft!</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Visual Bar Chart Comparison */}
-              <div className="mt-6 bg-white p-4 rounded-lg shadow-inner">
-                <h5 className="text-sm font-bold text-gray-700 mb-3">Visual Share Comparison</h5>
-                <div className="space-y-3">
-                  <div className="flex items-center">
-                    <span className="text-xs w-24">Correct Split:</span>
-                    <div className="flex-1 flex h-6 rounded overflow-hidden">
-                      <div className="bg-blue-500 flex items-center justify-center text-white text-xs" style={{width: '35%'}}>
-                        35%
-                      </div>
-                      <div className="bg-green-500 flex items-center justify-center text-white text-xs" style={{width: '65%'}}>
-                        65%
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-xs w-24">Their Claim:</span>
-                    <div className="flex-1 flex h-6 rounded overflow-hidden">
-                      <div className="bg-red-500 flex items-center justify-center text-white text-xs" style={{width: '45%'}}>
-                        45% (!!!)
-                      </div>
-                      <div className="bg-orange-500 flex items-center justify-center text-white text-xs" style={{width: '55%'}}>
-                        55%
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <p className="text-sm text-gray-700 mb-2">Correct Legal Distribution:</p>
+              <p className="text-sm">Total Proceeds: $280,355.83</p>
+              <p className="text-sm">Petitioner (35%): $98,124.54</p>
+              <p className="text-sm">Respondent (65%): $182,231.29</p>
+              <p className="text-xs text-gray-600 mt-2 italic">See Exhibit B for detailed distribution comparison charts.</p>
             </div>
 
             <div className="line-numbers mt-6">
@@ -470,7 +391,7 @@ const OppositionFilingPage: React.FC = () => {
                     <p className="text-xs italic text-purple-700">"I took possession of the home on November 16, 2024"</p>
                     <p className="text-xs text-purple-600 mt-2">- Declaration ¶19</p>
                   </div>
-                  <div className="border-2 border-red-400 bg-red-50 p-3 rounded">
+                  <div className="border-l-4 border-red-500 bg-red-50 p-3">
                     <p className="font-semibold text-xs text-red-900 mb-2">Petitioner's Claim</p>
                     <p className="text-xs text-red-700">Watts charges through November 16, 2024 and beyond</p>
                     <p className="text-xs text-red-600 mt-2 font-bold">CONTRADICTION!</p>
@@ -481,7 +402,7 @@ const OppositionFilingPage: React.FC = () => {
                   <span className="font-semibold">4.3 Correct Watts Calculation Cutoff.</span> Based on the legal principle that possession transfer terminates Watts charges, the correct calculation is:
                 </p>
 
-                <div className="ml-8 my-3 bg-green-50 border-2 border-green-500 rounded p-4">
+                <div className="ml-8 my-3 bg-green-50 border-l-4 border-green-500 p-4">
                   <p className="font-bold text-green-900 mb-3">[OK] LEGALLY CORRECT WATTS PERIOD</p>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between items-center p-2 bg-white rounded">
@@ -492,7 +413,7 @@ const OppositionFilingPage: React.FC = () => {
                       <span>Watts Charges End:</span>
                       <span className="font-mono font-semibold text-green-700">November 16, 2024 (possession transfer)</span>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-red-100 rounded border border-red-400">
+                    <div className="flex justify-between items-center p-2 bg-red-100 rounded border-l-4 border-red-500">
                       <span className="font-bold">Invalid Period Claimed:</span>
                       <span className="font-mono font-bold text-red-700">Nov 16, 2024 → May 30, 2025</span>
                     </div>
@@ -536,7 +457,7 @@ const OppositionFilingPage: React.FC = () => {
                     <p className="text-sm italic text-green-700">"I will take full responsibility for the tax withholding"</p>
                   </div>
                   <div className="flex items-center justify-center">
-                    <span className="text-2xl text-red-600 font-bold">[DOWN] BUT THEN [DOWN]</span>
+                    <span className="text-lg text-red-600 font-bold">[CONTRADICTION]</span>
                   </div>
                   <div className="border-l-4 border-red-500 bg-red-50 p-3">
                     <p className="font-semibold text-red-900 text-sm mb-1">Statement #2 (RFO ¶ __)</p>
@@ -556,7 +477,7 @@ const OppositionFilingPage: React.FC = () => {
                 </p>
 
                 <div className="ml-8 my-3 grid grid-cols-2 gap-3">
-                  <div className="bg-red-50 border border-red-200 p-3 rounded-sm">
+                  <div className="bg-red-50 border-l-4 border-red-500 p-3">
                     <p className="font-semibold text-xs text-red-900 mb-2">[MISSING] Missing Evidence</p>
                     <ul className="text-xs text-red-700 space-y-1">
                       <li>• Tax return calculations</li>
@@ -629,6 +550,7 @@ const OppositionFilingPage: React.FC = () => {
                 </p>
 
                 <div className="ml-8 my-2 bg-blue-50 border-l-4 border-blue-500 p-3">
+                  <p className="text-xs text-gray-600 mb-2 italic">See Exhibit C for detailed timeline analysis.</p>
                   <ul className="text-sm space-y-1 text-blue-900">
                     <li>[OK] Proof of actual tax liability</li>
                     <li>[OK] Evidence of payment (cancelled check, wire confirmation)</li>
@@ -1134,6 +1056,9 @@ const OppositionFilingPage: React.FC = () => {
           color: #34495e;
         }
       `}</style>
+
+        {/* Exhibit D - Email Communications */}
+        <ExhibitDEmailCommunications />
       </div>
     );
   };
