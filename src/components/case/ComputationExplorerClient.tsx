@@ -45,7 +45,12 @@ interface LedgerData {
   sources?: Record<string, SourceCitation>;
 }
 
-export function ComputationExplorerClient({ ledger }: { ledger: LedgerData }) {
+interface ComputationExplorerClientProps {
+  ledger: LedgerData;
+  anchors?: Record<string, string | undefined>;
+}
+
+export function ComputationExplorerClient({ ledger, anchors }: ComputationExplorerClientProps) {
   const [open, setOpen] = useState(false)
   const [srcKey, setSrcKey] = useState('closing_statement')
   const [title, setTitle] = useState('')
@@ -80,7 +85,14 @@ export function ComputationExplorerClient({ ledger }: { ledger: LedgerData }) {
             {ledger?.root?.children?.[0]?.items?.map((it: LedgerItem, idx: number)=>(
               <li key={idx} className={tx(typography.body.medium, 'mb-1 flex items-center gap-2')}>
                 <span>{it.label}: <strong>{toCurrency(it.amount)}</strong></span>
-                <button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource('closing_statement','Closing Statement')}>source</button>
+                <div className="flex items-center gap-2">
+                  <button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource('closing_statement','Closing Statement')}>source</button>
+                  {anchors?.closing_statement && (
+                    <a href={anchors.closing_statement} className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200')}>
+                      nav link
+                    </a>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
@@ -92,7 +104,14 @@ export function ComputationExplorerClient({ ledger }: { ledger: LedgerData }) {
         <summary className={tx(typography.label.medium, 'cursor-pointer')}>SOD Constructive Net and 65/35</summary>
         <div className={tx(typography.body.medium, 'pl-4 mt-2')}>Constructive net: {toCurrency(ledger?.root?.children?.[1]?.value?.constructive_net)} · R 65%: {toCurrency(ledger?.root?.children?.[1]?.value?.r65)} · P 35%: {toCurrency(ledger?.root?.children?.[1]?.value?.p35)}</div>
         {ledger?.root?.children?.[1]?.formulas?.map((f:string, i:number)=>(<div key={i} className="pl-4"><code className={tx(typography.caption.medium, 'bg-slate-50 border border-slate-200 rounded px-2 py-0.5')}>{f}</code></div>))}
-        <div className="pl-4 mt-2"><button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource('sod','Statement of Decision')}>source</button></div>
+        <div className="pl-4 mt-2 flex items-center gap-2">
+          <button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource('sod','Statement of Decision')}>source</button>
+          {anchors?.sod && (
+            <a href={anchors.sod} className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200')}>
+              nav link
+            </a>
+          )}
+        </div>
       </details>
 
       {/* Equal arrears */}
@@ -110,7 +129,14 @@ export function ComputationExplorerClient({ ledger }: { ledger: LedgerData }) {
             <li key={idx} className={tx(typography.body.medium, 'mb-1')}>
               <div>{it.label}: <strong>{toCurrency(it.amount)}</strong></div>
               {it.formula && <div className={tx(typography.caption.medium, textColors.secondary, 'font-mono')}>{it.formula}</div>}
-              <div className="mt-1"><button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource('sod','Statement of Decision')}>source</button></div>
+              <div className="mt-1 flex items-center gap-2">
+                <button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource('sod','Statement of Decision')}>source</button>
+                {anchors?.sod && (
+                  <a href={anchors.sod} className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200')}>
+                    nav link
+                  </a>
+                )}
+              </div>
             </li>
           ))}
         </ul>
@@ -124,7 +150,14 @@ export function ComputationExplorerClient({ ledger }: { ledger: LedgerData }) {
             <li key={idx} className={tx(typography.body.medium, 'mb-1')}>
               <div>{it.label}: <strong>{toCurrency(it.amount)}</strong></div>
               {it.formula && <div className={tx(typography.caption.medium, textColors.secondary, 'font-mono')}>{it.formula}</div>}
-              <div className="mt-1"><button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource('sod','Statement of Decision')}>source</button></div>
+              <div className="mt-1 flex items-center gap-2">
+                <button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource('sod','Statement of Decision')}>source</button>
+                {anchors?.sod && (
+                  <a href={anchors.sod} className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200')}>
+                    nav link
+                  </a>
+                )}
+              </div>
             </li>
           ))}
         </ul>
@@ -138,7 +171,19 @@ export function ComputationExplorerClient({ ledger }: { ledger: LedgerData }) {
             <li key={idx} className={tx(typography.body.medium, 'mb-1')}>
               <div>{it.label}{it.amount?<>: <strong>{toCurrency(it.amount)}</strong></>:null}</div>
               {it.formula && <div className={tx(typography.caption.medium, textColors.secondary, 'font-mono')}>{it.formula}</div>}
-              <div className="mt-1"><button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource(it.sources?.[0] || 'closing_statement','Form 593 / FTB Evidence')}>source</button></div>
+              <div className="mt-1 flex items-center gap-2">
+                <button className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200')} onClick={()=>openSource(it.sources?.[0] || 'closing_statement','Form 593 / FTB Evidence')}>source</button>
+                {it.sources?.[0] && anchors?.[it.sources[0]] && (
+                  <a href={anchors[it.sources[0]]} className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200')}>
+                    nav link
+                  </a>
+                )}
+                {!it.sources?.[0] && anchors?.closing_statement && (
+                  <a href={anchors.closing_statement} className={tx(typography.caption.small, 'px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200')}>
+                    nav link
+                  </a>
+                )}
+              </div>
             </li>
           ))}
         </ul>
@@ -148,4 +193,3 @@ export function ComputationExplorerClient({ ledger }: { ledger: LedgerData }) {
     </div>
   )
 }
-

@@ -353,8 +353,15 @@ const RFOComparisonPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Feedback Modal */}
-              <div className="fixed bottom-4 right-4 z-50 no-print">
+              {/* Action Buttons */}
+              <div className="fixed bottom-4 right-4 z-50 no-print flex gap-2">
+                <Button
+                  onClick={() => window.open('/case-workspace', '_blank')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                  size="sm"
+                >
+                  📁 Case Workspace
+                </Button>
                 <Button
                   onClick={() => setShowFeedbackModal(true)}
                   className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg"

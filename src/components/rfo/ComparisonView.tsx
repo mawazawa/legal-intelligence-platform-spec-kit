@@ -154,10 +154,18 @@ const ComparisonView = React.memo<ComparisonViewProps>(({ comparisonPoints }) =>
                       </div>
                     </div>
                     <p className="mt-2 text-slate-700 leading-relaxed">{point.petitionerClaim}</p>
-                    <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-                      <span className="font-semibold text-slate-600">Source:</span>
-                      <span>{point.pageRefs.petitioner}</span>
-                    </div>
+                     <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+                       <span className="font-semibold text-slate-600">Source:</span>
+                       <button 
+                         className="text-blue-600 hover:text-blue-800 underline"
+                         onClick={() => {
+                           // Navigate to document in case workspace
+                           window.open('/case-workspace', '_blank');
+                         }}
+                       >
+                         {point.pageRefs.petitioner}
+                       </button>
+                     </div>
                   </li>
                 );
               })}
@@ -194,9 +202,18 @@ const ComparisonView = React.memo<ComparisonViewProps>(({ comparisonPoints }) =>
                   Core Rebuttal
                 </h4>
                 <p>{activePoint.respondentRebuttal}</p>
-                <div className="text-xs text-slate-500">
-                  <strong>Reference:</strong> {activePoint.pageRefs.respondent}
-                </div>
+                 <div className="text-xs text-slate-500">
+                   <strong>Reference:</strong> 
+                   <button 
+                     className="text-blue-600 hover:text-blue-800 underline ml-1"
+                     onClick={() => {
+                       // Navigate to document in case workspace
+                       window.open('/case-workspace', '_blank');
+                     }}
+                   >
+                     {activePoint.pageRefs.respondent}
+                   </button>
+                 </div>
               </article>
 
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-xs space-y-2">
