@@ -75,7 +75,7 @@ export default async function SideBySidePage() {
     },
     {
       keywords: ['593', 'withholding'],
-      response: 'Mirror Petitioner: remove Respondent's Form 593 from the pot pre‑split and allocate 65/35 impact.',
+      response: 'Mirror Petitioner: remove Respondent\'s Form 593 from the pot pre-split and allocate 65/35 impact.',
       formula: '1,175,000 × 65% × 3.33% ≈ 25,432.88',
       sources: [{ key: 'withholding_emails', label: 'Emails: 593 handling' }],
     },

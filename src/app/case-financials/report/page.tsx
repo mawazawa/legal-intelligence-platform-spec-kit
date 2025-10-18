@@ -25,20 +25,17 @@ interface Ledger {
   root?: LedgerNode
 }
 
-async function readSibling(...parts: string[]) {
-  const p = path.resolve(process.cwd(), '..', ...parts)
-  return p
-}
+// Currency formatter (DRY - shared with side-by-side page)
+const formatCurrency = (n?: number) =>
+  typeof n === 'number' ? n.toLocaleString('en-US', {style: 'currency', currency: 'USD'}) : '—'
 
 export default async function ReportPage() {
   let ledger: Ledger | null = null
   try {
-    const p = await readSibling('case-financials','results','ledger.json')
-    const raw = await fs.readFile(p,'utf8')
+    const ledgerPath = path.resolve(process.cwd(), '..', 'case-financials', 'results', 'ledger.json')
+    const raw = await fs.readFile(ledgerPath, 'utf8')
     ledger = JSON.parse(raw) as Ledger
   } catch { /* ignore read errors */ }
-
-  const r = (n: number | undefined) => typeof n === 'number' ? n.toLocaleString('en-US',{style:'currency',currency:'USD'}) : '—'
 
   return (
     <div className="p-6">
@@ -54,15 +51,15 @@ export default async function ReportPage() {
         {/* Final distribution summary first (single source of truth) */}
         <section className="rounded border border-slate-200 p-4 mb-6 no-break">
           <div className="text-sm text-slate-600">Final Distribution</div>
-          <div className="text-xl font-semibold tracking-tight">Respondent {r(ledger?.root?.value?.respondent)} · Petitioner {r(ledger?.root?.value?.petitioner)}</div>
-          <div className="text-sm text-slate-600">Total after Form 593 removal: <span className="font-medium tracking-tight">{r(ledger?.root?.value?.total)}</span></div>
+          <div className="text-xl font-semibold tracking-tight">Respondent {formatCurrency(ledger?.root?.value?.respondent)} · Petitioner {formatCurrency(ledger?.root?.value?.petitioner)}</div>
+          <div className="text-sm text-slate-600">Total after Form 593 removal: <span className="font-medium tracking-tight">{formatCurrency(ledger?.root?.value?.total)}</span></div>
           <div className="mt-2 text-xs text-slate-600">This page is the single source of truth for the court filing. All amounts below reconcile to these totals and cite their sources.</div>
         </section>
 
         <div className="rounded border border-slate-200 p-4 mb-6 no-break">
           <div className="text-sm text-slate-600">Final Totals</div>
-          <div className="text-xl font-semibold tracking-tight">Respondent {r(ledger?.root?.value?.respondent)} · Petitioner {r(ledger?.root?.value?.petitioner)}</div>
-          <div className="text-sm text-slate-600">Total after Form 593 removal: <span className="font-medium tracking-tight">{r(ledger?.root?.value?.total)}</span></div>
+          <div className="text-xl font-semibold tracking-tight">Respondent {formatCurrency(ledger?.root?.value?.respondent)} · Petitioner {formatCurrency(ledger?.root?.value?.petitioner)}</div>
+          <div className="text-sm text-slate-600">Total after Form 593 removal: <span className="font-medium tracking-tight">{formatCurrency(ledger?.root?.value?.total)}</span></div>
         </div>
 
         {/* Assumptions & Inputs */}
@@ -93,10 +90,10 @@ export default async function ReportPage() {
         {/* Closing statement build-up */}
         <section className="mb-6 no-break">
           <h2 className="text-lg font-semibold tracking-tight mb-2">Closing Statement Build‑up</h2>
-          <div className="text-sm">Sale price: {r(ledger?.root?.children?.[0]?.value?.sale_price)} · Due to Seller: {r(ledger?.root?.children?.[0]?.value?.due_to_seller)}</div>
+          <div className="text-sm">Sale price: {formatCurrency(ledger?.root?.children?.[0]?.value?.sale_price)} · Due to Seller: {formatCurrency(ledger?.root?.children?.[0]?.value?.due_to_seller)}</div>
           <ul className="list-disc ml-6 mt-2 text-sm">
             {ledger?.root?.children?.[0]?.items?.map((it:any, idx:number)=>(
-              <li key={idx} className="mb-0.5">{it.label}: <strong>{r(it.amount)}</strong></li>
+              <li key={idx} className="mb-0.5">{it.label}: <strong>{formatCurrency(it.amount)}</strong></li>
             ))}
           </ul>
         </section>
@@ -104,14 +101,14 @@ export default async function ReportPage() {
         {/* SOD constructive net */}
         <section className="mb-6 no-break">
           <h2 className="text-lg font-semibold tracking-tight mb-2">SOD Constructive Net and 65/35</h2>
-          <div className="text-sm">Constructive net: {r(ledger?.root?.children?.[1]?.value?.constructive_net)} · R 65%: {r(ledger?.root?.children?.[1]?.value?.r65)} · P 35%: {r(ledger?.root?.children?.[1]?.value?.p35)}</div>
+          <div className="text-sm">Constructive net: {formatCurrency(ledger?.root?.children?.[1]?.value?.constructive_net)} · R 65%: {formatCurrency(ledger?.root?.children?.[1]?.value?.r65)} · P 35%: {formatCurrency(ledger?.root?.children?.[1]?.value?.p35)}</div>
           {ledger?.root?.children?.[1]?.formulas?.map((f:string, i:number)=>(<Formula key={i}>{f}</Formula>))}
         </section>
 
         {/* Equal arrears */}
         <section className="mb-6 no-break">
           <h2 className="text-lg font-semibold tracking-tight mb-2">Equal Sharing of Arrears</h2>
-          <div className="text-sm">Total arrears: {r(ledger?.root?.children?.[2]?.value?.arrears_total)} → Each: {r(ledger?.root?.children?.[2]?.value?.each)}</div>
+          <div className="text-sm">Total arrears: {formatCurrency(ledger?.root?.children?.[2]?.value?.arrears_total)} → Each: {formatCurrency(ledger?.root?.children?.[2]?.value?.each)}</div>
           {ledger?.root?.children?.[2]?.formulas?.[0] && (<Formula>{ledger.root.children[2].formulas[0]}</Formula>)}
         </section>
 
@@ -121,7 +118,7 @@ export default async function ReportPage() {
           <ul className="list-disc ml-6 mt-2 text-sm">
             {ledger?.root?.children?.[3]?.items?.map((it:any, idx:number)=>(
               <li key={idx} className="mb-1">
-                <div>{it.label}: <strong>{r(it.amount)}</strong></div>
+                <div>{it.label}: <strong>{formatCurrency(it.amount)}</strong></div>
                 {it.formula && <Formula>{it.formula}</Formula>}
               </li>
             ))}
@@ -134,7 +131,7 @@ export default async function ReportPage() {
           <ul className="list-disc ml-6 mt-2 text-sm">
             {ledger?.root?.children?.[4]?.items?.map((it:any, idx:number)=>(
               <li key={idx} className="mb-1">
-                <div>{it.label}: <strong>{r(it.amount)}</strong></div>
+                <div>{it.label}: <strong>{formatCurrency(it.amount)}</strong></div>
                 {it.formula && <Formula>{it.formula}</Formula>}
               </li>
             ))}
@@ -147,7 +144,7 @@ export default async function ReportPage() {
           <ul className="list-disc ml-6 mt-2 text-sm">
             {ledger?.root?.children?.[5]?.items?.map((it:any, idx:number)=>(
               <li key={idx} className="mb-1">
-                <div>{it.label}{it.amount?<>: <strong>{r(it.amount)}</strong></>:null}</div>
+                <div>{it.label}{it.amount?<>: <strong>{formatCurrency(it.amount)}</strong></>:null}</div>
                 {it.formula && <Formula>{it.formula}</Formula>}
               </li>
             ))}
