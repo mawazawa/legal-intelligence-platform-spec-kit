@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from 'react';
 import { FileText, Image, Video, ExternalLink } from 'lucide-react';
+import { logger } from '@/lib/logging/logger';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -29,12 +30,17 @@ export function FL320EvidenceLinks({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Load evidence for FL-320 paragraph
+     */
     async function loadEvidence() {
       try {
+        logger.debug('Loading evidence for paragraph', { paragraphNumber });
         const files = await getEvidenceForParagraph(paragraphNumber);
         setEvidence(files);
+        logger.debug('Evidence loaded for paragraph', { paragraphNumber, count: files.length });
       } catch (error) {
-        console.error('Error loading evidence for paragraph:', error);
+        logger.error('Error loading evidence for paragraph', error as Error, { paragraphNumber });
       } finally {
         setLoading(false);
       }
@@ -149,12 +155,17 @@ export function EvidenceBadge({ paragraphNumber, onClick }: EvidenceBadgeProps) 
   const [evidence, setEvidence] = useState<EvidenceFile[]>([]);
 
   useEffect(() => {
+    /**
+     * Load evidence for badge display
+     */
     async function loadEvidence() {
       try {
+        logger.debug('Loading evidence for badge', { paragraphNumber });
         const files = await getEvidenceForParagraph(paragraphNumber);
         setEvidence(files);
+        logger.debug('Badge evidence loaded', { paragraphNumber, count: files.length });
       } catch (error) {
-        console.error('Error loading evidence badge:', error);
+        logger.error('Error loading evidence badge', error as Error, { paragraphNumber });
       }
     }
 
