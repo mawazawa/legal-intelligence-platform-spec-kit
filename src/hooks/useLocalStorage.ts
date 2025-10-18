@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { logger } from '@/lib/logging/logger';
-import { logger } from '@/lib/logging/logger';
 
 /**
  * Custom hook for persisting state in localStorage with SSR safety
@@ -50,7 +49,9 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     } catch (error) {
       // If localStorage is not available or JSON parsing fails,
       // keep the initialValue
-      console.warn(`Error reading localStorage key "${key}":`, error);
+      logger.warn(`Error reading localStorage key "${key}"`, {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }, [key]); // Re-sync if key changes
 
@@ -78,7 +79,9 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
       }
     } catch (error) {
       // Silent fail for localStorage errors (quota exceeded, private mode, etc.)
-      console.warn(`Error writing to localStorage key "${key}":`, error);
+      logger.warn(`Error writing to localStorage key "${key}"`, {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   };
 
