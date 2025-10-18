@@ -326,8 +326,7 @@ const CourtFilingPage: React.FC = () => {
   };
 
   const exportToPDF = () => {
-    // In a real app, this would generate a PDF
-    console.log('Exporting to PDF...');
+    // TODO: Implement PDF export functionality
   };
 
   const completedTasks = filingTasks.filter(task => task.status === 'completed').length;

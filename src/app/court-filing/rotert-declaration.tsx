@@ -11,7 +11,7 @@ const RotertDeclaration: React.FC = () => {
   };
 
   const exportToPDF = () => {
-    console.log('Exporting declaration to PDF...');
+    // TODO: Implement PDF export functionality
   };
 
   return (
