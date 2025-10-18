@@ -1,22 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/Sidebar";
 import { APP_NAME, CASE_TITLE } from "@/config/navigation";
 
-const geistSans = Geist({
+// Temporary workaround for Turbopack font loading issue
+// Using system fonts instead of Google Fonts
+const geistSans = {
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["system-ui", "arial"],
-});
+};
 
-const geistMono = Geist_Mono({
+const geistMono = {
   variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["ui-monospace", "monospace"],
-});
+};
 
 export const metadata: Metadata = {
   title: `${APP_NAME} | ${CASE_TITLE}`,
