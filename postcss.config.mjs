@@ -1,5 +1,10 @@
 const config = {
-  plugins: ["@tailwindcss/postcss"],
+  plugins: {
+    '@tailwindcss/postcss': {
+      // Performance optimizations
+      optimize: true,
+    },
+  },
 };
 
 export default config;
