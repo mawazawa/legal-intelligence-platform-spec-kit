@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { logger } from '@/lib/logging/logger';
+import { logger } from '@/lib/logging/logger';
 
 /**
  * Custom hook for persisting state in localStorage with SSR safety
