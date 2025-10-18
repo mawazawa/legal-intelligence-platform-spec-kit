@@ -932,8 +932,8 @@ const OppositionFilingPage: React.FC = () => {
           padding-top: 6pt;
         }
       `}</style>
-    </div>
-  );
-};
+      </div>
+    );
+  };
 
 export default OppositionFilingPage;
