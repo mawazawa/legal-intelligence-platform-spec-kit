@@ -3,7 +3,7 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { EvidenceCluster } from '@/components/analytics/EvidenceCluster';
 import { buildEvidenceClusters, claimLabel } from '@/lib/evidence';
 
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
 export default async function EvidenceMatrixPage() {
   const { cells, suggestions } = await buildEvidenceClusters();
