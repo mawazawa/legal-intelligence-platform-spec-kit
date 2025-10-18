@@ -2,27 +2,82 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { UploadCloud, CheckCircle2 } from 'lucide-react'
+import { safeFetch } from '@/lib/api/fetch'
+import { logger } from '@/lib/logging/logger'
+
+interface IntakeResult {
+  ok: boolean;
+  message?: string;
+  files?: Array<{ name: string; type: string }>;
+  error?: string;
+}
 
 export default function IntakePage() {
   const [files, setFiles] = useState<File[]>([])
   const [busy, setBusy] = useState(false)
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<IntakeResult | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
 
   function onChoose(e: React.ChangeEvent<HTMLInputElement>) {
     const list = Array.from(e.target.files || [])
     setFiles(list)
   }
 
+  /**
+   * Upload and organize intake files
+   * Sends files to API for classification and exhibit assembly
+   */
   async function onSubmit() {
     if (!files.length) return
+
     setBusy(true)
     setResult(null)
-    const fd = new FormData()
-    files.forEach(f => fd.append('files', f, f.name))
-    const r = await fetch('/api/intake/upload', { method: 'POST', body: fd })
-    const j = await r.json()
-    setResult(j)
-    setBusy(false)
+    setUploadError(null)
+
+    try {
+      const formData = new FormData()
+      files.forEach(f => formData.append('files', f, f.name))
+
+      logger.debug('Uploading intake files', { count: files.length });
+
+      const response = await fetch('/api/intake/upload', {
+        method: 'POST',
+        body: formData,
+        signal: AbortSignal.timeout(60000) // 60s timeout for file upload
+      })
+
+      if (!response.ok) {
+        logger.warn('File intake failed', {
+          status: response.status,
+          statusText: response.statusText
+        })
+        setUploadError(`Upload failed: ${response.statusText}`)
+        setResult(null)
+        return
+      }
+
+      const uploadResult: IntakeResult = await response.json()
+
+      if (uploadResult.ok) {
+        logger.info('Files uploaded successfully', {
+          fileCount: uploadResult.files?.length || 0
+        })
+      } else {
+        logger.warn('Upload completed with errors', {
+          error: uploadResult.error
+        })
+        setUploadError(uploadResult.error || 'Upload failed')
+      }
+
+      setResult(uploadResult)
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error'
+      logger.error('Error uploading files', err as Error)
+      setUploadError('Failed to upload files: ' + errorMsg)
+      setResult(null)
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
@@ -40,6 +95,13 @@ export default function IntakePage() {
         )}
       </div>
       <Button disabled={!files.length || busy} onClick={onSubmit}>{busy? 'Processing…' : 'Upload & Organize'}</Button>
+
+      {uploadError && (
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded text-red-800 text-sm">
+          <p className="font-semibold">Upload error</p>
+          <p className="text-xs mt-1">{uploadError}</p>
+        </div>
+      )}
 
       {result && (
         <div className="mt-6 rounded border bg-white p-4">
