@@ -9,7 +9,6 @@ import {
   BrokerageAllocation,
   SODAdjustments,
   NegotiableParameter,
-  DocumentSource,
 } from '@/types/calculations';
 import {
   PROPERTY_SALE,

@@ -32,68 +32,10 @@ import {
   XCircle
 } from 'lucide-react';
 import Link from 'next/link';
-import { RFOChecklistItem as ChecklistItem, RFOType } from '@/types/checklist';
-
-// RFO Types Configuration
-const RFO_TYPES: RFOType[] = [
-  {
-    id: 'child-support',
-    name: 'Child Support',
-    icon: <Baby className="h-6 w-6" />,
-    description: 'Response to requests about child support payments',
-    commonIn: 'Divorce, separation, or paternity cases',
-    requiredForms: ['FL-320', 'FL-150']
-  },
-  {
-    id: 'spousal-support',
-    name: 'Spousal Support',
-    icon: <Users className="h-6 w-6" />,
-    description: 'Response to requests about spousal/partner support',
-    commonIn: 'Divorce or domestic partnership dissolution',
-    requiredForms: ['FL-320', 'FL-150']
-  },
-  {
-    id: 'property-division',
-    name: 'Property Division',
-    icon: <Home className="h-6 w-6" />,
-    description: 'Response to requests about dividing property or assets',
-    commonIn: 'Divorce, legal separation',
-    requiredForms: ['FL-320', 'FL-150', 'Detailed Financials']
-  },
-  {
-    id: 'custody-visitation',
-    name: 'Child Custody/Visitation',
-    icon: <Baby className="h-6 w-6" />,
-    description: 'Response to requests about custody or parenting time',
-    commonIn: 'Divorce, separation, paternity, modification cases',
-    requiredForms: ['FL-320', 'FL-105', 'FL-311']
-  },
-  {
-    id: 'attorney-fees',
-    name: 'Attorney Fees',
-    icon: <Briefcase className="h-6 w-6" />,
-    description: 'Response to requests for attorney fee payments',
-    commonIn: 'Any family law case',
-    requiredForms: ['FL-320', 'FL-150', 'FL-319']
-  }
-];
-
-// Deadline Calculator Utility
-const calculateCourtDays = (hearingDate: Date, daysNeeded: number): Date => {
-  const result = new Date(hearingDate);
-  let daysSubtracted = 0;
-
-  while (daysSubtracted < daysNeeded) {
-    result.setDate(result.getDate() - 1);
-    const dayOfWeek = result.getDay();
-    // Skip weekends (0 = Sunday, 6 = Saturday)
-    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-      daysSubtracted++;
-    }
-  }
-
-  return result;
-};
+import { RFOChecklistItem as ChecklistItem } from '@/types/checklist';
+import { RFO_TYPES } from '@/data/rfo-types';
+import { calculateCourtDays } from '@/lib/utils/court-days';
+import { renderIcon } from '@/lib/utils/icon-map';
 
 const RFOOppositionPage: React.FC = () => {
   const [selectedRFOType, setSelectedRFOType] = useState<string | null>(null);
@@ -368,7 +310,7 @@ const RFOOppositionPage: React.FC = () => {
                     >
                       <div className="flex items-start mb-3">
                         <div className={`p-3 rounded-lg ${selectedRFOType === type.id ? 'bg-blue-100' : 'bg-gray-100'}`}>
-                          {type.icon}
+                          {renderIcon(type.icon, 'h-6 w-6')}
                         </div>
                         {selectedRFOType === type.id && (
                           <CheckCircle2 className="h-6 w-6 text-blue-600 ml-auto" />

@@ -32,6 +32,7 @@ export const navigationConfig: NavItem[] = [
       { name: 'RFO Opposition Filing', href: '/rfo-opposition', badge: 'URGENT' },
       { name: 'Final Distribution', href: '/final-distribution' },
       { name: 'Responsive Declaration', href: '/responsive-declaration' },
+      { name: 'Integrated FL-320 Pleading', href: '/pleadings/fl320-pleading' },
       { name: 'RFO Comparison', href: '/rfo-comparison' },
     ],
   },

@@ -1,7 +1,6 @@
 import React from 'react'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { SourceDrawer } from '@/components/case/SourceDrawer'
 
 async function readSibling(...parts: string[]) {
   const p = path.resolve(process.cwd(), '..', ...parts)

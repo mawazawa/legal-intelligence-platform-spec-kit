@@ -36,7 +36,7 @@ export interface FL320ChecklistItem {
 export interface RFOType {
   id: string
   name: string
-  icon: React.ReactNode
+  icon: string // Icon name (e.g., 'Baby', 'Users', 'Home')
   description: string
   commonIn: string
   requiredForms: string[]
