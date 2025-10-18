@@ -1,13 +1,6 @@
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { formatCurrency } from '@/lib/transforms/dataTransform';
+import { formatCurrency, formatDate } from '@/lib/transforms/dataTransform';
 import { participants } from '@/data/participants';
-
-const formatDate = (value: string) =>
-  new Date(value + 'T00:00:00Z').toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
 
 const formatHours = (hours?: number) => {
   if (hours === undefined) {

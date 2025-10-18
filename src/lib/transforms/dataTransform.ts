@@ -241,11 +241,39 @@ export function formatPercentage(value: number, decimals: number = 0): string {
 }
 
 /**
- * Format date
+ * Format date with optional formatting options
+ * @param date - Date object or ISO string
+ * @param options - Formatting options (default: locale string format)
  */
-export function formatDate(date: Date | string, locale: string = 'en-US'): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat(locale).format(dateObj);
+export function formatDate(
+  date: Date | string,
+  options?: {
+    locale?: string;
+    month?: 'long' | 'short' | 'numeric' | '2-digit';
+    day?: 'numeric' | '2-digit';
+    year?: 'numeric' | '2-digit';
+    weekday?: 'long' | 'short' | 'narrow';
+  }
+): string {
+  const dateObj = typeof date === 'string'
+    ? new Date(date.includes('T') ? date : date + 'T00:00:00Z')
+    : date;
+
+  const locale = options?.locale || 'en-US';
+  const formatOptions: Intl.DateTimeFormatOptions = {
+    month: options?.month || undefined,
+    day: options?.day || undefined,
+    year: options?.year || undefined,
+    weekday: options?.weekday || undefined,
+  };
+
+  // Remove undefined options
+  Object.keys(formatOptions).forEach(
+    key => formatOptions[key as keyof Intl.DateTimeFormatOptions] === undefined &&
+    delete formatOptions[key as keyof Intl.DateTimeFormatOptions]
+  );
+
+  return new Intl.DateTimeFormat(locale, formatOptions).format(dateObj);
 }
 
 /**
