@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { logger } from '@/lib/logging/logger';
 import { useAutoTagging } from '@/hooks/useAutoTagging';
 import { DocumentMetadata, AutoTaggingResult } from '@/lib/services/autoTaggingService';
 import { 
@@ -78,10 +79,16 @@ const EnhancedCaseFileExplorer: React.FC<EnhancedCaseFileExplorerProps> = ({
 
   const { analyzeDocuments, getAvailableTags, isLoading, error } = useAutoTagging();
 
-  // Auto-tagging functionality
+  /**
+   * Handle auto-tagging of selected files
+   */
   const handleAutoTagging = async () => {
     setIsProcessing(true);
+    const fileCount = selectedFilesForTagging.length;
+
     try {
+      logger.debug('Starting auto-tagging', { fileCount });
+
       const documentsToAnalyze: DocumentMetadata[] = selectedFilesForTagging.map(file => ({
         filename: file.name,
         originalName: file.originalName,
@@ -96,8 +103,14 @@ const EnhancedCaseFileExplorer: React.FC<EnhancedCaseFileExplorerProps> = ({
 
       const results = await analyzeDocuments(documentsToAnalyze);
       setTaggingResults(results);
+      logger.info('Auto-tagging completed successfully', {
+        filesProcessed: fileCount,
+        resultsCount: results.length
+      });
     } catch (err) {
-      console.error('Auto-tagging failed:', err);
+      logger.error('Auto-tagging failed', err as Error, {
+        filesCount: fileCount
+      });
     } finally {
       setIsProcessing(false);
     }
