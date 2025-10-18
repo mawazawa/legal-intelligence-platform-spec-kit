@@ -214,6 +214,7 @@ const OppositionFilingPage: React.FC = () => {
               
               <p><strong>Timing of Tax Obligation:</strong> Tax withholding typically occurs at the time of sale. Petitioner's claim for reimbursement of tax withholding that she allegedly paid is unsupported by documentation showing when and how this amount was determined.</p>
             </div>
+          </div>
         </div>
 
         {/* PAGE 4 - CONTINUATION OF RESPONDENT'S DECLARATION */}
@@ -249,6 +250,7 @@ const OppositionFilingPage: React.FC = () => {
               
               <p><strong>Petitioner's Responsibility:</strong> As the party in possession from November 16, 2024, Petitioner was responsible for maintaining the Property. Any cleanup costs incurred during her possession period should be her responsibility.</p>
             </div>
+          </div>
         </div>
 
         {/* PAGE 5 - CONTINUATION OF RESPONDENT'S DECLARATION */}
@@ -269,6 +271,7 @@ const OppositionFilingPage: React.FC = () => {
               
               <p><strong>Furniture Fraud Evidence:</strong> Documentary evidence establishes that Petitioner instructed my new wife Piyawan that all jointly purchased furniture must stay in the Property, then charged me $2,000+ for hauling it away while keeping the furniture for herself. This constitutes unjust enrichment and fraud.</p>
             </div>
+          </div>
         </div>
 
         {/* PAGE 6 - CONTINUATION OF RESPONDENT'S DECLARATION */}
@@ -312,6 +315,7 @@ const OppositionFilingPage: React.FC = () => {
               
               <p><strong>Market Value Verification:</strong> I request that Petitioner be required to provide comparable rental properties to support her claimed $4,500/month fair rental value for Watts charges calculations.</p>
             </div>
+          </div>
         </div>
 
         {/* PAGE 7 - CONTINUATION OF RESPONDENT'S DECLARATION */}
@@ -330,6 +334,7 @@ const OppositionFilingPage: React.FC = () => {
               
               <p><strong>Requested Relief:</strong> I request that this Court deny Petitioner's motion in its entirety and order distribution according to the Judgment: 65% to me ($182,231.29) and 35% to Petitioner ($98,124.54), with legitimate offsets applied fairly and transparently.</p>
             </div>
+          </div>
         </div>
 
         {/* PAGE 8 - CONTINUATION OF RESPONDENT'S DECLARATION */}
@@ -391,7 +396,6 @@ const OppositionFilingPage: React.FC = () => {
                 </div>
               </div>
             </div>
-        </div>
           </div>
         </div>
 
