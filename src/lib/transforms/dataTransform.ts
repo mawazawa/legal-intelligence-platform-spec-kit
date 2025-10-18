@@ -221,17 +221,10 @@ export function formatNumber(value: number, decimals: number = 2): string {
 }
 
 /**
- * Format currency - returns formatted string or '—' if value is undefined
+ * DEPRECATED: Use formatCurrency from @/lib/utils/currency instead
+ * @deprecated - Import from centralized utility
  */
-export function formatCurrency(value?: number, currency: string = 'USD'): string {
-  if (value === undefined) {
-    return '—';
-  }
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-  }).format(value);
-}
+export { formatCurrency } from '@/lib/utils/currency';
 
 /**
  * Format percentage

@@ -4,6 +4,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import '@/styles/pleading.css';
+import { formatCurrency } from '@/lib/utils/currency';
 
 const CASE_CAPTION = {
   attorneyBlock: [
@@ -38,11 +39,6 @@ interface LedgerData {
     value?: Record<string, number>;
     children?: LedgerChild[];
   };
-}
-
-function formatCurrency(value?: number): string {
-  if (typeof value !== 'number' || Number.isNaN(value)) return '—';
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
 }
 
 async function loadDeclarationMarkdown(): Promise<string> {

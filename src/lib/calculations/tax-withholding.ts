@@ -34,19 +34,10 @@ export function calculateFinancialBreakdown(inputs: FinancialInputs): FinancialB
 }
 
 /**
- * Format currency for display
- *
- * @param amount - Dollar amount
- * @returns Formatted string (e.g., "$13,694.62")
+ * DEPRECATED: Use formatCurrency from @/lib/utils/currency instead
+ * @deprecated - Import from centralized utility
  */
-export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(amount)
-}
+export { formatCurrency } from '@/lib/utils/currency';
 
 /**
  * Format percentage for display
