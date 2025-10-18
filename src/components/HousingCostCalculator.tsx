@@ -171,7 +171,7 @@ const HousingCostCalculator: React.FC = () => {
     furnitureShare: 7500.00, // $7,500 (disputed)
     
     // Rosanna owes Mathieu (adjustments)
-    rosannaExclusivePossession: 21775.00, // 6.7 months × $5,000 = $33,500, Mathieu's 65% = $21,775
+    rosannaExclusivePossession: 33500.00, // 6.7 months × $5,000 = $33,500 (gross amount, not percentage-adjusted)
     furnitureCorrection: 15000.00, // $15,000 swing (she kept furniture)
     
     // Other adjustments
