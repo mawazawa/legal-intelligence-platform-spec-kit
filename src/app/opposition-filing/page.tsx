@@ -338,7 +338,7 @@ const OppositionFilingPage: React.FC = () => {
                 <p className="text-sm font-semibold text-gray-700 mb-2">Petitioner's Flawed Formula:</p>
                 <div className="bg-red-100 p-3 rounded font-mono text-center">
                   <p className="text-red-800">Available Funds = (Gross Sale - Debt Paid) + Debt Paid</p>
-                  <p className="text-sm text-gray-600 mt-2">↓ Simplifies to ↓</p>
+                  <p className="text-sm text-gray-600 mt-2">[v] Simplifies to [v]</p>
                   <p className="text-red-900 font-bold">Available Funds = Gross Sale</p>
                   <p className="text-xs text-red-700 mt-2">[WARNING] This would mean NO debts were ever paid!</p>
                 </div>
@@ -356,7 +356,7 @@ const OppositionFilingPage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-green-100 p-4 rounded-lg border-2 border-green-400">
-                  <h5 className="font-bold text-green-800 mb-3">✓ Correct Legal Distribution</h5>
+                  <h5 className="font-bold text-green-800 mb-3">[OK] Correct Legal Distribution</h5>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Total Proceeds:</span>
@@ -378,7 +378,7 @@ const OppositionFilingPage: React.FC = () => {
                 </div>
 
                 <div className="bg-red-100 p-4 rounded-lg border-2 border-red-400">
-                  <h5 className="font-bold text-red-800 mb-3">✗ Petitioner's Manipulation</h5>
+                  <h5 className="font-bold text-red-800 mb-3">[X] Petitioner's Manipulation</h5>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Fictional Total:</span>
@@ -445,7 +445,7 @@ const OppositionFilingPage: React.FC = () => {
             {/* Section 4 */}
             <div className="space-y-4 mt-6">
               <h3 className="text-base font-bold border-l-4 border-purple-600 pl-3 py-1 bg-purple-50">
-                4. WATTS CHARGES ANALYSIS — TIMELINE CUTOFF AND LEGAL IMPOSSIBILITY
+                4. WATTS CHARGES ANALYSIS - TIMELINE CUTOFF AND LEGAL IMPOSSIBILITY
               </h3>
 
               <div className="ml-4 space-y-4">
@@ -468,7 +468,7 @@ const OppositionFilingPage: React.FC = () => {
                   <div className="border-2 border-purple-300 bg-purple-50 p-3 rounded">
                     <p className="font-semibold text-xs text-purple-900 mb-2">Petitioner's Admission</p>
                     <p className="text-xs italic text-purple-700">"I took possession of the home on November 16, 2024"</p>
-                    <p className="text-xs text-purple-600 mt-2">— Declaration ¶19</p>
+                    <p className="text-xs text-purple-600 mt-2">- Declaration ¶19</p>
                   </div>
                   <div className="border-2 border-red-400 bg-red-50 p-3 rounded">
                     <p className="font-semibold text-xs text-red-900 mb-2">Petitioner's Claim</p>
@@ -522,7 +522,7 @@ const OppositionFilingPage: React.FC = () => {
             {/* Section 5 */}
             <div className="space-y-4 mt-6">
               <h3 className="text-base font-bold border-l-4 border-indigo-600 pl-3 py-1 bg-indigo-50">
-                5. TAX WITHHOLDING ANALYSIS — CONTRADICTORY CLAIMS AND LACK OF EVIDENCE
+                5. TAX WITHHOLDING ANALYSIS - CONTRADICTORY CLAIMS AND LACK OF EVIDENCE
               </h3>
 
               <div className="ml-4 space-y-4">
