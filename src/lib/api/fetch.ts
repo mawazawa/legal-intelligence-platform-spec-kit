@@ -218,14 +218,12 @@ export async function batchFetch<T = unknown>(
   const inProgress = new Set<Promise<unknown>>();
 
   for (const url of urls) {
-    let promise: Promise<unknown>;
-    promise = (async () => {
-      const result = await safeFetch<T>(url, fetchOptions);
+    const promise = safeFetch<T>(url, fetchOptions).then(result => {
       results.push(result);
-      inProgress.delete(promise);
-    })();
+    });
 
     inProgress.add(promise);
+    promise.finally(() => inProgress.delete(promise));
 
     if (inProgress.size >= concurrency) {
       await Promise.race(inProgress);
