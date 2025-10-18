@@ -44,15 +44,19 @@ export class VoyageEmbeddingClient {
     this.client = new (VoyageAI as any)(this.config.apiKey);
   }
 
-  async embedText(text: string): Promise<number[]> {
+  async embedText(text: string, inputType: 'query' | 'document' = 'query'): Promise<number[]> {
     let attempt = 0;
     const max = this.config.maxRetries ?? 3;
     const delay = this.config.retryDelay ?? 1000;
     // Initial try + retries
-     
+
     while (true) {
       try {
-        const response = await this.client.embed([text], this.config.model!);
+        const response = await this.client.embed({
+          input: [text],
+          model: this.config.model!,
+          inputType
+        });
         return response.embeddings[0];
       } catch (error) {
         attempt++;
@@ -64,15 +68,19 @@ export class VoyageEmbeddingClient {
     }
   }
 
-  async embedBatch(texts: string[]): Promise<number[][]> {
+  async embedBatch(texts: string[], inputType: 'query' | 'document' = 'document'): Promise<number[][]> {
     const embeddings: number[][] = [];
     const batchSize = this.config.batchSize!;
-    
+
     for (let i = 0; i < texts.length; i += batchSize) {
       const batch = texts.slice(i, i + batchSize);
-      
+
       try {
-        const response = await this.client.embed(batch, this.config.model!);
+        const response = await this.client.embed({
+          input: batch,
+          model: this.config.model!,
+          inputType
+        });
         embeddings.push(...response.embeddings);
         
         // Rate limiting delay
@@ -89,7 +97,11 @@ export class VoyageEmbeddingClient {
         while (retries < this.config.maxRetries!) {
           try {
             await this.delay(this.config.retryDelay! * (retries + 1));
-            const response = await this.client.embed(batch, this.config.model!);
+            const response = await this.client.embed({
+              input: batch,
+              model: this.config.model!,
+              inputType
+            });
             embeddings.push(...response.embeddings);
             break;
           } catch (retryError) {

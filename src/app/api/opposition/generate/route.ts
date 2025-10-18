@@ -101,7 +101,7 @@ async function processOpposition(
 
   // 1. Embed claim
   const voyageClient = getVoyageClient();
-  const embedding = await voyageClient.embedText(claim);
+  const embedding = await voyageClient.embedText(claim, 'query');
 
   // 2. Search evidence
   const supabaseClient = getSupabaseClient();
