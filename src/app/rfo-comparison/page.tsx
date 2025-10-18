@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Printer } from 'lucide-react';
+import { safeFetch } from '@/lib/api/fetch';
+import { logger } from '@/lib/logging/logger';
 import TabNavigation, { TabType } from '@/components/rfo/TabNavigation';
 import PetitionerView from '@/components/rfo/PetitionerView';
 import RespondentView from '@/components/rfo/RespondentView';
@@ -37,9 +39,11 @@ const RFOComparisonPage: React.FC = () => {
   const [petitionerRFO, setPetitionerRFO] = useState<RFOContent | null>(null);
   const [respondentFL320, setRespondentFL320] = useState<RFOContent | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('petitioner');
   const [ledger, setLedger] = useState<Record<string, unknown> | null>(null);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [annotations, setAnnotations] = useState<Array<{
     id: string;
     claim: string;
@@ -51,43 +55,89 @@ const RFOComparisonPage: React.FC = () => {
 
   // Load documents with parallel fetching
   useEffect(() => {
+    /**
+     * Load RFO comparison documents in parallel
+     * Fetches petitioner RFO, respondent FL-320 form, and ledger data
+     * with automatic retry and timeout for resilience
+     */
     const loadDocuments = async () => {
+      setLoading(true);
+      setLoadError(null);
+
       try {
-        // Parallel fetch for better performance
-        const [rfoResponse, fl320Response, ledgerResponse] = await Promise.all([
-          fetch('/api/case-financials/source?file=petitioner_rfo'),
-          fetch('/api/case-financials/source?file=respondent_fl320'),
-          fetch('/api/case-financials/ledger', { cache: 'no-store' })
+        // Parallel fetch for better performance with safeFetch
+        const [rfoResult, fl320Result, ledgerResult] = await Promise.all([
+          safeFetch<{ text: string; meta: Record<string, unknown> }>(
+            '/api/case-financials/source?file=petitioner_rfo',
+            { timeout: 15000, retries: 2 }
+          ),
+          safeFetch<{ text: string; meta: Record<string, unknown> }>(
+            '/api/case-financials/source?file=respondent_fl320',
+            { timeout: 15000, retries: 2 }
+          ),
+          safeFetch<Record<string, unknown>>(
+            '/api/case-financials/ledger',
+            { timeout: 15000, retries: 2 }
+          ),
         ]);
 
-        // Process responses in parallel
-        const [rfoData, fl320Data, ledgerData] = await Promise.all([
-          rfoResponse.ok ? rfoResponse.json() : null,
-          fl320Response.ok ? fl320Response.json() : null,
-          ledgerResponse.ok ? ledgerResponse.json() : null,
-        ]);
-
-        if (rfoData) {
+        // Process RFO data
+        if (rfoResult.error) {
+          logger.warn('Failed to load petitioner RFO', {
+            error: rfoResult.error.message,
+            status: rfoResult.status,
+          });
+        } else if (rfoResult.data) {
           setPetitionerRFO({
-            text: rfoData.text,
-            meta: rfoData.meta,
-            pages: rfoData.meta?.pages || 101
+            text: rfoResult.data.text,
+            meta: rfoResult.data.meta,
+            pages: (rfoResult.data.meta?.pages as number) || 101
+          });
+          logger.debug('Loaded petitioner RFO', {
+            size: rfoResult.data.text.length,
+            pages: rfoResult.data.meta?.pages
           });
         }
 
-        if (fl320Data) {
+        // Process FL-320 data
+        if (fl320Result.error) {
+          logger.warn('Failed to load respondent FL-320', {
+            error: fl320Result.error.message,
+            status: fl320Result.status,
+          });
+        } else if (fl320Result.data) {
           setRespondentFL320({
-            text: fl320Data.text,
-            meta: fl320Data.meta,
-            pages: fl320Data.meta?.pages || 0
+            text: fl320Result.data.text,
+            meta: fl320Result.data.meta,
+            pages: (fl320Result.data.meta?.pages as number) || 0
+          });
+          logger.debug('Loaded respondent FL-320', {
+            size: fl320Result.data.text.length,
+            pages: fl320Result.data.meta?.pages
           });
         }
 
-        if (ledgerData) {
-          setLedger(ledgerData);
+        // Process ledger data
+        if (ledgerResult.error) {
+          logger.warn('Failed to load ledger', {
+            error: ledgerResult.error.message,
+            status: ledgerResult.status,
+          });
+        } else if (ledgerResult.data) {
+          setLedger(ledgerResult.data);
+          logger.debug('Loaded ledger', {
+            entries: Object.keys(ledgerResult.data).length
+          });
         }
-      } catch (error) {
-        console.error('Error loading documents:', error);
+
+        // Check if critical documents failed
+        if (rfoResult.error && fl320Result.error) {
+          setLoadError('Failed to load comparison documents. Please refresh the page.');
+        }
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        logger.error('Error loading comparison documents', err as Error);
+        setLoadError('Unexpected error loading documents');
       } finally {
         setLoading(false);
       }
@@ -109,19 +159,38 @@ const RFOComparisonPage: React.FC = () => {
     setAnnotations(prev => [...prev, newAnnotation]);
   };
 
+  /**
+   * Search evidence (emails) for a given query
+   * Uses safeFetch with automatic retry and timeout
+   * Falls back to mock results if search fails
+   */
   const handleSearchEvidence = async (query: string): Promise<string[]> => {
-    // Simulate email search - in real implementation, this would search mbox files
     try {
-      const response = await fetch(`/api/search/emails?q=${encodeURIComponent(query)}`);
-      if (response.ok) {
-        const data = await response.json();
-        return data.results || [];
+      const result = await safeFetch<{ results?: string[] }>(
+        `/api/search/emails?q=${encodeURIComponent(query)}`,
+        { timeout: 10000, retries: 1 }
+      );
+
+      if (result.error) {
+        logger.warn('Email search failed', {
+          query,
+          error: result.error.message,
+          status: result.status,
+        });
+      } else if (result.data) {
+        logger.debug('Email search successful', {
+          query,
+          resultCount: result.data.results?.length || 0
+        });
+        return result.data.results || [];
       }
-    } catch (error) {
-      console.error('Email search failed:', error);
+    } catch (err) {
+      logger.error('Email search exception', err as Error, { query });
+      setSearchError('Email search failed');
     }
-    
+
     // Fallback to mock results for demonstration
+    logger.debug('Using mock email search results', { query });
     return [
       `Email from Selam Gezahegn dated May 24, 2023 regarding ${query}`,
       `Correspondence with Rosey Alvero about ${query}`,
