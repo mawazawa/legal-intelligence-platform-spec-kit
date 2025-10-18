@@ -1,43 +1,25 @@
 'use client';
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { 
   Calculator, 
   FileText, 
-  Scale, 
-  AlertTriangle,
   CheckCircle,
   Clock,
   Download,
-  Upload,
   Eye,
   EyeOff,
-  PenLine,
-  Trash2,
   Calendar,
-  DollarSign,
-  Mail,
-  TrendingUp,
-  BarChart,
-  PieChart,
-  Users,
   Gavel,
-  Search,
-  ExternalLink,
   Printer,
-  Save,
-  Edit,
-  Plus,
-  Minus,
   ChevronDown,
   ChevronRight,
   Target,
-  Shield,
-  Zap
+  Shield
 } from 'lucide-react';
 
 // Types
@@ -84,7 +66,7 @@ interface EvidenceItem {
 }
 
 const CourtFilingPage: React.FC = () => {
-  const [activeSection, setActiveSection] = useState('overview');
+  // Removed unused activeSection state
   const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set());
   const [showCalculations, setShowCalculations] = useState(true);
   const [showEvidence, setShowEvidence] = useState(true);
@@ -349,10 +331,7 @@ const CourtFilingPage: React.FC = () => {
     setExpandedTasks(newExpanded);
   };
 
-  const updateTaskStatus = (taskId: string, status: FilingTask['status']) => {
-    // In a real app, this would update the backend
-    console.log(`Updating task ${taskId} to status ${status}`);
-  };
+  // Removed unused updateTaskStatus function
 
   const printFiling = () => {
     if (printRef.current) {

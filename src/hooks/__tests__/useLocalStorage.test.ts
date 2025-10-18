@@ -17,7 +17,7 @@ describe('useLocalStorage', () => {
       // Simulate SSR by temporarily removing window.localStorage
       const originalLocalStorage = window.localStorage;
 
-      // @ts-ignore - Simulating SSR environment
+      // @ts-expect-error - Simulating SSR environment
       delete window.localStorage;
 
       expect(() => {
@@ -35,7 +35,7 @@ describe('useLocalStorage', () => {
     it('should return initialValue when localStorage is not available', () => {
       const originalLocalStorage = window.localStorage;
 
-      // @ts-ignore - Simulating SSR environment
+      // @ts-expect-error - Simulating SSR environment
       delete window.localStorage;
 
       const { result } = renderHook(() => useLocalStorage('test-key', 'default-value'));

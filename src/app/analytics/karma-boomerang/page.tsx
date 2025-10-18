@@ -6,25 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
-  TrendingUp,
-  TrendingDown,
-  Calendar,
-  Mail,
   DollarSign,
   AlertTriangle,
   CheckCircle,
-  FileText,
   Download,
-  Scale,
-  Target,
-  Award,
   Info,
-  ExternalLink,
-  Sparkles,
-  ShieldCheck,
   Users,
-  Clock,
-  Zap
+  Clock
 } from 'lucide-react';
 
 // Lazy load chart components
@@ -34,12 +22,7 @@ const Bar = lazy(() => import('recharts').then(mod => ({ default: mod.Bar })));
 const XAxis = lazy(() => import('recharts').then(mod => ({ default: mod.XAxis })));
 const YAxis = lazy(() => import('recharts').then(mod => ({ default: mod.YAxis })));
 const Tooltip = lazy(() => import('recharts').then(mod => ({ default: mod.Tooltip })));
-const Legend = lazy(() => import('recharts').then(mod => ({ default: mod.Legend })));
-const PieChart = lazy(() => import('recharts').then(mod => ({ default: mod.PieChart })));
-const Pie = lazy(() => import('recharts').then(mod => ({ default: mod.Pie })));
-const Cell = lazy(() => import('recharts').then(mod => ({ default: mod.Cell })));
-const LineChart = lazy(() => import('recharts').then(mod => ({ default: mod.LineChart })));
-const Line = lazy(() => import('recharts').then(mod => ({ default: mod.Line })));
+// Chart components removed - not used in current implementation
 
 interface KarmaAnalysis {
   actor: 'petitioner' | 'respondent' | 'court';
@@ -125,13 +108,7 @@ export default function KarmaBoomerangPage() {
     URL.revokeObjectURL(url);
   };
 
-  const getImpactColor = (impact: string) => {
-    switch (impact) {
-      case 'positive': return 'text-green-600';
-      case 'negative': return 'text-red-600';
-      default: return 'text-gray-600';
-    }
-  };
+  // Removed unused getImpactColor function
 
   const getImpactIcon = (impact: string) => {
     switch (impact) {

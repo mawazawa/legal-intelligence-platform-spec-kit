@@ -158,36 +158,7 @@ const RFOComparisonPage: React.FC = () => {
 
   return (
     <>
-      {/* Print Styles */}
-      <style jsx global>{`
-        @media print {
-          .no-print {
-            display: none !important;
-          }
-          body {
-            background: white !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          .bg-gradient-to-br {
-            background: white !important;
-          }
-          .shadow-lg, .shadow-xl, .shadow-2xl {
-            box-shadow: none !important;
-          }
-          .animate-in {
-            animation: none !important;
-          }
-          .hover\\:scale-105:hover {
-            transform: none !important;
-          }
-          .court-document {
-            box-shadow: none !important;
-            margin: 0 !important;
-            max-width: none !important;
-          }
-        }
-      `}</style>
+      {/* Print styles moved to globals.css */}
 
       <TooltipProvider>
         <div ref={printRef} className="min-h-screen bg-gray-50">

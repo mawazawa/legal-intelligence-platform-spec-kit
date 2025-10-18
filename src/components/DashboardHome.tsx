@@ -22,7 +22,7 @@ import {
   Scale,
   GitCompare
 } from 'lucide-react';
-import { typography, tx, textColors } from '@/styles/typography';
+import { typography, tx, textColors } from '@/lib/design-system';
 
 export function DashboardHome() {
   const caseMetrics = [

@@ -222,3 +222,32 @@ html {
 
 /* Pleading/declaration screen preview font */
 .print-pleading { font-family: "Times New Roman", Times, serif; }
+
+/* Consolidated print styles for all pages */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .bg-gradient-to-br {
+    background: white !important;
+  }
+  .shadow-lg, .shadow-xl, .shadow-2xl {
+    box-shadow: none !important;
+  }
+  .animate-in {
+    animation: none !important;
+  }
+  .hover\:scale-105:hover {
+    transform: none !important;
+  }
+  .court-document {
+    box-shadow: none !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+}

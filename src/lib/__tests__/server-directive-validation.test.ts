@@ -155,18 +155,18 @@ describe('Regression test for Bug #2', () => {
     expect(hasUseServerDirective).toBe(false);
   });
 
-  it('should not break EmailParser class import', () => {
+  it('should not break EmailParser class import', async () => {
     // If the fix is correct, we should be able to import EmailParser
-    expect(() => {
-      const { EmailParser } = require('../ingestion/email-parser');
+    expect(async () => {
+      const { EmailParser } = await import('../ingestion/email-parser');
       expect(EmailParser).toBeDefined();
       expect(typeof EmailParser).toBe('function');
     }).not.toThrow();
   });
 
-  it('should not break parseAllEmails function import', () => {
-    expect(() => {
-      const { parseAllEmails } = require('../ingestion/email-parser');
+  it('should not break parseAllEmails function import', async () => {
+    expect(async () => {
+      const { parseAllEmails } = await import('../ingestion/email-parser');
       expect(parseAllEmails).toBeDefined();
       expect(typeof parseAllEmails).toBe('function');
     }).not.toThrow();
