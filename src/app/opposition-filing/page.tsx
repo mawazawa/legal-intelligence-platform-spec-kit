@@ -142,149 +142,151 @@ const OppositionFilingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* PAGE 3-8 - RESPONDENT'S DECLARATION */}
-        <div className="page-break min-h-[11in] p-12">
-          <div className="border-b-2 border-gray-800 pb-3 mb-6">
-            <h2 className="text-xl font-bold text-center tracking-wide">DECLARATION OF MATHIEU CHRISTIAN YVES WAUTERS</h2>
-            <p className="text-center text-xs text-gray-600 mt-1">In Opposition to Petitioner's Request for Order</p>
-          </div>
+        {/* PAGE 3 - RESPONDENT'S DECLARATION - PLEADING PAPER FORMAT */}
+        <div className="page-break">
+          <div className="page-content">
+            {/* Page Header with Case Info */}
+            <div className="text-[10pt] mb-4">
+              <div>MATHIEU CHRISTIAN YVES WAUTERS</div>
+              <div>In Pro Per</div>
+              <div>[Address]</div>
+              <div>[City, State ZIP]</div>
+              <div>Tel: [Phone]</div>
+              <div>Email: [Email]</div>
+            </div>
 
-          <div className="text-[13px] leading-[1.7] space-y-5">
-            <p className="text-center italic mb-6"><strong>I, Mathieu Christian Yves Wauters, declare under penalty of perjury as follows:</strong></p>
+            {/* Court Caption */}
+            <div className="text-center mt-8 mb-8">
+              <div className="font-bold">SUPERIOR COURT OF CALIFORNIA</div>
+              <div className="font-bold">COUNTY OF LOS ANGELES</div>
+            </div>
 
-            {/* Section 1 */}
-            <div className="space-y-4">
-              <h3 className="text-base font-bold border-l-4 border-blue-600 pl-3 py-1 bg-blue-50">
-                1. INTRODUCTION AND PERSONAL KNOWLEDGE
-              </h3>
-
-              <div className="ml-4 space-y-3">
-                <p className="leading-relaxed">
-                  <span className="font-semibold">1.1 Standing and Competency.</span> I am the Respondent in this dissolution action, Case No. FDI-21-794666. I have personal knowledge of all facts stated herein except those stated on information and belief, and as to those matters, I believe them to be true. I am over 18 years of age and competent to testify to the matters stated herein if called as a witness.
-                </p>
-
-                <p className="leading-relaxed">
-                  <span className="font-semibold">1.2 Purpose of Declaration.</span> This declaration is made in support of my opposition to Petitioner Rosanna Claire Alvero's Request for Order (RFO) filed June 25, 2025, seeking redistribution of escrow proceeds from the sale of the real property located at:
-                </p>
-
-                <div className="ml-8 my-2 p-3 bg-gray-50 border-l-2 border-gray-400">
-                  <p className="font-mono text-xs">3525 8th Avenue, Los Angeles, CA 90018</p>
-                  <p className="text-xs text-gray-600 mt-1">(hereinafter "the Property")</p>
+            <div className="caption-box">
+              <div className="flex justify-between mb-2">
+                <div className="w-1/2">
+                  <div>In re the Marriage of:</div>
+                  <div className="mt-2">ROSANNA CLAIRE ALVERO,</div>
+                  <div className="ml-8">Petitioner,</div>
+                  <div className="mt-2">and</div>
+                  <div className="mt-2">MATHIEU CHRISTIAN YVES WAUTERS,</div>
+                  <div className="ml-8">Respondent.</div>
                 </div>
-
-                <p className="leading-relaxed">
-                  <span className="font-semibold">1.3 Core Legal Deficiency.</span> Petitioner's RFO contains fundamental mathematical errors that render her requested relief legally and arithmetically impossible. The central flaw is her attempt to simultaneously:
-                </p>
-
-                <div className="ml-8 space-y-2 my-3">
-                  <div className="flex items-start">
-                    <span className="font-bold mr-3 text-red-600">•</span>
-                    <p><strong>DEDUCT</strong> $77,779.88 from the net escrow proceeds (as a debt paid at closing), <em>and</em></p>
-                  </div>
-                  <div className="flex items-start">
-                    <span className="font-bold mr-3 text-red-600">•</span>
-                    <p><strong>ADD BACK</strong> the same $77,779.88 to create a fictional "total net proceed" of $358,155.71</p>
-                  </div>
+                <div className="w-1/2 text-right">
+                  <div>Case No. FDI-21-794666</div>
+                  <div className="mt-4 font-bold">DECLARATION OF MATHIEU</div>
+                  <div className="font-bold">CHRISTIAN YVES WAUTERS IN</div>
+                  <div className="font-bold">OPPOSITION TO REQUEST FOR</div>
+                  <div className="font-bold">ORDER</div>
+                  <div className="mt-4">Hearing Date: August 28, 2025</div>
+                  <div>Hearing Time: 8:30 a.m.</div>
+                  <div>Department: [Dept.]</div>
                 </div>
-
-                <div className="my-4 p-4 bg-yellow-50 border border-yellow-400 rounded">
-                  <p className="font-bold text-sm text-yellow-900 mb-2">⚠️ MATHEMATICAL IMPOSSIBILITY</p>
-                  <p className="text-xs leading-relaxed">This double-counting scheme violates basic arithmetic principles. One cannot both pay a debt AND add that same amount back to available proceeds. This demonstrates either a fundamental misunderstanding of accounting principles or an intentional attempt to mislead this Court.</p>
-                </div>
-
-                <p className="leading-relaxed">
-                  <span className="font-semibold">1.4 Legal Authority and Relief Sought.</span> This opposition is filed pursuant to California Family Code § 271 and California Rules of Court, Rule 5.92. I respectfully request that this Court <strong>deny Petitioner's motion in its entirety</strong> due to the mathematical impossibilities, legal deficiencies, and factual misrepresentations outlined below.
-                </p>
               </div>
             </div>
 
-            {/* Section 2 */}
-            <div className="space-y-4 mt-6">
-              <h3 className="text-base font-bold border-l-4 border-blue-600 pl-3 py-1 bg-blue-50">
-                2. CHRONOLOGICAL TIMELINE — PETITIONER'S EXCLUSIVE POSSESSION AND CONTROL
-              </h3>
+            {/* Declaration Content with Line Numbers */}
+            <div className="line-numbers mt-8">
+              <div className="line">I, MATHIEU CHRISTIAN YVES WAUTERS, declare as follows:</div>
+              <div className="line">&nbsp;</div>
+              <div className="line font-bold">1. INTRODUCTION AND PERSONAL KNOWLEDGE</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     1.1  I am the Respondent in this dissolution action, Case</div>
+              <div className="line">No. FDI-21-794666. I have personal knowledge of all facts</div>
+              <div className="line">stated herein except those stated on information and belief,</div>
+              <div className="line">and as to those matters, I believe them to be true. I am over</div>
+              <div className="line">18 years of age and competent to testify to the matters</div>
+              <div className="line">stated herein if called as a witness.</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     1.2  This declaration is made in support of my opposition</div>
+              <div className="line">to Petitioner Rosanna Claire Alvero's Request for Order</div>
+              <div className="line">("RFO") filed June 25, 2025, seeking redistribution of escrow</div>
+              <div className="line">proceeds from the sale of the real property located at 3525</div>
+              <div className="line">8th Avenue, Los Angeles, CA 90018 (the "Property").</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     1.3  Petitioner's RFO contains fundamental mathematical</div>
+              <div className="line">errors that render her requested relief legally and</div>
+              <div className="line">arithmetically impossible. The central flaw is her attempt to</div>
+              <div className="line">simultaneously: (a) DEDUCT $77,779.88 from the net escrow</div>
+              <div className="line">proceeds as a debt paid at closing; and (b) ADD BACK the same</div>
+              <div className="line">$77,779.88 to create a fictional "total net proceed" of</div>
+              <div className="line">$358,155.71. This double-counting scheme violates basic</div>
+              <div className="line">arithmetic principles. One cannot both pay a debt AND add</div>
+              <div className="line">that same amount back to available proceeds.</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     1.4  This opposition is filed pursuant to California</div>
+              <div className="line">Family Code section 271 and California Rules of Court, rule</div>
+              <div className="line">5.92. I respectfully request that this Court deny</div>
+              <div className="line">Petitioner's motion in its entirety due to the mathematical</div>
+              <div className="line">impossibilities, legal deficiencies, and factual</div>
+              <div className="line">misrepresentations outlined below.</div>
+              <div className="line">&nbsp;</div>
 
-              <div className="ml-4 space-y-4">
-                <p className="leading-relaxed">
-                  <span className="font-semibold">2.1 Critical Possession Date: November 16, 2024.</span> Petitioner took exclusive possession of the Property on November 16, 2024. This fact is established by Petitioner's own sworn declaration at ¶19, which states:
-                </p>
+              <div className="line font-bold">2. TIMELINE OF EVENTS - PETITIONER'S EXCLUSIVE POSSESSION</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     2.1  Petitioner took exclusive possession of the Property</div>
+              <div className="line">on November 16, 2024. This fact is established by</div>
+              <div className="line">Petitioner's own sworn declaration at paragraph 19, which</div>
+              <div className="line">states: "On November 16, 2024, I took possession of the</div>
+              <div className="line">home." (Petitioner's Declaration, ¶19 filed June 25, 2025.)</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     2.2  Under California family law, the party in exclusive</div>
+              <div className="line">possession of community real property bears responsibility for</div>
+              <div className="line">all Property-related expenses from the date of possession.</div>
+              <div className="line">Once Petitioner took possession on November 16, 2024, she</div>
+              <div className="line">became legally responsible for: (a) mortgage payments</div>
+              <div className="line">(principal, interest, and escrow); (b) property taxes; (c)</div>
+              <div className="line">insurance premiums; and (d) maintenance and repairs.</div>
+              <div className="line">&nbsp;</div>
 
-                <div className="ml-8 my-3 p-3 bg-gray-100 border-l-4 border-gray-500 italic">
-                  <p className="text-sm">"On November 16, 2024, I took possession of the home."</p>
-                  <p className="text-xs text-gray-600 mt-1">— Petitioner's Declaration, ¶19 (June 25, 2025)</p>
-                </div>
+              <div className="line">     2.3  The critical dates are as follows:</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          December 2023: Last mortgage payment allegedly made</div>
+              <div className="line">               (per Petitioner's claim)</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          November 16, 2024: PETITIONER TAKES EXCLUSIVE</div>
+              <div className="line">               POSSESSION - All liability transfers to Petitioner</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          February 15, 2025: Property listed for sale</div>
+              <div className="line">               (Petitioner in possession: 91 days)</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          May 30, 2025: PROPERTY SOLD - Petitioner in</div>
+              <div className="line">               possession: 196 days (6.5 months)</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     2.4  Petitioner cannot claim Watts charges or expenses</div>
+              <div className="line">for the 196-day period (November 16, 2024 through May 30,</div>
+              <div className="line">2025) during which she had exclusive possession, use, and</div>
+              <div className="line">benefit of the Property. Her claims for expenses during her</div>
+              <div className="line">own possession period are legally baseless and directly</div>
+              <div className="line">contradicted by her own sworn admission in paragraph 19 of</div>
+              <div className="line">her declaration.</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     2.5  Petitioner's sworn statement of possession on</div>
+              <div className="line">November 16, 2024, constitutes a binding judicial admission</div>
+              <div className="line">under California Evidence Code section 1220. She cannot now</div>
+              <div className="line">claim expenses against me for a period when she admits she</div>
+              <div className="line">had exclusive possession and control of the Property.</div>
+              <div className="line">&nbsp;</div>
 
-                <p className="leading-relaxed">
-                  <span className="font-semibold">2.2 Legal Significance of Possession Transfer.</span> Under California family law, the party in exclusive possession of community real property bears responsibility for all Property-related expenses from the date of possession. Once Petitioner took possession on November 16, 2024, she became legally responsible for:
-                </p>
-
-                <div className="ml-8 grid grid-cols-2 gap-3 my-3">
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm">
-                    <p className="font-semibold text-xs text-blue-900">Mortgage Payments</p>
-                    <p className="text-xs text-gray-700 mt-1">Principal, interest, and escrow</p>
-                  </div>
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm">
-                    <p className="font-semibold text-xs text-blue-900">Property Taxes</p>
-                    <p className="text-xs text-gray-700 mt-1">All tax obligations post-possession</p>
-                  </div>
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm">
-                    <p className="font-semibold text-xs text-blue-900">Insurance Premiums</p>
-                    <p className="text-xs text-gray-700 mt-1">Homeowner's and liability coverage</p>
-                  </div>
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm">
-                    <p className="font-semibold text-xs text-blue-900">Maintenance & Repairs</p>
-                    <p className="text-xs text-gray-700 mt-1">All upkeep and improvements</p>
-                  </div>
-                </div>
-
-                <p className="leading-relaxed">
-                  <span className="font-semibold">2.3 Complete Property Timeline.</span> The following chronology demonstrates the critical dates and Petitioner's exclusive control:
-                </p>
-
-                <div className="ml-8 my-3 space-y-2">
-                  <div className="flex items-start border-l-2 border-gray-300 pl-4 py-2">
-                    <div className="min-w-[140px] font-mono text-xs font-semibold text-gray-700">Dec 2023</div>
-                    <p className="text-sm">Last mortgage payment allegedly made (per Petitioner's claim)</p>
-                  </div>
-                  <div className="flex items-start border-l-2 border-red-500 pl-4 py-2 bg-red-50">
-                    <div className="min-w-[140px] font-mono text-xs font-semibold text-red-700">Nov 16, 2024</div>
-                    <p className="text-sm"><strong>PETITIONER TAKES EXCLUSIVE POSSESSION</strong> — All liability transfers to Petitioner</p>
-                  </div>
-                  <div className="flex items-start border-l-2 border-gray-300 pl-4 py-2">
-                    <div className="min-w-[140px] font-mono text-xs font-semibold text-gray-700">Feb 15, 2025</div>
-                    <p className="text-sm">Property listed for sale (Petitioner in possession: 91 days)</p>
-                  </div>
-                  <div className="flex items-start border-l-2 border-green-500 pl-4 py-2 bg-green-50">
-                    <div className="min-w-[140px] font-mono text-xs font-semibold text-green-700">May 30, 2025</div>
-                    <p className="text-sm"><strong>PROPERTY SOLD</strong> — Petitioner in possession: 196 days (6.5 months)</p>
-                  </div>
-                </div>
-
-                <div className="my-4 p-4 bg-red-50 border border-red-300 rounded">
-                  <p className="font-bold text-sm text-red-900 mb-2">🚫 LEGAL IMPOSSIBILITY</p>
-                  <p className="text-xs leading-relaxed">Petitioner cannot claim Watts charges or expenses for the 196-day period (November 16, 2024 → May 30, 2025) during which she had exclusive possession, use, and benefit of the Property. Her claims for expenses during her own possession period are legally baseless and directly contradicted by her own sworn admission.</p>
-                </div>
-
-                <p className="leading-relaxed">
-                  <span className="font-semibold">2.4 Binding Judicial Admission.</span> Petitioner's sworn statement of possession on November 16, 2024, constitutes a binding judicial admission under California Evidence Code § 1220. She cannot now claim expenses against me for a period when she admits she had exclusive possession and control of the Property.
-                </p>
-              </div>
-            </div>
-
-            {/* Section 3 */}
-            <div className="space-y-4 mt-6 page-break-before">
-              <h3 className="text-base font-bold border-l-4 border-red-600 pl-3 py-1 bg-red-50">
-                3. MATHEMATICAL IMPOSSIBILITY — THE $77,779.88 DOUBLE-COUNTING SCHEME
-              </h3>
-
-              <div className="ml-4 space-y-4">
-                <p className="leading-relaxed">
-                  <span className="font-semibold">3.1 Overview of Fatal Calculation Error.</span> Petitioner's RFO is premised on a mathematically impossible "add-back" methodology that violates fundamental principles of accounting and arithmetic. This scheme attempts to artificially inflate the distributable proceeds by double-counting a debt payment.
-                </p>
-
-                <p className="leading-relaxed">
-                  <span className="font-semibold">3.2 Actual Escrow Closing Figures.</span> The escrow closing statement from the May 30, 2025 sale establishes the following undisputed facts:
-                </p>
+              <div className="line font-bold">3. MATHEMATICAL IMPOSSIBILITY - THE $77,779.88 DOUBLE-</div>
+              <div className="line font-bold">   COUNTING SCHEME</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     3.1  Petitioner's RFO is premised on a mathematically</div>
+              <div className="line">impossible "add-back" methodology that violates fundamental</div>
+              <div className="line">principles of accounting and arithmetic. This scheme attempts</div>
+              <div className="line">to artificially inflate the distributable proceeds by double-</div>
+              <div className="line">counting a debt payment.</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     3.2  The escrow closing statement from the May 30, 2025</div>
+              <div className="line">sale establishes the following undisputed facts:</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          Gross Sale Price:              $1,050,000.00</div>
+              <div className="line">          Less: Closing Costs:              ($10,280.05)</div>
+              <div className="line">          Less: Mortgage Payoff:           ($759,364.32)</div>
+              <div className="line">               (includes $681,584.44 principal +</div>
+              <div className="line">                $77,779.88 arrears/late charges)</div>
+              <div className="line">          _______________________________________________</div>
+              <div className="line">          NET PROCEEDS AVAILABLE:           $280,355.83</div>
+              <div className="line">&nbsp;</div>
 
                 <div className="ml-8 my-3 bg-white border-2 border-gray-300 rounded overflow-hidden">
                   <div className="bg-gray-700 text-white px-4 py-2 font-bold text-sm">ESCROW CLOSING STATEMENT — MAY 30, 2025</div>
