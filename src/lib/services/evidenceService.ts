@@ -4,6 +4,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { logger } from '../logging/logger';
 import type {
   EvidenceFile,
   EvidenceWithExhibit,
@@ -32,7 +33,7 @@ export async function getEvidenceFiles(
   filters?: EvidenceFilterOptions
 ): Promise<EvidenceFile[]> {
   if (!supabase) {
-    console.warn('Supabase not configured, returning mock data');
+    logger.debug('Supabase not configured, using mock data for evidence files');
     return getMockEvidenceFiles();
   }
 
@@ -79,7 +80,7 @@ export async function getEvidenceFiles(
   const { data, error } = await query.order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching evidence files:', error);
+    logger.error('Error fetching evidence files', error as Error);
     throw new Error(`Failed to fetch evidence files: ${error.message}`);
   }
 
@@ -93,7 +94,7 @@ export async function getEvidenceWithExhibits(
   filingType?: FilingType
 ): Promise<EvidenceWithExhibit[]> {
   if (!supabase) {
-    console.warn('Supabase not configured, returning mock data');
+    logger.debug('Supabase not configured, using mock data for evidence with exhibits');
     return getMockEvidenceFiles() as EvidenceWithExhibit[];
   }
 
@@ -106,7 +107,7 @@ export async function getEvidenceWithExhibits(
   const { data, error } = await query.order('exhibit_sort_order', { ascending: true });
 
   if (error) {
-    console.error('Error fetching evidence with exhibits:', error);
+    logger.error('Error fetching evidence with exhibits', error as Error, { filingType });
     throw new Error(`Failed to fetch evidence with exhibits: ${error.message}`);
   }
 
@@ -130,7 +131,7 @@ export async function getEvidenceFileById(id: string): Promise<EvidenceFile | nu
     .single();
 
   if (error) {
-    console.error('Error fetching evidence file:', error);
+    logger.error('Error fetching evidence file', error as Error, { id });
     return null;
   }
 
@@ -145,7 +146,7 @@ export async function searchEvidence(
   limit: number = 20
 ): Promise<EvidenceSearchResult[]> {
   if (!supabase) {
-    console.warn('Supabase not configured, returning empty search results');
+    logger.debug('Supabase not configured, returning empty search results');
     return [];
   }
 
@@ -155,7 +156,7 @@ export async function searchEvidence(
   });
 
   if (error) {
-    console.error('Error searching evidence:', error);
+    logger.error('Error searching evidence', error as Error, { query, limit });
     throw new Error(`Failed to search evidence: ${error.message}`);
   }
 
@@ -175,7 +176,7 @@ export async function getEvidenceForClaim(claimKey: ClaimKey): Promise<EvidenceF
   });
 
   if (error) {
-    console.error('Error getting evidence for claim:', error);
+    logger.error('Error getting evidence for claim', error as Error, { claimKey });
     throw new Error(`Failed to get evidence for claim: ${error.message}`);
   }
 
@@ -187,7 +188,7 @@ export async function getEvidenceForClaim(claimKey: ClaimKey): Promise<EvidenceF
  */
 export async function getExhibitIndex(filingType: FilingType): Promise<ExhibitIndexEntry[]> {
   if (!supabase) {
-    console.warn('Supabase not configured, returning mock exhibit index');
+    logger.debug('Supabase not configured, using mock exhibit index', { filingType });
     return getMockExhibitIndex(filingType);
   }
 
@@ -196,7 +197,7 @@ export async function getExhibitIndex(filingType: FilingType): Promise<ExhibitIn
   });
 
   if (error) {
-    console.error('Error generating exhibit index:', error);
+    logger.error('Error generating exhibit index', error as Error, { filingType });
     throw new Error(`Failed to generate exhibit index: ${error.message}`);
   }
 
@@ -236,7 +237,7 @@ export async function getEvidenceCitations(
   const { data, error } = await query.order('paragraph_number', { ascending: true });
 
   if (error) {
-    console.error('Error fetching evidence citations:', error);
+    logger.error('Error fetching evidence citations', error as Error, { documentType, paragraphNumber });
     throw new Error(`Failed to fetch evidence citations: ${error.message}`);
   }
 
@@ -257,7 +258,7 @@ export async function getEvidenceStats(): Promise<EvidenceStats> {
     .is('deleted_at', null);
 
   if (error) {
-    console.error('Error fetching evidence stats:', error);
+    logger.error('Error fetching evidence stats', error as Error);
     throw new Error(`Failed to fetch evidence stats: ${error.message}`);
   }
 

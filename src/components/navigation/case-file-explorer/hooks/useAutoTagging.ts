@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { logger } from '@/lib/logging/logger';
 import { CaseFile } from '../types';
 import { DocumentMetadata, AutoTaggingResult } from '@/lib/services/autoTaggingService';
 import { useAutoTagging as useAutoTaggingService } from '@/hooks/useAutoTagging';
@@ -32,7 +33,7 @@ export const useFileAutoTagging = (
       const results = await analyzeDocuments(documentsToAnalyze);
       setTaggingResults(results);
     } catch (err) {
-      console.error('Auto-tagging failed:', err);
+      logger.error('Auto-tagging failed', err as Error, { fileCount: selectedFilesForTagging.length });
     } finally {
       setIsProcessing(false);
     }

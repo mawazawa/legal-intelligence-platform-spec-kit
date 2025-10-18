@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { logger } from '@/lib/logging/logger';
 
 export interface ROAEvent {
   externalId: string;
@@ -44,10 +45,10 @@ export class ROAParser {
     try {
       const content = await fs.readFile(filePath, 'utf-8');
       const entries = this.parseCSVContent(content);
-      
+
       return entries.map((entry, index) => this.convertToEvent(entry, filePath, index));
     } catch (error) {
-      console.error(`Error parsing CSV file ${filePath}:`, error);
+      logger.error(`Error parsing CSV file ${filePath}`, error as Error);
       return [];
     }
   }
@@ -56,10 +57,10 @@ export class ROAParser {
     try {
       const content = await fs.readFile(filePath, 'utf-8');
       const entries = this.parseTextContent(content);
-      
+
       return entries.map((entry, index) => this.convertToEvent(entry, filePath, index));
     } catch (error) {
-      console.error(`Error parsing text file ${filePath}:`, error);
+      logger.error(`Error parsing text file ${filePath}`, error as Error);
       return [];
     }
   }

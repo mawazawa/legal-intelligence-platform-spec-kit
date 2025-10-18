@@ -1,4 +1,5 @@
 import { VoyageAI } from 'voyageai';
+import { logger } from '../logging/logger';
 import { env } from '../../env';
 
 export interface VoyageConfig {
@@ -79,8 +80,10 @@ export class VoyageEmbeddingClient {
           await this.delay(this.config.retryDelay!);
         }
       } catch (error) {
-        console.error(`Batch embedding error (${i}-${i + batchSize}):`, error);
-        
+        logger.error(`Batch embedding error (${i}-${i + batchSize})`, error as Error, {
+          batchRange: `${i}-${i + batchSize}`,
+        });
+
         // Retry logic
         let retries = 0;
         while (retries < this.config.maxRetries!) {
