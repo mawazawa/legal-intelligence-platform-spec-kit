@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { logger } from '@/lib/logging/logger';
 import {
   getEvidenceFiles,
   getEvidenceStats,
@@ -32,10 +33,19 @@ export default function EvidencePage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<FileType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
+    /**
+     * Load evidence files, statistics, and exhibit index in parallel
+     * Displays error message if any data fails to load
+     */
     async function loadEvidence() {
+      setLoading(true);
+      setLoadError(null);
+
       try {
+        logger.debug('Loading evidence data');
         const [files, statsData, fl320Index] = await Promise.all([
           getEvidenceFiles(),
           getEvidenceStats(),
@@ -45,8 +55,14 @@ export default function EvidencePage() {
         setEvidenceFiles(files);
         setStats(statsData);
         setExhibitIndex(fl320Index);
+
+        logger.info('Evidence data loaded successfully', {
+          fileCount: files.length,
+          exhibitCount: fl320Index.length
+        });
       } catch (error) {
-        console.error('Error loading evidence:', error);
+        logger.error('Error loading evidence', error as Error);
+        setLoadError('Failed to load evidence. Please refresh the page.');
       } finally {
         setLoading(false);
       }
@@ -108,6 +124,13 @@ export default function EvidencePage() {
           Organize and manage legal evidence for case FDI-21-794666
         </p>
       </div>
+
+      {loadError && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-800 text-sm">
+          <p className="font-semibold">Error loading evidence</p>
+          <p className="text-xs mt-1">{loadError}</p>
+        </div>
+      )}
 
       {/* Statistics Cards */}
       {stats && (
