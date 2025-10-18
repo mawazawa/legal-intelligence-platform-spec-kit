@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { safeFetch } from '@/lib/api/fetch';
+import { logger } from '@/lib/logging/logger';
 import {
   DollarSign,
   AlertTriangle,
@@ -73,21 +75,53 @@ export default function KarmaBoomerangPage() {
     fetchKarmaAnalysis();
   }, []);
 
+  /**
+   * Fetch karma boomerang analysis data from API
+   * Includes error handling and structured logging
+   */
   const fetchKarmaAnalysis = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/api/analytics/karma-boomerang');
-      const data = await response.json();
+    setLoading(true);
+    setError(null);
 
-      if (data.success) {
-        setAnalyses(data.data.analyses);
-        setSummary(data.data.summary);
+    try {
+      logger.debug('Fetching karma boomerang analysis');
+
+      const result = await safeFetch<{
+        success: boolean;
+        data?: {
+          analyses: KarmaAnalysis[];
+          summary: AnalysisSummary;
+        };
+        error?: string;
+      }>('/api/analytics/karma-boomerang', {
+        timeout: 15000,
+        retries: 2
+      });
+
+      if (result.error) {
+        logger.warn('Failed to fetch karma analysis', {
+          error: result.error.message,
+          status: result.status
+        });
+        setError('Failed to fetch analysis. Please try again.');
+        return;
+      }
+
+      if (result.data?.success && result.data?.data) {
+        setAnalyses(result.data.data.analyses);
+        setSummary(result.data.data.summary);
+        logger.info('Karma analysis loaded successfully', {
+          analysisCount: result.data.data.analyses.length
+        });
       } else {
-        setError(data.error || 'Failed to fetch karma analysis');
+        logger.warn('Analysis request unsuccessful', {
+          error: result.data?.error
+        });
+        setError(result.data?.error || 'Failed to fetch karma analysis');
       }
     } catch (err) {
-      setError('Network error occurred');
-      console.error('Error fetching karma analysis:', err);
+      logger.error('Error fetching karma analysis', err as Error);
+      setError('Network error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
