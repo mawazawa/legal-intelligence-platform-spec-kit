@@ -18,6 +18,7 @@ import type {
   EvidenceStats,
   EvidenceCluster,
   ExhibitIndexEntry,
+  ExhibitIndexRpcRow,
   EvidenceCitation,
   ClaimKey,
   FilingType,
@@ -201,12 +202,14 @@ export async function getExhibitIndex(filingType: FilingType): Promise<ExhibitIn
     throw new Error(`Failed to generate exhibit index: ${error.message}`);
   }
 
-  return (data as any[]).map((row, index) => ({
+  const rows: ExhibitIndexRpcRow[] = data || [];
+
+  return rows.map((row): ExhibitIndexEntry => ({
     id: `${filingType}-${row.exhibit_letter}-${row.exhibit_number}`,
     filing_type: filingType,
     exhibit_letter: row.exhibit_letter,
     exhibit_number: row.exhibit_number,
-    evidence_file_id: row.file_name, // This would be the actual ID in real usage
+    evidence_file_id: row.file_name,
     description: row.description,
     sort_order: row.sort_order,
     created_at: new Date().toISOString(),

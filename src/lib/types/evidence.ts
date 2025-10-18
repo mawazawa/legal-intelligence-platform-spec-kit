@@ -192,6 +192,17 @@ export interface ExhibitIndexOptions {
 }
 
 /**
+ * RPC Response Types for Supabase Functions
+ */
+export interface ExhibitIndexRpcRow {
+  exhibit_letter: string;
+  exhibit_number: number;
+  file_name: string;
+  description: string;
+  sort_order: number;
+}
+
+/**
  * Evidence Statistics
  */
 export interface EvidenceStats {

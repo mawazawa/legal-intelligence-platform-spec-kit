@@ -53,9 +53,13 @@ class Logger {
   private userId?: string;
 
   constructor(config: Partial<LoggerConfig> = {}) {
+    const nodeEnv = process.env.NODE_ENV;
+    const environment: LoggerConfig['environment'] =
+      nodeEnv === 'production' || nodeEnv === 'test' ? nodeEnv : 'development';
+
     this.config = {
       minLevel: LogLevel.DEBUG,
-      environment: process.env.NODE_ENV as any || 'development',
+      environment,
       enableConsole: true,
       ...config,
     };
@@ -208,9 +212,17 @@ class Logger {
 /**
  * Global logger instance
  */
+const logLevel = Object.values(LogLevel).includes(process.env.LOG_LEVEL as LogLevel)
+  ? (process.env.LOG_LEVEL as LogLevel)
+  : LogLevel.INFO;
+
+const nodeEnv = process.env.NODE_ENV;
+const environment: LoggerConfig['environment'] =
+  nodeEnv === 'production' || nodeEnv === 'test' ? nodeEnv : 'development';
+
 export const logger = new Logger({
-  minLevel: process.env.LOG_LEVEL as LogLevel || LogLevel.INFO,
-  environment: process.env.NODE_ENV as any,
+  minLevel: logLevel,
+  environment,
   enableConsole: true,
 });
 
