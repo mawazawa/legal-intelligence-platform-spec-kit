@@ -159,6 +159,32 @@ export class Neo4jClient {
     await this.executeQuery(query, document);
   }
 
+  async upsertNodeWithLabels(params: {
+    externalId: string;
+    labels: string[];
+    properties: Record<string, any>;
+  }): Promise<void> {
+    if (!params.labels || params.labels.length === 0) {
+      throw new Error('At least one label is required to upsert node');
+    }
+
+    const [primaryLabel, ...extraLabels] = params.labels;
+    const extraLabelSets = extraLabels.map(label => `SET n:${label}`).join('\n');
+
+    const query = `
+      MERGE (n:${primaryLabel} {externalId: $externalId})
+      ${extraLabelSets}
+      SET n += $properties,
+          n.updatedAt = datetime()
+      RETURN n
+    `;
+
+    await this.executeQuery(query, {
+      externalId: params.externalId,
+      properties: params.properties,
+    });
+  }
+
   // Relationship operations
   async createRelationship(
     fromId: string,

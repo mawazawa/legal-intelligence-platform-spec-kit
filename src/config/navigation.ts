@@ -51,6 +51,7 @@ export const navigationConfig: NavItem[] = [
     name: 'Evidence & Intake',
     icon: FolderOpen,
     children: [
+      { name: 'Evidence Management', href: '/evidence', badge: 'NEW' },
       { name: 'Document Evidence', href: '/documents' },
       { name: 'Exhibit Packet', href: '/exhibits/packet' },
       { name: 'Intake (Dropzone)', href: '/intake' },

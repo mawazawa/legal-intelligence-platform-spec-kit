@@ -1,6 +1,7 @@
 import 'server-only';
 import fs from 'node:fs';
 import path from 'node:path';
+import { extractEntitiesFromEmail, type ExtractedEntity, type ExtractedRelationship } from './email-entity-extractor';
 
 /**
  * Email event extracted from mbox files
@@ -14,6 +15,9 @@ export interface EmailEvent {
   actor: 'petitioner' | 'respondent' | 'attorney' | 'court' | 'other';
   sourcePath: string;
   snippet: string;
+  entities: ExtractedEntity[];
+  relationships: ExtractedRelationship[];
+  tags: string[];
   metadata: {
     from: string;
     to: string[];
@@ -397,6 +401,15 @@ export async function parseAllEmails(
       const messageId = parsed.messageId || `email_${index}`;
       const externalId = sanitizeExternalId(messageId, index);
 
+      const extraction = extractEntitiesFromEmail({
+        messageExternalId: externalId,
+        subject: parsed.subject,
+        body: parsed.body,
+        from: parsed.from,
+        to: parsed.to,
+        cc: parsed.cc,
+      });
+
       events.push({
         externalId,
         type: 'email',
@@ -405,6 +418,9 @@ export async function parseAllEmails(
         actor,
         sourcePath: sourcePath || options.source || 'mailbox',
         snippet,
+        entities: extraction.entities,
+        relationships: extraction.relationships,
+        tags: extraction.tags,
         metadata: {
           from: parsed.from,
           to: parsed.to,

@@ -74,6 +74,7 @@ class DataIngestionPipeline {
           this.stats.emails.upserted++;
 
           await this._upsertParticipants(event);
+          await this._upsertEntities(event);
         } catch (error) {
           this.stats.errors.push(`Email upsert error: ${error.message}`);
         }
@@ -307,6 +308,59 @@ class DataIngestionPipeline {
       this.stats.errors.push(`Pipeline: ${error.message}`);
     } finally {
       await this.disconnect();
+    }
+  }
+
+  _cleanProperties(properties) {
+    const cleaned = {};
+    for (const [key, value] of Object.entries(properties || {})) {
+      if (value === undefined || value === null || value === '') continue;
+      cleaned[key] = value;
+    }
+    return cleaned;
+  }
+
+  async _upsertEntities(event) {
+    if (!event.entities?.length) return;
+
+    for (const entity of event.entities) {
+      const properties = this._cleanProperties({
+        ...entity.properties,
+        tags: entity.tags,
+        sourceText: entity.sourceText,
+        confidence: entity.confidence,
+        sourceMessageId: event.externalId
+      });
+
+      try {
+        await this.neo4jClient.upsertNodeWithLabels({
+          externalId: entity.externalId,
+          labels: entity.labels,
+          properties
+        });
+      } catch (error) {
+        this.stats.errors.push(`Entity upsert error (${entity.externalId}): ${error.message}`);
+      }
+    }
+
+    if (!event.relationships?.length) return;
+    for (const relationship of event.relationships) {
+      try {
+        await this.neo4jClient.createRelationship(
+          relationship.from.externalId,
+          relationship.to.externalId,
+          relationship.type,
+          this._cleanProperties({
+            ...relationship.properties,
+            confidence: relationship.confidence,
+            sourceMessageId: event.externalId
+          })
+        );
+      } catch (error) {
+        this.stats.errors.push(
+          `Relationship error (${relationship.type} ${relationship.from.externalId}->${relationship.to.externalId}): ${error.message}`
+        );
+      }
     }
   }
 

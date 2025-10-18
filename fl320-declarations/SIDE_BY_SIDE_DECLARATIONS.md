@@ -84,7 +84,7 @@ Then we'll build YOUR declaration paragraph-by-paragraph to counter each claim.
 - [ ] Why did court need to designate Elisor?
 
 **COUNTER-ARGUMENT**:
-"I [ATTENDED/DID NOT ATTEND] the July 2, 2024 hearing. [If attended: I was represented by [ATTORNEY NAME]]. The Court's July 12, 2024 order [DESCRIBE WHAT IT SAID]. I [AGREED/OBJECTED] to Ron Melendez because [REASON]."
+"I ATTENDED the July 2, 2024 hearing. The Court's July 12, 2024 order [DESCRIBE WHAT IT SAID]. I [AGREED/OBJECTED] to Ron Melendez because [REASON]."
 
 ---
 
