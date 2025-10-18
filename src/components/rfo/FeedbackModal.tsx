@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { X, MessageSquare, Search, FileText } from 'lucide-react';
+import { logger } from '@/lib/logging/logger';
 
 interface Annotation {
   id: string;
@@ -52,15 +53,20 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
     }
   };
 
+  /**
+   * Search for evidence matching the query
+   */
   const handleSearchEvidence = async () => {
     if (!searchQuery.trim()) return;
-    
+
     setIsSearching(true);
     try {
+      logger.debug('Searching for evidence', { query: searchQuery });
       const results = await onSearchEvidence(searchQuery);
       setSearchResults(results);
+      logger.debug('Evidence search completed', { resultCount: results.length });
     } catch (error) {
-      console.error('Search failed:', error);
+      logger.error('Evidence search failed', error as Error);
     } finally {
       setIsSearching(false);
     }
