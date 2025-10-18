@@ -35,11 +35,16 @@ describe('Server Directive Validation', () => {
         const content = fs.readFileSync(fullPath, 'utf-8');
         const lines = content.split('\n');
 
-        // Check first 5 lines for 'use server' directive
-        const firstLines = lines.slice(0, 5).join('\n');
-        const hasUseServer = /['"]use server['"];?/.test(firstLines);
+        // Check first 10 lines for 'use server' directive (not import 'server-only')
+        const firstLines = lines.slice(0, 10).join('\n');
 
-        expect(hasUseServer).toBe(false);
+        // 'use server' directive (BAD for library modules)
+        const hasUseServerDirective = /^['"]use server['"];?\s*$/m.test(firstLines);
+
+        // import 'server-only' is OK and encouraged for server-side modules
+        // We're only checking for the incorrect 'use server' directive
+
+        expect(hasUseServerDirective).toBe(false);
       });
     });
   });
@@ -66,10 +71,12 @@ describe('Server Directive Validation', () => {
       }
 
       const content = fs.readFileSync(emailParserPath, 'utf-8');
-      const firstFewLines = content.split('\n').slice(0, 10).join('\n');
 
-      // Should NOT have 'use server' directive
-      expect(firstFewLines).not.toMatch(/['"]use server['"];?/);
+      // Should NOT have 'use server' directive (as standalone directive)
+      // Note: import 'server-only' is OK and encouraged
+      const hasUseServerDirective = /^['"]use server['"];?\s*$/m.test(content);
+
+      expect(hasUseServerDirective).toBe(false);
     });
 
     it('should export EmailParser class', () => {

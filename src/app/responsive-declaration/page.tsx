@@ -1,11 +1,10 @@
 import React from 'react';
-import dynamic from 'next/dynamic';
-const PrintButton = dynamic(() => import('@/components/case/PrintButton').then(m => m.PrintButton), { ssr: false });
+import { PrintButton } from '@/components/case/PrintButton';
 import { ResponsiveDeclarationDocument } from '@/components/filings/ResponsiveDeclarationDocument';
 
-const ResponsiveDeclarationPage = () => {
+export default async function ResponsiveDeclarationPage() {
   return (
-    <div className="p-6 mx-auto max-w-6xl space-y-6 cv-auto">
+    <div className="p-6 mx-auto max-w-6xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Responsive Declaration (FL-320)</h1>
@@ -16,6 +15,4 @@ const ResponsiveDeclarationPage = () => {
       <ResponsiveDeclarationDocument layout="detailed" showSidebars id="responsive-declaration" />
     </div>
   );
-};
-
-export default ResponsiveDeclarationPage;
+}
