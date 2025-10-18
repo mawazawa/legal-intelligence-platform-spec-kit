@@ -2,7 +2,27 @@
 
 import React from 'react';
 import { CheckCircle2 } from 'lucide-react';
+import { formatCurrency } from '@/lib/transforms/dataTransform';
 import { PageView } from '@/components/case/PageView';
+
+interface LedgerValue {
+  due_to_seller?: number;
+  respondent?: number;
+  petitioner?: number;
+  r65?: number;
+  p35?: number;
+  constructive_net?: number;
+  [key: string]: number | undefined;
+}
+
+interface LedgerNode {
+  value?: LedgerValue;
+  children?: LedgerNode[];
+}
+
+interface Ledger {
+  root?: LedgerNode;
+}
 
 interface RespondentViewProps {
   fl320Content: {
@@ -10,12 +30,10 @@ interface RespondentViewProps {
     meta: Record<string, unknown>;
     pages: number;
   } | null;
-  ledger: Record<string, unknown> | null;
+  ledger: Ledger | null;
 }
 
 const RespondentView = React.memo<RespondentViewProps>(({ fl320Content, ledger }) => {
-  const fmt = (n?: number) => typeof n === 'number' ? n.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '—';
-
   if (!fl320Content && !ledger) {
     return (
       <div className="text-center text-slate-500 py-8">
@@ -25,13 +43,13 @@ const RespondentView = React.memo<RespondentViewProps>(({ fl320Content, ledger }
     );
   }
 
-  // Build a minimal computed outline from the ledger for page view
-  const d2s = (ledger as any)?.root?.children?.[0]?.value?.due_to_seller as number | undefined;
-  const r65 = (ledger as any)?.root?.children?.[1]?.value?.r65 as number | undefined;
-  const p35 = (ledger as any)?.root?.children?.[1]?.value?.p35 as number | undefined;
-  const fr = (ledger as any)?.root?.value?.respondent as number | undefined;
-  const fp = (ledger as any)?.root?.value?.petitioner as number | undefined;
-  const cn = (ledger as any)?.root?.children?.[1]?.value?.constructive_net as number | undefined;
+  // Safe accessor for nested ledger values
+  const d2s = ledger?.root?.children?.[0]?.value?.due_to_seller;
+  const r65 = ledger?.root?.children?.[1]?.value?.r65;
+  const p35 = ledger?.root?.children?.[1]?.value?.p35;
+  const fr = ledger?.root?.value?.respondent;
+  const fp = ledger?.root?.value?.petitioner;
+  const cn = ledger?.root?.children?.[1]?.value?.constructive_net;
   const outlinePages: string[] = [
     [
       'RESPONSIVE DECLARATION (FL-320) — Computation Outline',
