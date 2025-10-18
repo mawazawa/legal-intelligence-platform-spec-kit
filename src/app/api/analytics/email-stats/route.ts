@@ -5,8 +5,9 @@ export async function GET() {
   try {
     const stats = await getEmailStats();
     return NextResponse.json(stats);
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'Failed to compute email stats' }, { status: 500 });
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : 'Failed to compute email stats';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 

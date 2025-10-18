@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useTransition } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { typography } from '@/styles/typography';
-import PageSkeleton from '@/components/loading/PageSkeleton';
 import {
   Search,
   FileText,
@@ -25,20 +24,20 @@ interface ClaimAnalysis {
     content: string;
     source: string;
     similarity: number;
-    metadata: Record<string, any>;
+    metadata: Record<string, unknown>;
   }>;
   graphContext?: {
     nodes: Array<{
       id: string;
       labels: string[];
-      properties: Record<string, any>;
+      properties: Record<string, unknown>;
     }>;
     relationships: Array<{
       id: string;
       type: string;
       startNodeId: string;
       endNodeId: string;
-      properties: Record<string, any>;
+      properties: Record<string, unknown>;
     }>;
   };
   answer: string;
@@ -307,7 +306,7 @@ const ClaimsAnalysis: React.FC = () => {
                     </h4>
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-r-xl p-4">
                       <p className={`${typography.body.medium} text-slate-800 italic`}>
-                        "{analysis.claim || query}"
+                        &quot;{analysis.claim || query}&quot;
                       </p>
                     </div>
                   </div>
@@ -405,7 +404,7 @@ const ClaimsAnalysis: React.FC = () => {
 
                       <div className="bg-gradient-to-br from-slate-50 to-blue-50/30 border border-slate-200 rounded-lg p-4 mb-3">
                         <p className={`${typography.body.small} text-slate-700 italic leading-relaxed`}>
-                          "{item.content}"
+                          &quot;{item.content}&quot;
                         </p>
                       </div>
 
@@ -458,28 +457,32 @@ const ClaimsAnalysis: React.FC = () => {
                         Connected Nodes
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {analysis.graphContext.nodes.slice(0, 6).map((node, index) => (
-                          <div
-                            key={node.id}
-                            className="bg-gradient-to-br from-white to-purple-50/30 border-2 border-purple-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200"
-                          >
-                            <div className="flex items-center gap-2 mb-3">
-                              <Badge variant="outline" className="text-xs font-semibold text-purple-700 border-purple-300 bg-purple-50">
-                                {node.labels.join(', ')}
-                              </Badge>
+                        {analysis.graphContext.nodes.slice(0, 6).map((node) => {
+                          const title = typeof node.properties.title === 'string' ? node.properties.title : null;
+                          const description = typeof node.properties.description === 'string' ? node.properties.description : null;
+                          return (
+                            <div
+                              key={node.id}
+                              className="bg-gradient-to-br from-white to-purple-50/30 border-2 border-purple-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200"
+                            >
+                              <div className="flex items-center gap-2 mb-3">
+                                <Badge variant="outline" className="text-xs font-semibold text-purple-700 border-purple-300 bg-purple-50">
+                                  {node.labels.join(', ')}
+                                </Badge>
+                              </div>
+                              {title && (
+                                <div className={`${typography.body.small} font-semibold text-slate-800 mb-1`}>
+                                  {title}
+                                </div>
+                              )}
+                              {description && (
+                                <div className={`${typography.caption.medium} text-slate-600 line-clamp-2`}>
+                                  {description.substring(0, 100)}...
+                                </div>
+                              )}
                             </div>
-                            {node.properties.title && (
-                              <div className={`${typography.body.small} font-semibold text-slate-800 mb-1`}>
-                                {node.properties.title}
-                              </div>
-                            )}
-                            {node.properties.description && (
-                              <div className={`${typography.caption.medium} text-slate-600 line-clamp-2`}>
-                                {node.properties.description.substring(0, 100)}...
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -492,7 +495,7 @@ const ClaimsAnalysis: React.FC = () => {
                           Relationships
                         </h4>
                         <div className="space-y-2">
-                          {analysis.graphContext.relationships.slice(0, 5).map((rel, index) => (
+                          {analysis.graphContext.relationships.slice(0, 5).map((rel) => (
                             <div
                               key={rel.id}
                               className="bg-white border border-slate-200 rounded-lg p-3 hover:border-pink-300 hover:bg-pink-50/30 transition-all duration-200"
