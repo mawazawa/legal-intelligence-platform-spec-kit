@@ -66,7 +66,7 @@ export const comparisonPoints: ComparisonPoint[] = [
       'Statement of Decision 65% allocation'
     ],
     feedback: [
-      'Point out that Respondent's tax credit is cherry-picked—compare to Form 593 showing parallel withholding.',
+      'Point out that Respondent\'s tax credit is cherry-picked - compare to Form 593 showing parallel withholding.',
       'Consider attaching escrow wire confirmation proving arrears payoff occurred before the split.'
     ],
     status: 'disputed',
