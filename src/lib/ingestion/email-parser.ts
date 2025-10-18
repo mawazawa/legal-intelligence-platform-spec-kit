@@ -1,5 +1,7 @@
 // Email parser - server-side only
+import 'server-only';
 // This file uses Node.js APIs and cannot run in edge runtime
+// NOTE: Do NOT add 'use server' directive - this is a library module, not a server action
 import { readFileSync } from 'fs';
 import { join } from 'path';
 

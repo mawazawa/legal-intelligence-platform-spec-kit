@@ -43,12 +43,22 @@ export class VoyageEmbeddingClient {
   }
 
   async embedText(text: string): Promise<number[]> {
-    try {
-      const response = await this.client.embed([text], this.config.model!);
-      return response.embeddings[0];
-    } catch (error) {
-      console.error('Voyage embedding error:', error);
-      throw error;
+    let attempt = 0;
+    const max = this.config.maxRetries ?? 3;
+    const delay = this.config.retryDelay ?? 1000;
+    // Initial try + retries
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      try {
+        const response = await this.client.embed([text], this.config.model!);
+        return response.embeddings[0];
+      } catch (error) {
+        attempt++;
+        if (attempt > max) {
+          throw error;
+        }
+        await this.delay(delay * attempt);
+      }
     }
   }
 
@@ -125,9 +135,15 @@ export class VoyageEmbeddingClient {
           chunk = chunk.slice(0, breakPoint + 1);
         }
       }
-      
-      chunks.push(chunk.trim());
-      start = start + chunk.length - overlap;
+      const trimmed = chunk.trim();
+      if (trimmed.length === 0) {
+        // Avoid infinite loops on whitespace-only ranges
+        break;
+      }
+      chunks.push(trimmed);
+      // Ensure forward progress even when overlap >= chunk.length
+      const advance = Math.max(1, chunk.length - overlap);
+      start = start + advance;
     }
     
     return chunks.filter(chunk => chunk.length > 0);

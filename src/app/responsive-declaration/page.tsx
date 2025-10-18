@@ -1,5 +1,6 @@
 import React from 'react';
-import { PrintButton } from '@/components/case/PrintButton';
+import dynamic from 'next/dynamic';
+const PrintButton = dynamic(() => import('@/components/case/PrintButton').then(m => m.PrintButton), { ssr: false });
 import { ResponsiveDeclarationDocument } from '@/components/filings/ResponsiveDeclarationDocument';
 
 const ResponsiveDeclarationPage = () => {
