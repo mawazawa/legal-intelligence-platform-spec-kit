@@ -63,11 +63,11 @@ I declare under penalty of perjury under the laws of the State of California tha
 
   return (
     <div id={id} className="legal-document min-h-screen p-16">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto measure">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw]}
-          className="prose prose-lg max-w-none"
+          className="prose prose-lg"
         >
           {declarationContent}
         </ReactMarkdown>

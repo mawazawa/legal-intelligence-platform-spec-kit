@@ -38,11 +38,12 @@ export async function POST(req: NextRequest) {
     if (proc.status !== 0) {
       return NextResponse.json({ error: 'organizer failed', code: proc.status, stderr: proc.stderr }, { status: 500 })
     }
-    let out: any = {}
-    try { out = JSON.parse(proc.stdout || '{}') } catch {}
+    let out: Record<string, unknown> = {}
+    try { out = JSON.parse(proc.stdout || '{}') as Record<string, unknown> } catch { /* ignore parse errors */ }
     return NextResponse.json({ ok: true, inbox: inboxRel, organizer: out })
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'upload failed' }, { status: 500 })
+  } catch (e) {
+    const errorMessage = e instanceof Error ? e.message : 'upload failed'
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }
 

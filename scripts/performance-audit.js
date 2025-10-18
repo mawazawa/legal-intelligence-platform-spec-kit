@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports */
 
 const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');

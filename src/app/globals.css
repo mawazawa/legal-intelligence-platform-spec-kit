@@ -23,6 +23,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 html {
@@ -34,6 +37,27 @@ html {
   content-visibility: auto;
   contain-intrinsic-size: 1000px 2000px;
 }
+
+/* Readability helpers */
+.measure {
+  max-width: 70ch;
+}
+
+.prose {
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+}
+.prose h1, .prose h2, .prose h3 {
+  line-height: 1.2;
+  margin-top: 1.2em;
+  margin-bottom: 0.6em;
+  text-wrap: balance;
+}
+.prose p { margin: 0.75em 0; }
+.prose ul, .prose ol { padding-left: 1.25rem; margin: 0.75em 0; }
+.prose li { margin: 0.25em 0; }
+.prose blockquote { margin: 1em 0; padding-left: 1rem; border-left: 3px solid #e2e8f0; color: #475569; }
+.prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.95em; }
 
 /* Typographic polish */
 .tabular-nums {

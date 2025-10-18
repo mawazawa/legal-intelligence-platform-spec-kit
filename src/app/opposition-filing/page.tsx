@@ -74,11 +74,11 @@ const OppositionFilingPage: React.FC = () => {
               <span>3</span>
             </div>
             <div className="flex justify-between">
-              <span>&nbsp;&nbsp;2. Timeline of Events - Petitioner's Possession Control</span>
+              <span>&nbsp;&nbsp;2. Timeline of Events - Petitioner&apos;s Possession Control</span>
               <span>3</span>
             </div>
             <div className="flex justify-between">
-              <span>&nbsp;&nbsp;3. Mathematical Impossibility of Petitioner's Calculations</span>
+              <span>&nbsp;&nbsp;3. Mathematical Impossibility of Petitioner&apos;s Calculations</span>
               <span>4</span>
             </div>
             <div className="flex justify-between">
@@ -905,9 +905,88 @@ const OppositionFilingPage: React.FC = () => {
         @media print {
           .no-print { display: none !important; }
           .page-break { page-break-before: always; }
-          .legal-document { font-family: "Times New Roman", Times, serif; }
+          .legal-document {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 12pt;
+            line-height: 2;
+          }
           body { margin: 0; padding: 0; }
           .page-break:first-child { page-break-before: avoid; }
+
+          /* Pleading paper line numbers */
+          .line-numbers {
+            counter-reset: line-counter;
+          }
+          .line-numbers .line {
+            position: relative;
+            padding-left: 0.75in;
+          }
+          .line-numbers .line::before {
+            counter-increment: line-counter;
+            content: counter(line-counter);
+            position: absolute;
+            left: 0.25in;
+            width: 0.4in;
+            text-align: right;
+            font-size: 10pt;
+            color: #666;
+          }
+        }
+
+        /* Screen styles */
+        .legal-document {
+          font-family: "Courier New", Courier, monospace;
+          font-size: 12pt;
+          line-height: 2;
+          max-width: 8.5in;
+          margin: 0 auto;
+          background: white;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .line-numbers {
+          counter-reset: line-counter;
+        }
+        .line-numbers .line {
+          position: relative;
+          padding-left: 0.75in;
+          min-height: 24pt;
+        }
+        .line-numbers .line::before {
+          counter-increment: line-counter;
+          content: counter(line-counter);
+          position: absolute;
+          left: 0.25in;
+          width: 0.4in;
+          text-align: right;
+          font-size: 10pt;
+          color: #888;
+          font-family: "Courier New", Courier, monospace;
+        }
+
+        .page-content {
+          padding: 1in 1in 1in 1.5in;
+        }
+
+        .caption-box {
+          border: 2pt solid black;
+          padding: 12pt;
+          margin: 24pt 0;
+        }
+
+        .centered {
+          text-align: center;
+        }
+
+        .footer {
+          position: fixed;
+          bottom: 0.5in;
+          left: 1.5in;
+          right: 1in;
+          text-align: center;
+          font-size: 10pt;
+          border-top: 1pt solid black;
+          padding-top: 6pt;
         }
       `}</style>
     </div>

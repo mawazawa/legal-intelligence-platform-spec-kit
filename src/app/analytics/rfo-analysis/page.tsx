@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,30 +18,11 @@ import {
   Download,
   Scale,
   Target,
-  Award,
   Info,
-  ExternalLink,
-  Sparkles,
   ShieldCheck
 } from 'lucide-react';
 
-// Lazy load chart components to reduce initial bundle size
-const RechartsModule = lazy(() => import('recharts'));
-
-// Create a wrapper component for charts
-const ChartWrapper = ({ children, ...props }: any) => {
-  const [ChartComponents, setChartComponents] = useState<any>(null);
-  
-  useEffect(() => {
-    import('recharts').then(setChartComponents);
-  }, []);
-  
-  if (!ChartComponents) {
-    return <ChartSkeleton />;
-  }
-  
-  return React.cloneElement(children, { ...props, components: ChartComponents });
-};
+// Chart components temporarily disabled
 
 interface SourceCitation {
   document: string;
@@ -200,10 +181,10 @@ const RFOAnalysisPage: React.FC = () => {
           totalInvalidClaims: 145780.38,
           percentage: 69,
           coreError: 'Double-counting $77,779.88 mortgage costs',
-          detailedExplanation: 'Petitioner attempts to both deduct the mortgage payoff from sale proceeds AND add it back as a separate community debt. This is mathematically impossible and constitutes double-counting. The mortgage was already paid from escrow proceeds, so it cannot be "added back" to the distribution calculation.',
+          detailedExplanation: 'Petitioner attempts to both deduct the mortgage payoff from sale proceeds AND add it back as a separate community debt. This is mathematically impossible and constitutes double-counting. The mortgage was already paid from escrow proceeds, so it cannot be &quot;added back&quot; to the distribution calculation.',
           sources: [
             {
-              document: 'Petitioner\'s RFO',
+              document: 'Petitioner&apos;s RFO',
               page: 8,
               section: 'Schedule of Assets and Debts',
               date: '2025-01-15',
@@ -326,13 +307,13 @@ const RFOAnalysisPage: React.FC = () => {
         claims: {
           invalid: [
             {
-              description: 'Mortgage Payoff "Add Back"',
+              description: 'Mortgage Payoff &quot;Add Back&quot;',
               amount: 77779.88,
               status: 'invalid',
               reason: 'Mathematically impossible - mortgage already deducted from sale proceeds',
-              calculation: 'Petitioner\'s share of mortgage ($759,364.32 ÷ 2) = $379,682.16. Amount already paid: $301,902.28. Difference claimed: $77,779.88',
+              calculation: 'Petitioner&apos;s share of mortgage ($759,364.32 ÷ 2) = $379,682.16. Amount already paid: $301,902.28. Difference claimed: $77,779.88',
               sources: [
-                { document: 'Petitioner\'s RFO', page: 8, type: 'rfo' },
+                { document: 'Petitioner&apos;s RFO', page: 8, type: 'rfo' },
                 { document: 'Settlement Statement', page: 1, section: 'Line 504', type: 'settlement_stmt' }
               ]
             },
@@ -444,33 +425,9 @@ const RFOAnalysisPage: React.FC = () => {
   }, []);
 
   // Memoize data transformations to prevent unnecessary recalculations
-  const continuanceData = useMemo(() => analysisData ? [
-    { name: 'Petitioner', value: analysisData.continuances.petitionerRequests, color: '#EF4444' },
-    { name: 'Respondent', value: analysisData.continuances.respondentRequests, color: '#8B5CF6' },
-    { name: 'Court', value: analysisData.continuances.courtRequests, color: '#3B82F6' }
-  ] : [], [analysisData]);
+  // Chart data temporarily disabled
 
-  const communicationData = useMemo(() => analysisData ? [
-    { name: 'Petitioner', emails: analysisData.communications.petitionerEmails, responseTime: analysisData.communications.petitionerResponseTime },
-    { name: 'Respondent', emails: analysisData.communications.respondentEmails, responseTime: analysisData.communications.respondentResponseTime }
-  ] : [], [analysisData]);
-
-  const financialData = useMemo(() => analysisData ? [
-    { category: 'Invalid Claims', amount: analysisData.summary.totalInvalidClaims, color: '#EF4444' },
-    { category: 'Valid Claims', amount: analysisData.summary.totalValidClaims, color: '#10B981' }
-  ] : [], [analysisData]);
-
-  const invalidClaimsBreakdown = useMemo(() => analysisData?.claims.invalid.map(claim => ({
-    name: claim.description,
-    amount: claim.amount,
-    color: '#EF4444'
-  })) || [], [analysisData]);
-
-  const validClaimsBreakdown = useMemo(() => analysisData?.claims.valid.map(claim => ({
-    name: claim.description,
-    amount: claim.amount,
-    color: '#10B981'
-  })) || [], [analysisData]);
+  // Chart data temporarily disabled
 
   const exParteTimeline = [
     { date: 'Jun 14, 2024', filing: 'List property for sale', impact: 'High' },
@@ -521,7 +478,7 @@ const RFOAnalysisPage: React.FC = () => {
                   RFO Responsive Declaration
                 </h1>
                 <p className={`${typography.body.large} text-slate-600 max-w-4xl`}>
-                  Comprehensive forensic analysis of Petitioner's Request for Order with detailed mathematical refutations, source citations, and evidence-based counterproposals
+                  Comprehensive forensic analysis of Petitioner&apos;s Request for Order with detailed mathematical refutations, source citations, and evidence-based counterproposals
                 </p>
               </div>
             </div>
@@ -556,7 +513,7 @@ const RFOAnalysisPage: React.FC = () => {
                   Total Invalid Claims
                 </div>
                 <div className={`${typography.caption.small} text-red-600`}>
-                  {analysisData?.summary.invalidPercentage}% of Petitioner's total claims
+                  {analysisData?.summary.invalidPercentage}% of Petitioner&apos;s total claims
                 </div>
               </CardContent>
             </Card>
@@ -593,7 +550,7 @@ const RFOAnalysisPage: React.FC = () => {
                   ${analysisData?.summary.netRespondentPosition.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
                 <div className={`${typography.caption.large} text-blue-700 mb-2`}>
-                  Respondent's Net Position
+                  Respondent&apos;s Net Position
                 </div>
                 <div className={`${typography.caption.small} text-blue-600`}>
                   After all valid adjustments
@@ -744,25 +701,12 @@ const RFOAnalysisPage: React.FC = () => {
                 <CardContent>
                   <div className="h-64">
                     <Suspense fallback={<ChartSkeleton />}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={continuanceData}
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                            label={({ name, value }) => `${name}: ${value}`}
-                          >
-                            {continuanceData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                          <Legend />
-                        </PieChart>
-                      </ResponsiveContainer>
+                      <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg">
+                        <div className="text-center">
+                          <div className="text-gray-500 mb-2">Continuance Analysis Chart</div>
+                          <div className="text-sm text-gray-400">Chart component temporarily disabled</div>
+                        </div>
+                      </div>
                     </Suspense>
                   </div>
                 </CardContent>
@@ -775,14 +719,12 @@ const RFOAnalysisPage: React.FC = () => {
                 <CardContent>
                   <div className="h-64">
                     <Suspense fallback={<ChartSkeleton />}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={financialData}>
-                          <XAxis dataKey="category" />
-                          <YAxis />
-                          <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Amount']} />
-                          <Bar dataKey="amount" fill="#8884d8" />
-                        </BarChart>
-                      </ResponsiveContainer>
+                      <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg">
+                        <div className="text-center">
+                          <div className="text-gray-500 mb-2">Financial Analysis Chart</div>
+                          <div className="text-sm text-gray-400">Chart component temporarily disabled</div>
+                        </div>
+                      </div>
                     </Suspense>
                   </div>
                 </CardContent>
@@ -830,7 +772,7 @@ const RFOAnalysisPage: React.FC = () => {
                         <span className="text-red-900 text-lg font-bold">✗</span>
                       </div>
                       <h4 className={`${typography.heading.h5} text-red-900`}>
-                        Petitioner's Impossible Calculation
+                        Petitioner&apos;s Impossible Calculation
                       </h4>
                     </div>
                     <div className={`${typography.body.small} text-red-800 space-y-2`}>
@@ -839,7 +781,7 @@ const RFOAnalysisPage: React.FC = () => {
                         <span className="font-semibold">${analysisData.propertyDetails.netProceeds.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-red-100">
-                        <span>2. "Add Back" Request:</span>
+                        <span>2. &quot;Add Back&quot; Request:</span>
                         <span className="font-semibold text-red-700">+$77,779.88</span>
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-red-300">
@@ -1050,7 +992,7 @@ const RFOAnalysisPage: React.FC = () => {
                     <p className="text-blue-700 text-sm">
                       Petitioner took exclusive possession of the Property on this date. 
                       This fact is critical because Watts charges end on November 15, 2024, 
-                      and all Property-related expenses after this date are Petitioner's responsibility.
+                      and all Property-related expenses after this date are Petitioner&apos;s responsibility.
                     </p>
                   </div>
 
@@ -1150,14 +1092,12 @@ const RFOAnalysisPage: React.FC = () => {
                   </div>
 
                   <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={communicationData}>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="emails" fill="#8884d8" name="Emails" />
-                      </BarChart>
-                    </ResponsiveContainer>
+                    <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg">
+                      <div className="text-center">
+                        <div className="text-gray-500 mb-2">Communication Analysis Chart</div>
+                        <div className="text-sm text-gray-400">Chart component temporarily disabled</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -1232,7 +1172,7 @@ const RFOAnalysisPage: React.FC = () => {
                       <h4 className="font-semibold text-red-800 mb-2">Invalid Claims: $145,780.38</h4>
                       <div className="space-y-2">
                         <div className="flex justify-between">
-                          <span className="text-sm text-red-600">Mortgage "Add Back":</span>
+                          <span className="text-sm text-red-600">Mortgage &quot;Add Back&quot;:</span>
                           <span className="font-medium text-red-800">$77,779.88</span>
                         </div>
                         <div className="flex justify-between">
@@ -1289,7 +1229,7 @@ const RFOAnalysisPage: React.FC = () => {
               <CardContent>
                 <div className="space-y-4">
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-blue-800 mb-2">Petitioner's Exclusive Use Period</h4>
+                    <h4 className="font-semibold text-blue-800 mb-2">Petitioner&apos;s Exclusive Use Period</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-blue-900">196</div>
@@ -1310,11 +1250,11 @@ const RFOAnalysisPage: React.FC = () => {
                     <h4 className="font-semibold text-slate-800 mb-2">Watts Charges Offset Calculation</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-sm text-slate-600">Petitioner's Watts Claims:</span>
+                        <span className="text-sm text-slate-600">Petitioner&apos;s Watts Claims:</span>
                         <span className="font-medium text-slate-800">$64,312.50</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-slate-600">Petitioner's Use Period:</span>
+                        <span className="text-sm text-slate-600">Petitioner&apos;s Use Period:</span>
                         <span className="font-medium text-slate-800">196 days</span>
                       </div>
                       <div className="flex justify-between">

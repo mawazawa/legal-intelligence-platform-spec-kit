@@ -1,6 +1,6 @@
 import React from 'react';
 import { PrintButton } from '@/components/case/PrintButton';
-import { ResponsiveDeclarationDocument } from '@/components/filings/ResponsiveDeclarationDocument';
+import ResponsiveDeclarationDocument from '@/components/filings/ResponsiveDeclarationDocument';
 
 export default async function ResponsiveDeclarationPage() {
   return (

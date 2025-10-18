@@ -3,34 +3,46 @@ import path from 'node:path'
 import React from 'react'
 import { SideBySide } from '@/components/case/SideBySide'
 
+interface LedgerValue {
+  [key: string]: number | undefined
+}
+
+interface LedgerNode {
+  value?: LedgerValue
+}
+
+interface Ledger {
+  root?: LedgerNode
+}
+
 async function readSibling(...parts: string[]) {
   const p = path.resolve(process.cwd(), '..', ...parts)
   return p
 }
 
 export default async function SideBySidePage() {
-  let ledger: any = null
+  let ledger: Ledger | null = null
   try {
     const p = await readSibling('case-financials','results','ledger.json')
     const raw = await fs.readFile(p,'utf8')
-    ledger = JSON.parse(raw)
-  } catch {}
+    ledger = JSON.parse(raw) as Ledger
+  } catch { /* ignore read errors */ }
 
   const r = (n?: number) => typeof n==='number'? n.toLocaleString('en-US',{style:'currency',currency:'USD'}) : '—'
 
   // Attempt to read the latest ingested RFO claims
-  async function readLatestRFOClaims(): Promise<any[] | null> {
+  async function readLatestRFOClaims(): Promise<Array<Record<string, unknown>> | null> {
     try {
       const idxPath = await readSibling('case-financials','sources','index.json')
       const idxRaw = await fs.readFile(idxPath, 'utf8')
-      const idx = JSON.parse(idxRaw)
-      const docs = (idx?.docs || []).filter((d: any) => d?.type === 'petitioner/rfo')
+      const idx = JSON.parse(idxRaw) as { docs?: Array<{ type?: string; date?: string; path?: string }> }
+      const docs = (idx?.docs || []).filter((d) => d?.type === 'petitioner/rfo')
       if (!docs.length) return null
-      docs.sort((a: any, b: any) => String(b.date).localeCompare(String(a.date)))
+      docs.sort((a, b) => String(b.date).localeCompare(String(a.date)))
       const latest = docs[0]
-      const claimsPath = await readSibling('case-financials','sources', latest.path, 'claims.json')
+      const claimsPath = await readSibling('case-financials','sources', latest.path!, 'claims.json')
       const claimsRaw = await fs.readFile(claimsPath, 'utf8')
-      const claims = JSON.parse(claimsRaw)
+      const claims = JSON.parse(claimsRaw) as { claims?: Array<Record<string, unknown>> }
       return claims?.claims || null
     } catch {
       return null
@@ -39,7 +51,7 @@ export default async function SideBySidePage() {
 
   const claims = await readLatestRFOClaims()
 
-  function buildResponseForClaim(title: string): { response: string, formula?: string, sources?: any[] } {
+  function buildResponseForClaim(title: string): { response: string, formula?: string, sources?: Array<Record<string, unknown>> } {
     const L = ledger?.root
     const fmt = (n?: number) => typeof n==='number'? n.toLocaleString('en-US',{style:'currency',currency:'USD'}) : '—'
     const base = `From‑the‑Pot result: Respondent ${fmt(L?.value?.respondent)} · Petitioner ${fmt(L?.value?.petitioner)} (Total ${fmt(L?.value?.total)}).`

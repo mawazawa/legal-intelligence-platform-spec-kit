@@ -27,7 +27,7 @@ export interface EmbeddingResult {
 }
 
 export class VoyageEmbeddingClient {
-  private client: VoyageAI;
+  private client: any;
   private config: VoyageConfig;
 
   constructor(config: VoyageConfig) {
@@ -39,7 +39,8 @@ export class VoyageEmbeddingClient {
       ...config
     };
     
-    this.client = new VoyageAI(this.config.apiKey);
+    // The voyageai package types do not expose a constructable class in all versions; use any at runtime.
+    this.client = new (VoyageAI as any)(this.config.apiKey);
   }
 
   async embedText(text: string): Promise<number[]> {
@@ -47,7 +48,7 @@ export class VoyageEmbeddingClient {
     const max = this.config.maxRetries ?? 3;
     const delay = this.config.retryDelay ?? 1000;
     // Initial try + retries
-    // eslint-disable-next-line no-constant-condition
+     
     while (true) {
       try {
         const response = await this.client.embed([text], this.config.model!);

@@ -4,18 +4,39 @@ import React from 'react'
 import { PrintButton } from '@/components/case/PrintButton'
 import { Formula } from '@/components/case/Formula'
 
+interface LedgerItem {
+  label: string
+  amount?: number
+  formula?: string
+}
+
+interface LedgerValue {
+  [key: string]: number | undefined
+}
+
+interface LedgerNode {
+  value?: LedgerValue
+  items?: LedgerItem[]
+  formulas?: string[]
+  children?: LedgerNode[]
+}
+
+interface Ledger {
+  root?: LedgerNode
+}
+
 async function readSibling(...parts: string[]) {
   const p = path.resolve(process.cwd(), '..', ...parts)
   return p
 }
 
 export default async function ReportPage() {
-  let ledger: any = null
+  let ledger: Ledger | null = null
   try {
     const p = await readSibling('case-financials','results','ledger.json')
     const raw = await fs.readFile(p,'utf8')
-    ledger = JSON.parse(raw)
-  } catch {}
+    ledger = JSON.parse(raw) as Ledger
+  } catch { /* ignore read errors */ }
 
   const r = (n: number | undefined) => typeof n === 'number' ? n.toLocaleString('en-US',{style:'currency',currency:'USD'}) : '—'
 

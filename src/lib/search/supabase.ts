@@ -150,33 +150,21 @@ export class SupabaseVectorClient {
     threshold: number = 0.7,
     source?: string
   ): Promise<SearchResult[]> {
-    let query = this.client
-      .from('document_chunks')
-      .select(`
-        id,
-        content,
-        embedding,
-        external_id,
-        chunk_index,
-        documents!inner(source, title)
-      `)
-      .rpc('match_documents', {
-        query_embedding: queryEmbedding,
-        match_threshold: threshold,
-        match_count: limit
-      });
-
-    if (source) {
-      query = query.eq('documents.source', source);
-    }
-
-    const { data, error } = await query;
+    // Use RPC directly from client to satisfy typings and runtime behavior
+    const { data, error } = await (this.client as any).rpc('match_documents', {
+      query_embedding: queryEmbedding,
+      match_threshold: threshold,
+      match_count: limit
+    });
 
     if (error) {
       throw new Error(`Vector search failed: ${error.message}`);
     }
 
-    return data.map((item: any) => ({
+    const rows = (data as any[]) || [];
+    const mapped = rows
+      .filter((item: any) => (source ? item.documents?.source === source : true))
+      .map((item: any) => ({
       id: item.id,
       content: item.content,
       metadata: {
@@ -186,6 +174,7 @@ export class SupabaseVectorClient {
       },
       similarity: item.similarity || 0
     }));
+    return mapped;
   }
 
   async hybridSearch(
@@ -307,7 +296,7 @@ export class SupabaseVectorClient {
     const [documentsResult, chunksResult, sourcesResult] = await Promise.all([
       this.client.from('documents').select('id', { count: 'exact' }),
       this.client.from('document_chunks').select('id', { count: 'exact' }),
-      this.client.from('documents').select('source').distinct()
+      this.client.from('documents').select('source')
     ]);
 
     if (documentsResult.error) {
@@ -318,14 +307,15 @@ export class SupabaseVectorClient {
       throw new Error(`Chunks stats failed: ${chunksResult.error.message}`);
     }
 
-    if (sourcesResult.error) {
-      throw new Error(`Sources stats failed: ${sourcesResult.error.message}`);
+    const sourcesErr = (sourcesResult as any).error;
+    if (sourcesErr) {
+      throw new Error(`Sources stats failed: ${sourcesErr.message}`);
     }
 
     return {
       totalDocuments: documentsResult.count || 0,
       totalChunks: chunksResult.count || 0,
-      sources: sourcesResult.data.map((item: any) => item.source)
+      sources: Array.from(new Set((sourcesResult.data as any[]).map((item: any) => item.source)))
     };
   }
 }

@@ -8,7 +8,7 @@ export async function GET() {
     const raw = await fs.readFile(p, 'utf8')
     const data = JSON.parse(raw)
     return NextResponse.json(data)
-  } catch (e: any) {
+  } catch {
     return NextResponse.json({ docs: [] })
   }
 }

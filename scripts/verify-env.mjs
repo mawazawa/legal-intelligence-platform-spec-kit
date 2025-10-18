@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 
 const required = [
   'NEO4J_URI',

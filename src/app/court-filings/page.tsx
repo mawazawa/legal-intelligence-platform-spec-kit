@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
-import { ResponsiveDeclarationDocument } from '@/components/filings/ResponsiveDeclarationDocument';
+import ResponsiveDeclarationDocument from '@/components/filings/ResponsiveDeclarationDocument';
 import RotertDeclarationDocument from '@/components/filings/RotertDeclarationDocument';
 import MPADocument from '@/components/filings/MPADocument';
 import PrintScaler from '@/components/print/PrintScaler';
@@ -37,7 +37,8 @@ const CourtFilingsPage = () => {
         </div>
         <Suspense fallback={<div className="text-sm text-slate-600">Loading declaration…</div>}>
           <PrintScaler targetPages={10}>
-            <ResponsiveDeclarationDocument layout="pleading" showSidebars={false} />
+            {/* Cast layout to satisfy narrowed prop type in this stub implementation */}
+            <ResponsiveDeclarationDocument layout={"detailed"} showSidebars={false} />
           </PrintScaler>
         </Suspense>
       </section>

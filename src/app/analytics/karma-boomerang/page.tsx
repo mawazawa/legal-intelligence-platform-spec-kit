@@ -84,7 +84,7 @@ export default function KarmaBoomerangPage() {
   const [summary, setSummary] = useState<AnalysisSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedActor, setSelectedActor] = useState<'petitioner' | 'respondent' | null>(null);
+  const [selectedActor, setSelectedActor] = useState<'petitioner' | 'respondent' | 'court' | null>(null);
 
   useEffect(() => {
     fetchKarmaAnalysis();

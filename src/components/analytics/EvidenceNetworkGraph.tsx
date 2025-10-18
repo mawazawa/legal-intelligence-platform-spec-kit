@@ -4,12 +4,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Network, 
-  Target, 
-  Link, 
-  Nodes, 
-  ArrowRight, 
+import {
+  Network,
+  Target,
+  Link,
+  ArrowRight,
   ArrowLeft,
   CheckCircle2,
   XCircle,
@@ -31,8 +30,6 @@ import {
   Activity,
   Zap,
   Flame,
-  Thunder,
-  Lightning,
   Rocket,
   Star,
   Crown,

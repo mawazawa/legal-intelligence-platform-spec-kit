@@ -389,7 +389,7 @@ const CourtFilingPage: React.FC = () => {
               FL-320 Responsive Declaration Filing Package
             </h1>
             <p className="text-lg text-slate-600 max-w-3xl">
-              Complete single source of truth for filing responsive declaration to Petitioner's RFO
+              Complete single source of truth for filing responsive declaration to Petitioner&apos;s RFO
             </p>
           </div>
 
@@ -567,7 +567,7 @@ const CourtFilingPage: React.FC = () => {
                               {source.sectionName && <span> - {source.sectionName}</span>}
                               {source.excerpt && (
                                 <div className="text-xs text-slate-500 mt-1 italic">
-                                  "{source.excerpt}"
+                                  &quot;{source.excerpt}&quot;
                                 </div>
                               )}
                             </div>
@@ -638,7 +638,7 @@ const CourtFilingPage: React.FC = () => {
                         </div>
                         {item.excerpt && (
                           <div className="text-xs text-slate-500 mt-2 italic">
-                            "{item.excerpt}"
+                            &quot;{item.excerpt}&quot;
                           </div>
                         )}
                       </div>

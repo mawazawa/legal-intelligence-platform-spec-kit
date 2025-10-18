@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -128,7 +128,7 @@ const ConsolidatedCasePage: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-slate-600">Mathematical error analysis of Petitioner's $77,779.88 double-counting claim</p>
+                <p className="text-sm text-slate-600">Mathematical error analysis of Petitioner&apos;s $77,779.88 double-counting claim</p>
                 <ChevronRight className="h-4 w-4 text-blue-600 mt-2" />
               </CardContent>
             </Card>
@@ -207,7 +207,7 @@ const ConsolidatedCasePage: React.FC = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-red-100 p-6 rounded-lg">
-                      <h4 className="font-bold text-red-900 mb-3">❌ Petitioner's Incorrect Math</h4>
+                      <h4 className="font-bold text-red-900 mb-3">❌ Petitioner&apos;s Incorrect Math</h4>
                       <div className="space-y-2 font-mono text-sm">
                         <div>Net Proceeds: $280,355.83</div>
                         <div className="text-red-700">+ Add Back: $77,779.88</div>
@@ -270,7 +270,7 @@ const ConsolidatedCasePage: React.FC = () => {
                         <td className="p-3 text-slate-600">Per settlement statement</td>
                       </tr>
                       <tr className="hover:bg-slate-50">
-                        <td className="p-3">Petitioner's Share (35%)</td>
+                        <td className="p-3">Petitioner&apos;s Share (35%)</td>
                         <td className="p-3 text-right font-mono">$98,124.54</td>
                         <td className="p-3 text-center">
                           <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">Calculated</span>
@@ -278,7 +278,7 @@ const ConsolidatedCasePage: React.FC = () => {
                         <td className="p-3 text-slate-600">Per Statement of Decision</td>
                       </tr>
                       <tr className="hover:bg-slate-50">
-                        <td className="p-3">Respondent's Share (65%)</td>
+                        <td className="p-3">Respondent&apos;s Share (65%)</td>
                         <td className="p-3 text-right font-mono">$182,231.29</td>
                         <td className="p-3 text-center">
                           <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">Calculated</span>
@@ -286,7 +286,7 @@ const ConsolidatedCasePage: React.FC = () => {
                         <td className="p-3 text-slate-600">Per Statement of Decision</td>
                       </tr>
                       <tr className="bg-red-50 hover:bg-red-100">
-                        <td className="p-3 font-semibold">Mortgage "Add Back"</td>
+                        <td className="p-3 font-semibold">Mortgage &quot;Add Back&quot;</td>
                         <td className="p-3 text-right font-mono text-red-700">$77,779.88</td>
                         <td className="p-3 text-center">
                           <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold">Invalid</span>
@@ -318,7 +318,7 @@ const ConsolidatedCasePage: React.FC = () => {
                 <CardTitle className="text-2xl">FL-320 Responsive Declaration</CardTitle>
               </CardHeader>
               <CardContent className="print-pleading">
-                <p className="text-sm text-slate-600 mb-4">Respondent's responsive declaration to Petitioner's RFO regarding property division</p>
+                  <p className="text-sm text-slate-600 mb-4">Respondent&apos;s responsive declaration to Petitioner&apos;s RFO regarding property division</p>
                 <Button variant="outline" size="sm">
                   <FileText className="h-4 w-4 mr-2" />
                   View Full Declaration
@@ -334,7 +334,7 @@ const ConsolidatedCasePage: React.FC = () => {
                 <CardTitle className="text-2xl">Thomas J. Rotert Declaration</CardTitle>
               </CardHeader>
               <CardContent className="print-pleading">
-                <p className="text-sm text-slate-600 mb-4">Attorney declaration in support of Respondent's opposition</p>
+                <p className="text-sm text-slate-600 mb-4">Attorney declaration in support of Respondent&apos;s opposition</p>
                 <Button variant="outline" size="sm">
                   <Gavel className="h-4 w-4 mr-2" />
                   View Attorney Declaration

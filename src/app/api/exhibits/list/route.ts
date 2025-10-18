@@ -7,7 +7,7 @@ export async function GET() {
     const p = path.resolve(process.cwd(), '..', 'case-financials', 'exhibits', 'exhibits.json')
     const raw = await fs.readFile(p, 'utf8')
     return new NextResponse(raw, { status: 200, headers: { 'Content-Type': 'application/json; charset=utf-8' } })
-  } catch (e: any) {
+  } catch {
     return NextResponse.json({ exhibits: [] })
   }
 }
