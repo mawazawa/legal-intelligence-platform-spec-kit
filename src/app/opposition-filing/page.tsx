@@ -1,8 +1,9 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import React, { useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Printer, Download, FileText, Scale, Gavel } from 'lucide-react';
+import { Printer, Download } from 'lucide-react';
 
 const OppositionFilingPage: React.FC = () => {
   const printRef = useRef<HTMLDivElement>(null);
@@ -423,30 +424,201 @@ const OppositionFilingPage: React.FC = () => {
               </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold mb-2">4. WATTS CHARGES ANALYSIS - TIMELINE CUTOFF</h3>
-              <p><strong>Watts Charges Cannot Extend Past Possession Date:</strong> Petitioner claims Watts charges through November 16, 2024, but she took possession on that exact date. Watts charges are for exclusive use and possession - once she took possession, the charges should end.</p>
-              
-              <p><strong>Petitioner's Own Timeline Contradiction:</strong> Her declaration shows she took possession on November 16, 2024, yet she claims Watts charges through that date. This is logically impossible - she cannot both owe Watts charges for exclusive use AND have taken possession on the same date.</p>
-              
-              <p><strong>Correct Watts Calculation:</strong> Watts charges should end on November 15, 2024, the day before she took possession. Any claims for November 16, 2024, and beyond are invalid.</p>
-              
-              <p><strong>Legal Authority:</strong> Watts v. Watts (1985) 171 Cal.App.3d 366 establishes that Watts charges are for exclusive use and possession. Once possession changes hands, the charges must end. Petitioner's own admission that she took possession on November 16, 2024, legally terminates any Watts charges as of that date.</p>
-              
-              <p><strong>Petitioner's Benefit During Possession:</strong> From November 16, 2024, to May 30, 2025, Petitioner had exclusive use and benefit of the Property. She cannot claim Watts charges against me for a period when she was exclusively using and benefiting from the Property.</p>
-              
-              <p><strong>Calculation Error:</strong> Petitioner's Watts charges calculation includes the period after she took possession, which is legally impossible. The correct calculation would end on November 15, 2024, resulting in significantly reduced charges.</p>
+            {/* Section 4 */}
+            <div className="space-y-4 mt-6">
+              <h3 className="text-base font-bold border-l-4 border-purple-600 pl-3 py-1 bg-purple-50">
+                4. WATTS CHARGES ANALYSIS — TIMELINE CUTOFF AND LEGAL IMPOSSIBILITY
+              </h3>
+
+              <div className="ml-4 space-y-4">
+                <p className="leading-relaxed">
+                  <span className="font-semibold">4.1 Fundamental Legal Principle.</span> <span className="italic font-semibold">Watts v. Watts</span> (1985) 171 Cal.App.3d 366 establishes that Watts charges compensate a non-occupying spouse for the exclusive use and benefit of community property by the occupying spouse. Critically, these charges <strong>terminate upon transfer of possession</strong> to the previously non-occupying spouse.
+                </p>
+
+                <div className="bg-purple-50 border-l-4 border-purple-500 p-4 my-3">
+                  <p className="font-bold text-purple-900 mb-2">⚖️ LEGAL IMPOSSIBILITY — TIMELINE CUTOFF</p>
+                  <p className="text-sm leading-relaxed text-purple-800">
+                    Petitioner's own sworn declaration establishes she took exclusive possession on <strong>November 16, 2024</strong>. Any Watts charges claimed for periods <em>after</em> this date—when she was the sole occupant deriving exclusive benefit—are legally impossible and must be stricken.
+                  </p>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">4.2 Petitioner's Contradictory Claims.</span> Petitioner's RFO contains an inherent logical contradiction:
+                </p>
+
+                <div className="ml-8 my-3 grid grid-cols-2 gap-3">
+                  <div className="border-2 border-purple-300 bg-purple-50 p-3 rounded">
+                    <p className="font-semibold text-xs text-purple-900 mb-2">Petitioner's Admission</p>
+                    <p className="text-xs italic text-purple-700">"I took possession of the home on November 16, 2024"</p>
+                    <p className="text-xs text-purple-600 mt-2">— Declaration ¶19</p>
+                  </div>
+                  <div className="border-2 border-red-400 bg-red-50 p-3 rounded">
+                    <p className="font-semibold text-xs text-red-900 mb-2">Petitioner's Claim</p>
+                    <p className="text-xs text-red-700">Watts charges through November 16, 2024 and beyond</p>
+                    <p className="text-xs text-red-600 mt-2 font-bold">CONTRADICTION!</p>
+                  </div>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">4.3 Correct Watts Calculation Cutoff.</span> Based on the legal principle that possession transfer terminates Watts charges, the correct calculation is:
+                </p>
+
+                <div className="ml-8 my-3 bg-green-50 border-2 border-green-500 rounded p-4">
+                  <p className="font-bold text-green-900 mb-3">✓ LEGALLY CORRECT WATTS PERIOD</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between items-center p-2 bg-white rounded">
+                      <span>Watts Charges Accrue:</span>
+                      <span className="font-mono font-semibold">Until November 15, 2024</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-white rounded">
+                      <span>Watts Charges End:</span>
+                      <span className="font-mono font-semibold text-green-700">November 16, 2024 (possession transfer)</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-red-100 rounded border border-red-400">
+                      <span className="font-bold">Invalid Period Claimed:</span>
+                      <span className="font-mono font-bold text-red-700">Nov 16, 2024 → May 30, 2025</span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">4.4 Petitioner's Exclusive Benefit Period (196 Days).</span> From November 16, 2024 to May 30, 2025, Petitioner enjoyed <strong>exclusive possession, use, and benefit</strong> of the Property for 196 consecutive days (6.5 months). During this period:
+                </p>
+
+                <ul className="ml-12 list-disc space-y-2 text-sm">
+                  <li>She had sole access and occupancy rights</li>
+                  <li>She derived all residential benefit</li>
+                  <li>She controlled property access and use</li>
+                  <li>She bore legal responsibility for property expenses</li>
+                </ul>
+
+                <div className="bg-slate-50 border border-slate-300 rounded p-4 my-3">
+                  <p className="font-semibold text-slate-900 mb-2">4.5 Offset for Petitioner's Use Value</p>
+                  <p className="text-sm text-slate-700 leading-relaxed">
+                    If the Court were to entertain Petitioner's Watts claims (which it should not), any such award must be offset by the fair rental value of her exclusive use during the 196-day period she possessed the Property. At her claimed rate of $4,500/month, her use value equals approximately <strong>$29,250</strong>, completely offsetting any pre-possession Watts claims.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold mb-2">5. TAX WITHHOLDING ANALYSIS</h3>
-              <p><strong>Proportional Responsibility:</strong> Petitioner claims $13,694.62 in tax withholding and seeks my 65% share ($8,901.50). However, tax withholding is typically split proportionally based on ownership interests.</p>
-              
-              <p><strong>Petitioner's Admission:</strong> She states she will "take full responsibility" for the tax withholding but then seeks reimbursement. This is contradictory and unsupported by law.</p>
-              
-              <p><strong>Tax Liability Determination:</strong> The tax withholding amount should be determined based on the actual tax liability, not Petitioner's unilateral calculation. She provides no evidence of the actual tax liability or how the $13,694.62 figure was calculated.</p>
-              
-              <p><strong>Timing of Tax Obligation:</strong> Tax withholding typically occurs at the time of sale. Petitioner's claim for reimbursement of tax withholding that she allegedly paid is unsupported by documentation showing when and how this amount was determined.</p>
+            {/* Section 5 */}
+            <div className="space-y-4 mt-6">
+              <h3 className="text-base font-bold border-l-4 border-indigo-600 pl-3 py-1 bg-indigo-50">
+                5. TAX WITHHOLDING ANALYSIS — CONTRADICTORY CLAIMS AND LACK OF EVIDENCE
+              </h3>
+
+              <div className="ml-4 space-y-4">
+                <p className="leading-relaxed">
+                  <span className="font-semibold">5.1 Petitioner's Contradictory Position.</span> Petitioner's RFO contains internally inconsistent statements regarding tax withholding responsibility:
+                </p>
+
+                <div className="ml-8 my-3 space-y-3">
+                  <div className="border-l-4 border-green-500 bg-green-50 p-3">
+                    <p className="font-semibold text-green-900 text-sm mb-1">Statement #1 (RFO ¶ __)</p>
+                    <p className="text-sm italic text-green-700">"I will take full responsibility for the tax withholding"</p>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <span className="text-2xl text-red-600 font-bold">⇓ BUT THEN ⇓</span>
+                  </div>
+                  <div className="border-l-4 border-red-500 bg-red-50 p-3">
+                    <p className="font-semibold text-red-900 text-sm mb-1">Statement #2 (RFO ¶ __)</p>
+                    <p className="text-sm italic text-red-700">"Respondent shall reimburse me 65% of tax withholding ($8,901.50)"</p>
+                  </div>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-400 rounded p-4">
+                  <p className="font-bold text-yellow-900 text-sm mb-2">⚠️ LOGICAL CONTRADICTION</p>
+                  <p className="text-xs text-yellow-800">
+                    One cannot simultaneously "take full responsibility" for an obligation AND demand reimbursement for that same obligation. These positions are mutually exclusive and demonstrate the internally inconsistent nature of Petitioner's RFO.
+                  </p>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">5.2 Lack of Supporting Documentation.</span> Petitioner provides <strong>zero evidence</strong> for her claimed tax withholding amount of $13,694.62, including:
+                </p>
+
+                <div className="ml-8 my-3 grid grid-cols-2 gap-3">
+                  <div className="bg-red-50 border border-red-200 p-3 rounded-sm">
+                    <p className="font-semibold text-xs text-red-900 mb-2">❌ Missing Evidence</p>
+                    <ul className="text-xs text-red-700 space-y-1">
+                      <li>• Tax return calculations</li>
+                      <li>• IRS Form 593 documentation</li>
+                      <li>• Capital gains worksheets</li>
+                      <li>• Actual tax liability proof</li>
+                    </ul>
+                  </div>
+                  <div className="bg-slate-50 border border-slate-200 p-3 rounded-sm">
+                    <p className="font-semibold text-xs text-slate-900 mb-2">📋 Required Documentation</p>
+                    <ul className="text-xs text-slate-700 space-y-1">
+                      <li>• Basis calculation</li>
+                      <li>• Gain/loss determination</li>
+                      <li>• Payment confirmation</li>
+                      <li>• Tax professional opinion</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">5.3 Proportional vs. Disproportionate Allocation.</span> Tax withholding obligations in community property sales are typically allocated based on ownership percentages:
+                </p>
+
+                <div className="ml-8 my-3 bg-white border-2 border-indigo-300 rounded overflow-hidden">
+                  <div className="bg-indigo-600 text-white px-4 py-2 font-bold text-sm">PROPORTIONAL TAX ALLOCATION ANALYSIS</div>
+                  <div className="p-4">
+                    <table className="w-full text-xs">
+                      <thead className="border-b-2 border-indigo-300">
+                        <tr className="text-left">
+                          <th className="pb-2">Ownership</th>
+                          <th className="pb-2 text-right">Percentage</th>
+                          <th className="pb-2 text-right">Proportional Share</th>
+                          <th className="pb-2 text-right">Petitioner Claims</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-indigo-200">
+                        <tr>
+                          <td className="py-2">Respondent (me)</td>
+                          <td className="py-2 text-right font-mono">65%</td>
+                          <td className="py-2 text-right font-mono bg-green-50">$8,901.50</td>
+                          <td className="py-2 text-right font-mono bg-red-50 font-bold">$8,901.50</td>
+                        </tr>
+                        <tr>
+                          <td className="py-2">Petitioner</td>
+                          <td className="py-2 text-right font-mono">35%</td>
+                          <td className="py-2 text-right font-mono bg-green-50">$4,793.12</td>
+                          <td className="py-2 text-right font-mono bg-green-50">$0 (seeks reimbursement)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="mt-3 text-xs bg-indigo-50 p-2 rounded">
+                      <strong>Note:</strong> While proportional allocation matches Petitioner's requested amount, she provides no evidence this tax liability actually exists or that she paid it.
+                    </p>
+                  </div>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">5.4 Timing and Payment Questions.</span> Petitioner fails to address critical timing issues:
+                </p>
+
+                <ul className="ml-12 list-decimal space-y-2 text-sm text-slate-700">
+                  <li>When was the withholding allegedly paid? (No date provided)</li>
+                  <li>To which taxing authority? (IRS, FTB, or both?)</li>
+                  <li>What was the actual sale-year tax liability vs. withholding?</li>
+                  <li>Will Petitioner receive a refund when taxes are filed?</li>
+                </ul>
+
+                <p className="leading-relaxed mt-3">
+                  <span className="font-semibold">5.5 Requested Relief.</span> I request that the Court deny Petitioner's tax withholding claim unless and until she provides:
+                </p>
+
+                <div className="ml-8 my-2 bg-blue-50 border-l-4 border-blue-500 p-3">
+                  <ul className="text-sm space-y-1 text-blue-900">
+                    <li>✓ Proof of actual tax liability</li>
+                    <li>✓ Evidence of payment (cancelled check, wire confirmation)</li>
+                    <li>✓ Tax professional analysis</li>
+                    <li>✓ IRS/FTB correspondence confirming obligation</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
