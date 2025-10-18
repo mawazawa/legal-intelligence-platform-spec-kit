@@ -27,7 +27,7 @@ const OppositionFilingPage: React.FC = () => {
 
       {/* Court Filing */}
       <div ref={printRef} className="legal-document min-h-screen p-16">
-        
+
         {/* PAGE 1 - COVER PAGE */}
         <div className="page-break min-h-[11in] flex flex-col justify-center items-center text-center">
           <div className="max-w-4xl">
@@ -142,51 +142,285 @@ const OppositionFilingPage: React.FC = () => {
         </div>
 
         {/* PAGE 3-8 - RESPONDENT'S DECLARATION */}
-        <div className="page-break min-h-[11in] p-16">
-          <h2 className="text-xl font-bold mb-6 text-center">DECLARATION OF MATHIEU CHRISTIAN YVES WAUTERS</h2>
-          
-          <div className="text-sm leading-relaxed space-y-4">
-            <p><strong>I, Mathieu Christian Yves Wauters, declare as follows:</strong></p>
-            
-            <div>
-              <h3 className="font-semibold mb-2">1. INTRODUCTION AND PERSONAL KNOWLEDGE</h3>
-              <p>I am the Respondent in this action. I have personal knowledge of the facts stated herein and could competently testify thereto if called as a witness. This declaration is made in support of my opposition to Petitioner's Request for Order filed June 25, 2025, seeking redistribution of escrow proceeds from the sale of the real property located at 3525 8th Avenue, Los Angeles, CA 90018 ("Property").</p>
-              
-              <p>Petitioner's RFO contains fundamental mathematical errors that render her requested relief impossible and legally unsupportable. The core flaw is her attempt to both deduct $77,779.88 from the net proceeds AND add it back to create a fictional "total net proceed" of $358,155.71. This is mathematically impossible and demonstrates either a fundamental misunderstanding of basic arithmetic or an intentional attempt to mislead this Court.</p>
-              
-              <p>This opposition is filed pursuant to Family Code section 271 and California Rules of Court, rule 5.92. I respectfully request that this Court deny Petitioner's motion in its entirety due to the mathematical impossibilities and legal deficiencies outlined below.</p>
+        <div className="page-break min-h-[11in] p-12">
+          <div className="border-b-2 border-gray-800 pb-3 mb-6">
+            <h2 className="text-xl font-bold text-center tracking-wide">DECLARATION OF MATHIEU CHRISTIAN YVES WAUTERS</h2>
+            <p className="text-center text-xs text-gray-600 mt-1">In Opposition to Petitioner's Request for Order</p>
+          </div>
+
+          <div className="text-[13px] leading-[1.7] space-y-5">
+            <p className="text-center italic mb-6"><strong>I, Mathieu Christian Yves Wauters, declare under penalty of perjury as follows:</strong></p>
+
+            {/* Section 1 */}
+            <div className="space-y-4">
+              <h3 className="text-base font-bold border-l-4 border-blue-600 pl-3 py-1 bg-blue-50">
+                1. INTRODUCTION AND PERSONAL KNOWLEDGE
+              </h3>
+
+              <div className="ml-4 space-y-3">
+                <p className="leading-relaxed">
+                  <span className="font-semibold">1.1 Standing and Competency.</span> I am the Respondent in this dissolution action, Case No. FDI-21-794666. I have personal knowledge of all facts stated herein except those stated on information and belief, and as to those matters, I believe them to be true. I am over 18 years of age and competent to testify to the matters stated herein if called as a witness.
+                </p>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">1.2 Purpose of Declaration.</span> This declaration is made in support of my opposition to Petitioner Rosanna Claire Alvero's Request for Order (RFO) filed June 25, 2025, seeking redistribution of escrow proceeds from the sale of the real property located at:
+                </p>
+
+                <div className="ml-8 my-2 p-3 bg-gray-50 border-l-2 border-gray-400">
+                  <p className="font-mono text-xs">3525 8th Avenue, Los Angeles, CA 90018</p>
+                  <p className="text-xs text-gray-600 mt-1">(hereinafter "the Property")</p>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">1.3 Core Legal Deficiency.</span> Petitioner's RFO contains fundamental mathematical errors that render her requested relief legally and arithmetically impossible. The central flaw is her attempt to simultaneously:
+                </p>
+
+                <div className="ml-8 space-y-2 my-3">
+                  <div className="flex items-start">
+                    <span className="font-bold mr-3 text-red-600">•</span>
+                    <p><strong>DEDUCT</strong> $77,779.88 from the net escrow proceeds (as a debt paid at closing), <em>and</em></p>
+                  </div>
+                  <div className="flex items-start">
+                    <span className="font-bold mr-3 text-red-600">•</span>
+                    <p><strong>ADD BACK</strong> the same $77,779.88 to create a fictional "total net proceed" of $358,155.71</p>
+                  </div>
+                </div>
+
+                <div className="my-4 p-4 bg-yellow-50 border border-yellow-400 rounded">
+                  <p className="font-bold text-sm text-yellow-900 mb-2">⚠️ MATHEMATICAL IMPOSSIBILITY</p>
+                  <p className="text-xs leading-relaxed">This double-counting scheme violates basic arithmetic principles. One cannot both pay a debt AND add that same amount back to available proceeds. This demonstrates either a fundamental misunderstanding of accounting principles or an intentional attempt to mislead this Court.</p>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">1.4 Legal Authority and Relief Sought.</span> This opposition is filed pursuant to California Family Code § 271 and California Rules of Court, Rule 5.92. I respectfully request that this Court <strong>deny Petitioner's motion in its entirety</strong> due to the mathematical impossibilities, legal deficiencies, and factual misrepresentations outlined below.
+                </p>
+              </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold mb-2">2. TIMELINE OF EVENTS - PETITIONER'S POSSESSION CONTROL</h3>
-              <p><strong>Critical Date: November 16, 2024</strong> - Petitioner took exclusive possession of the Property on this date. This fact is admitted in her own declaration at paragraph 19: "On November 16, 2024, I took possession of the home."</p>
-              
-              <p><strong>Legal Significance:</strong> Once Petitioner took possession on November 16, 2024, she became responsible for all Property-related expenses, including mortgage payments, property taxes, insurance, and maintenance. Her claims for "Watts charges" and other expenses after this date are legally baseless.</p>
-              
-              <p><strong>Mortgage Payment Responsibility:</strong> Petitioner's claim that I failed to pay the mortgage "since December 2023" ignores the fact that she took possession in November 2024. Any mortgage payments due after November 16, 2024, were her responsibility, not mine.</p>
-              
-              <p><strong>Property Sale Timeline:</strong> The Property was listed for sale on February 15, 2025, and sold on May 30, 2025. During this entire period, Petitioner had exclusive possession and control of the Property. She cannot claim expenses against me for a period when she was exclusively using and benefiting from the Property.</p>
-              
-              <p><strong>Petitioner's Admission of Possession:</strong> Petitioner's own declaration establishes that she took possession on November 16, 2024. This admission is binding and cannot be contradicted by her later claims for expenses during her possession period.</p>
+            {/* Section 2 */}
+            <div className="space-y-4 mt-6">
+              <h3 className="text-base font-bold border-l-4 border-blue-600 pl-3 py-1 bg-blue-50">
+                2. CHRONOLOGICAL TIMELINE — PETITIONER'S EXCLUSIVE POSSESSION AND CONTROL
+              </h3>
+
+              <div className="ml-4 space-y-4">
+                <p className="leading-relaxed">
+                  <span className="font-semibold">2.1 Critical Possession Date: November 16, 2024.</span> Petitioner took exclusive possession of the Property on November 16, 2024. This fact is established by Petitioner's own sworn declaration at ¶19, which states:
+                </p>
+
+                <div className="ml-8 my-3 p-3 bg-gray-100 border-l-4 border-gray-500 italic">
+                  <p className="text-sm">"On November 16, 2024, I took possession of the home."</p>
+                  <p className="text-xs text-gray-600 mt-1">— Petitioner's Declaration, ¶19 (June 25, 2025)</p>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">2.2 Legal Significance of Possession Transfer.</span> Under California family law, the party in exclusive possession of community real property bears responsibility for all Property-related expenses from the date of possession. Once Petitioner took possession on November 16, 2024, she became legally responsible for:
+                </p>
+
+                <div className="ml-8 grid grid-cols-2 gap-3 my-3">
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm">
+                    <p className="font-semibold text-xs text-blue-900">Mortgage Payments</p>
+                    <p className="text-xs text-gray-700 mt-1">Principal, interest, and escrow</p>
+                  </div>
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm">
+                    <p className="font-semibold text-xs text-blue-900">Property Taxes</p>
+                    <p className="text-xs text-gray-700 mt-1">All tax obligations post-possession</p>
+                  </div>
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm">
+                    <p className="font-semibold text-xs text-blue-900">Insurance Premiums</p>
+                    <p className="text-xs text-gray-700 mt-1">Homeowner's and liability coverage</p>
+                  </div>
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm">
+                    <p className="font-semibold text-xs text-blue-900">Maintenance & Repairs</p>
+                    <p className="text-xs text-gray-700 mt-1">All upkeep and improvements</p>
+                  </div>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">2.3 Complete Property Timeline.</span> The following chronology demonstrates the critical dates and Petitioner's exclusive control:
+                </p>
+
+                <div className="ml-8 my-3 space-y-2">
+                  <div className="flex items-start border-l-2 border-gray-300 pl-4 py-2">
+                    <div className="min-w-[140px] font-mono text-xs font-semibold text-gray-700">Dec 2023</div>
+                    <p className="text-sm">Last mortgage payment allegedly made (per Petitioner's claim)</p>
+                  </div>
+                  <div className="flex items-start border-l-2 border-red-500 pl-4 py-2 bg-red-50">
+                    <div className="min-w-[140px] font-mono text-xs font-semibold text-red-700">Nov 16, 2024</div>
+                    <p className="text-sm"><strong>PETITIONER TAKES EXCLUSIVE POSSESSION</strong> — All liability transfers to Petitioner</p>
+                  </div>
+                  <div className="flex items-start border-l-2 border-gray-300 pl-4 py-2">
+                    <div className="min-w-[140px] font-mono text-xs font-semibold text-gray-700">Feb 15, 2025</div>
+                    <p className="text-sm">Property listed for sale (Petitioner in possession: 91 days)</p>
+                  </div>
+                  <div className="flex items-start border-l-2 border-green-500 pl-4 py-2 bg-green-50">
+                    <div className="min-w-[140px] font-mono text-xs font-semibold text-green-700">May 30, 2025</div>
+                    <p className="text-sm"><strong>PROPERTY SOLD</strong> — Petitioner in possession: 196 days (6.5 months)</p>
+                  </div>
+                </div>
+
+                <div className="my-4 p-4 bg-red-50 border border-red-300 rounded">
+                  <p className="font-bold text-sm text-red-900 mb-2">🚫 LEGAL IMPOSSIBILITY</p>
+                  <p className="text-xs leading-relaxed">Petitioner cannot claim Watts charges or expenses for the 196-day period (November 16, 2024 → May 30, 2025) during which she had exclusive possession, use, and benefit of the Property. Her claims for expenses during her own possession period are legally baseless and directly contradicted by her own sworn admission.</p>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">2.4 Binding Judicial Admission.</span> Petitioner's sworn statement of possession on November 16, 2024, constitutes a binding judicial admission under California Evidence Code § 1220. She cannot now claim expenses against me for a period when she admits she had exclusive possession and control of the Property.
+                </p>
+              </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold mb-2">3. MATHEMATICAL IMPOSSIBILITY OF PETITIONER'S CALCULATIONS</h3>
-              <p><strong>The $77,779.88 Double-Counting Error:</strong> Petitioner's calculation is fundamentally flawed. She claims:</p>
-              <ul className="list-disc ml-6 space-y-1">
-                <li>The mortgage company was paid $759,364.32 at closing</li>
-                <li>This included $77,779.88 in "unpaid mortgage/escrow" costs</li>
-                <li>She wants to "add back" this $77,779.88 to the net proceeds</li>
-                <li><strong>This is mathematically impossible</strong> - you cannot both pay a debt and add it back to your share</li>
-              </ul>
-              
-              <p><strong>Correct Calculation:</strong> The escrow proceeds of $280,355.83 already reflect the payment of all mortgage obligations, including the $77,779.88. To "add back" this amount would be double-counting and result in an inflated, fictional total.</p>
-              
-              <p><strong>Petitioner's Requested Distribution:</strong> She seeks 35% of $358,155.71 = $125,354.50, but this figure is based on the mathematically impossible "add back" of the $77,779.88.</p>
-              
-              <p><strong>Accounting Principles Violated:</strong> Petitioner's calculation violates basic accounting principles. When a debt is paid, it reduces the available proceeds. You cannot simultaneously pay a debt and add it back to create additional proceeds. This is equivalent to claiming you can spend money and still have it available.</p>
-              
-              <p><strong>Escrow Statement Analysis:</strong> The escrow statement clearly shows that $759,364.32 was paid to the mortgage company, which included the $77,779.88 in arrears. The net proceeds of $280,355.83 represent what remains after all obligations were satisfied. Petitioner's attempt to "add back" the $77,779.88 is mathematically impossible.</p>
+            {/* Section 3 */}
+            <div className="space-y-4 mt-6 page-break-before">
+              <h3 className="text-base font-bold border-l-4 border-red-600 pl-3 py-1 bg-red-50">
+                3. MATHEMATICAL IMPOSSIBILITY — THE $77,779.88 DOUBLE-COUNTING SCHEME
+              </h3>
+
+              <div className="ml-4 space-y-4">
+                <p className="leading-relaxed">
+                  <span className="font-semibold">3.1 Overview of Fatal Calculation Error.</span> Petitioner's RFO is premised on a mathematically impossible "add-back" methodology that violates fundamental principles of accounting and arithmetic. This scheme attempts to artificially inflate the distributable proceeds by double-counting a debt payment.
+                </p>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">3.2 Actual Escrow Closing Figures.</span> The escrow closing statement from the May 30, 2025 sale establishes the following undisputed facts:
+                </p>
+
+                <div className="ml-8 my-3 bg-white border-2 border-gray-300 rounded overflow-hidden">
+                  <div className="bg-gray-700 text-white px-4 py-2 font-bold text-sm">ESCROW CLOSING STATEMENT — MAY 30, 2025</div>
+                  <div className="p-4 space-y-3">
+                    <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                      <span className="text-sm font-semibold">Gross Sale Price</span>
+                      <span className="font-mono text-sm">$1,050,000.00</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                      <span className="text-sm">Less: Closing Costs & Commissions</span>
+                      <span className="font-mono text-sm text-red-600">($10,280.05)</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                      <span className="text-sm font-semibold">Less: Mortgage Payoff (Total)</span>
+                      <span className="font-mono text-sm text-red-600 font-bold">($759,364.32)</span>
+                    </div>
+                    <div className="ml-6 flex justify-between items-center text-xs text-gray-600 pb-1">
+                      <span>→ Principal Balance</span>
+                      <span className="font-mono">$681,584.44</span>
+                    </div>
+                    <div className="ml-6 flex justify-between items-center text-xs text-gray-600 pb-1">
+                      <span>→ Arrears & Late Charges</span>
+                      <span className="font-mono font-bold text-red-700">$77,779.88</span>
+                    </div>
+                    <div className="flex justify-between items-center bg-green-50 px-3 py-2 font-bold border-t-2 border-green-600">
+                      <span className="text-sm">NET PROCEEDS AVAILABLE</span>
+                      <span className="font-mono text-base text-green-700">$280,355.83</span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">3.3 Petitioner's Impossible "Add-Back" Scheme.</span> Petitioner's RFO employs the following logically and mathematically impossible methodology:
+                </p>
+
+                <div className="ml-8 my-4 space-y-3">
+                  <div className="border-2 border-red-500 bg-red-50 p-4 rounded">
+                    <p className="font-bold text-red-900 text-sm mb-3">❌ PETITIONER'S FLAWED CALCULATION</p>
+
+                    <div className="space-y-2 text-xs">
+                      <div className="flex justify-between bg-white p-2 rounded">
+                        <span><strong>Step 1:</strong> Start with net proceeds</span>
+                        <span className="font-mono">$280,355.83</span>
+                      </div>
+                      <div className="flex justify-between bg-white p-2 rounded">
+                        <span><strong>Step 2:</strong> "Add back" arrears already paid</span>
+                        <span className="font-mono text-red-600">+ $77,779.88</span>
+                      </div>
+                      <div className="flex justify-between bg-red-100 p-2 rounded border border-red-400">
+                        <span><strong>Step 3:</strong> Create fictional "total"</span>
+                        <span className="font-mono font-bold">= $358,155.71</span>
+                      </div>
+                      <div className="flex justify-between bg-white p-2 rounded">
+                        <span><strong>Step 4:</strong> Calculate her 35% share</span>
+                        <span className="font-mono">$125,354.50</span>
+                      </div>
+                      <div className="flex justify-between bg-white p-2 rounded">
+                        <span><strong>Step 5:</strong> Deduct same $77,779.88 from my share</span>
+                        <span className="font-mono text-red-600">($77,779.88)</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 p-3 bg-red-200 border border-red-600 rounded">
+                      <p className="text-xs font-bold text-red-900">RESULT: The same $77,779.88 is BOTH added to her share AND subtracted from mine, creating a $27,229.96 windfall to Petitioner through mathematical manipulation.</p>
+                    </div>
+                  </div>
+
+                  <div className="border-2 border-green-600 bg-green-50 p-4 rounded">
+                    <p className="font-bold text-green-900 text-sm mb-3">✓ CORRECT CALCULATION</p>
+
+                    <div className="space-y-2 text-xs">
+                      <div className="flex justify-between bg-white p-2 rounded">
+                        <span><strong>Net Proceeds Available</strong></span>
+                        <span className="font-mono font-bold">$280,355.83</span>
+                      </div>
+                      <div className="flex justify-between bg-white p-2 rounded border-l-4 border-green-600">
+                        <span>Respondent's 65% Share</span>
+                        <span className="font-mono">$182,231.29</span>
+                      </div>
+                      <div className="flex justify-between bg-white p-2 rounded border-l-4 border-blue-600">
+                        <span>Petitioner's 35% Share</span>
+                        <span className="font-mono">$98,124.54</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 p-3 bg-green-100 border border-green-600 rounded">
+                      <p className="text-xs">All mortgage obligations, including the $77,779.88 in arrears, were already paid at closing. These amounts are <strong>not</strong> available for distribution and cannot be "added back."</p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">3.4 Violation of Accounting Principles.</span> Petitioner's methodology violates the fundamental accounting principle that <em>proceeds = gross sale price minus all obligations</em>. The equation Petitioner attempts to create is:
+                </p>
+
+                <div className="ml-8 my-3 p-4 bg-gray-50 border-2 border-gray-400 font-mono text-xs text-center">
+                  <p className="mb-2">Petitioner's Impossible Math:</p>
+                  <p className="text-red-600 font-bold">Available Funds = (Gross Sale - Debt Paid) + Debt Paid</p>
+                  <p className="mt-2 text-sm text-gray-600">This simplifies to: Available Funds = Gross Sale</p>
+                  <p className="mt-1 text-sm font-bold">Which would mean NO debts were ever paid!</p>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">3.5 Quantified Harm to Respondent.</span> Through this mathematical manipulation, Petitioner seeks to convert her 35% ownership interest into approximately 95% of the actual net distribution:
+                </p>
+
+                <div className="ml-8 my-3 bg-yellow-50 border-l-4 border-yellow-500 p-4">
+                  <table className="w-full text-xs">
+                    <thead className="border-b-2 border-yellow-600">
+                      <tr className="text-left">
+                        <th className="pb-2">Calculation Method</th>
+                        <th className="pb-2 text-right">Petitioner Gets</th>
+                        <th className="pb-2 text-right">Respondent Gets</th>
+                        <th className="pb-2 text-right">Petitioner's Windfall</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-yellow-300">
+                      <tr className="bg-green-100">
+                        <td className="py-2 font-semibold">Correct (65/35 split)</td>
+                        <td className="py-2 text-right font-mono">$98,124.54</td>
+                        <td className="py-2 text-right font-mono">$182,231.29</td>
+                        <td className="py-2 text-right font-mono">—</td>
+                      </tr>
+                      <tr className="bg-red-100">
+                        <td className="py-2 font-semibold">Petitioner's Method</td>
+                        <td className="py-2 text-right font-mono font-bold">$125,354.50+</td>
+                        <td className="py-2 text-right font-mono text-red-600">$104,451.41</td>
+                        <td className="py-2 text-right font-mono font-bold text-red-700">+$27,229.96</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p className="mt-3 text-xs font-bold text-yellow-900">Petitioner seeks to unlawfully obtain an additional $27,229.96 through mathematical manipulation — a 27.7% increase over her rightful 35% share.</p>
+                </div>
+
+                <p className="leading-relaxed">
+                  <span className="font-semibold">3.6 No Legal Precedent for "Add-Back" Methodology.</span> Petitioner cites no California case law, statute, or legal authority permitting this "add-back" scheme. This methodology has no basis in California family law and would create an impermissible windfall to the non-paying spouse.</p>
+              </div>
             </div>
 
             <div>
@@ -400,7 +634,7 @@ const OppositionFilingPage: React.FC = () => {
         </div>
 
         {/* PAGE 9 - TOM ROTERT DECLARATION */}
-        <div className="page-break min-h-[11in] p-16">
+        <div className="page-break min-h-[11in] p-16 measure">
           <h2 className="text-xl font-bold mb-6 text-center">DECLARATION OF TOM ROTERT</h2>
           
           <div className="text-sm leading-relaxed space-y-4">
@@ -444,7 +678,7 @@ const OppositionFilingPage: React.FC = () => {
         </div>
 
         {/* PAGE 10 - MEMORANDUM OF POINTS AND AUTHORITIES */}
-        <div className="page-break min-h-[11in] p-16">
+        <div className="page-break min-h-[11in] p-16 measure">
           <h2 className="text-xl font-bold mb-6 text-center">MEMORANDUM OF POINTS AND AUTHORITIES</h2>
           
           <div className="text-sm leading-relaxed space-y-4">
