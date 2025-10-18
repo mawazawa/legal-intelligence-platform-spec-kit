@@ -173,14 +173,11 @@ const CaseWorkspacePage: React.FC = () => {
   };
 
   const handleFileOpen = (file: CaseFile) => {
-    // In real implementation, this would open the file in a viewer
-    console.log('Opening file:', file);
+    // TODO: Implement file viewer for opening files
   };
 
   const handleFileUpdate = (fileId: string, updates: Partial<CaseFile>) => {
-    // In real implementation, this would update the file in the database
-    console.log('Updating file:', fileId, updates);
-    // For now, we'll just log the update
+    // TODO: Implement file update to database
   };
 
   const handleCalculationUpdate = (calculation: any) => {
@@ -188,8 +185,7 @@ const CaseWorkspacePage: React.FC = () => {
   };
 
   const handleSaveCalculation = (calculation: any) => {
-    // In real implementation, this would save to database
-    console.log('Saving calculation:', calculation);
+    // TODO: Implement calculation persistence to database
   };
 
   const getFileIcon = (type: CaseFile['type']) => {

@@ -42,10 +42,8 @@ export class Neo4jClient {
       
       // Test connection
       await this.driver.verifyConnectivity();
-      console.log('✅ Neo4j connection established');
     } catch (error) {
-      console.error('❌ Neo4j connection failed:', error);
-      throw error;
+      throw new Error(`Neo4j connection failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
