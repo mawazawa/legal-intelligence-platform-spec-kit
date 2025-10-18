@@ -319,53 +319,39 @@ const OppositionFilingPage: React.FC = () => {
               <div className="line">          amounts are NOT available for distribution and</div>
               <div className="line">          cannot be "added back."</div>
               <div className="line">&nbsp;</div>
-
-                <p className="leading-relaxed">
-                  <span className="font-semibold">3.4 Violation of Accounting Principles.</span> Petitioner's methodology violates the fundamental accounting principle that <em>proceeds = gross sale price minus all obligations</em>. The equation Petitioner attempts to create is:
-                </p>
-
-                <div className="ml-8 my-3 p-4 bg-gray-50 border-2 border-gray-400 font-mono text-xs text-center">
-                  <p className="mb-2">Petitioner's Impossible Math:</p>
-                  <p className="text-red-600 font-bold">Available Funds = (Gross Sale - Debt Paid) + Debt Paid</p>
-                  <p className="mt-2 text-sm text-gray-600">This simplifies to: Available Funds = Gross Sale</p>
-                  <p className="mt-1 text-sm font-bold">Which would mean NO debts were ever paid!</p>
-                </div>
-
-                <p className="leading-relaxed">
-                  <span className="font-semibold">3.5 Quantified Harm to Respondent.</span> Through this mathematical manipulation, Petitioner seeks to convert her 35% ownership interest into approximately 95% of the actual net distribution:
-                </p>
-
-                <div className="ml-8 my-3 bg-yellow-50 border-l-4 border-yellow-500 p-4">
-                  <table className="w-full text-xs">
-                    <thead className="border-b-2 border-yellow-600">
-                      <tr className="text-left">
-                        <th className="pb-2">Calculation Method</th>
-                        <th className="pb-2 text-right">Petitioner Gets</th>
-                        <th className="pb-2 text-right">Respondent Gets</th>
-                        <th className="pb-2 text-right">Petitioner's Windfall</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-yellow-300">
-                      <tr className="bg-green-100">
-                        <td className="py-2 font-semibold">Correct (65/35 split)</td>
-                        <td className="py-2 text-right font-mono">$98,124.54</td>
-                        <td className="py-2 text-right font-mono">$182,231.29</td>
-                        <td className="py-2 text-right font-mono">—</td>
-                      </tr>
-                      <tr className="bg-red-100">
-                        <td className="py-2 font-semibold">Petitioner's Method</td>
-                        <td className="py-2 text-right font-mono font-bold">$125,354.50+</td>
-                        <td className="py-2 text-right font-mono text-red-600">$104,451.41</td>
-                        <td className="py-2 text-right font-mono font-bold text-red-700">+$27,229.96</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <p className="mt-3 text-xs font-bold text-yellow-900">Petitioner seeks to unlawfully obtain an additional $27,229.96 through mathematical manipulation — a 27.7% increase over her rightful 35% share.</p>
-                </div>
-
-                <p className="leading-relaxed">
-                  <span className="font-semibold">3.6 No Legal Precedent for "Add-Back" Methodology.</span> Petitioner cites no California case law, statute, or legal authority permitting this "add-back" scheme. This methodology has no basis in California family law and would create an impermissible windfall to the non-paying spouse.</p>
-              </div>
+              <div className="line">     3.5  Petitioner's methodology violates the fundamental</div>
+              <div className="line">accounting principle that proceeds equal gross sale price</div>
+              <div className="line">minus all obligations. The equation Petitioner attempts to</div>
+              <div className="line">create is: Available Funds = (Gross Sale - Debt Paid) + Debt</div>
+              <div className="line">Paid. This simplifies to: Available Funds = Gross Sale, which</div>
+              <div className="line">would mean NO debts were ever paid. This is mathematically</div>
+              <div className="line">and legally impossible.</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     3.6  Through this mathematical manipulation, Petitioner</div>
+              <div className="line">seeks to convert her 35% ownership interest into approximately</div>
+              <div className="line">95% of the actual net distribution. The following comparison</div>
+              <div className="line">demonstrates the harm:</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          DISTRIBUTION COMPARISON:</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          Correct (65/35 split):</div>
+              <div className="line">               Petitioner Gets:     $98,124.54</div>
+              <div className="line">               Respondent Gets:    $182,231.29</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          Petitioner's Method:</div>
+              <div className="line">               Petitioner Gets:    $125,354.50</div>
+              <div className="line">               Respondent Gets:    $104,451.41</div>
+              <div className="line">               Petitioner's Windfall: +$27,229.96</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     3.7  Petitioner seeks to unlawfully obtain an additional</div>
+              <div className="line">$27,229.96 through mathematical manipulation, representing a</div>
+              <div className="line">27.7% increase over her rightful 35% share.</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">     3.8  Petitioner cites no California case law, statute,</div>
+              <div className="line">or legal authority permitting this "add-back" scheme. This</div>
+              <div className="line">methodology has no basis in California family law and would</div>
+              <div className="line">create an impermissible windfall to the non-paying spouse.</div>
+              <div className="line">&nbsp;</div>
             </div>
 
             {/* Section 4 */}
@@ -380,9 +366,9 @@ const OppositionFilingPage: React.FC = () => {
                 </p>
 
                 <div className="bg-purple-50 border-l-4 border-purple-500 p-4 my-3">
-                  <p className="font-bold text-purple-900 mb-2">⚖️ LEGAL IMPOSSIBILITY — TIMELINE CUTOFF</p>
+                  <p className="font-bold text-purple-900 mb-2">[LEGAL] LEGAL IMPOSSIBILITY - TIMELINE CUTOFF</p>
                   <p className="text-sm leading-relaxed text-purple-800">
-                    Petitioner's own sworn declaration establishes she took exclusive possession on <strong>November 16, 2024</strong>. Any Watts charges claimed for periods <em>after</em> this date—when she was the sole occupant deriving exclusive benefit—are legally impossible and must be stricken.
+                    Petitioner's own sworn declaration establishes she took exclusive possession on <strong>November 16, 2024</strong>. Any Watts charges claimed for periods <em>after</em> this date - when she was the sole occupant deriving exclusive benefit - are legally impossible and must be stricken.
                   </p>
                 </div>
 
@@ -408,7 +394,7 @@ const OppositionFilingPage: React.FC = () => {
                 </p>
 
                 <div className="ml-8 my-3 bg-green-50 border-2 border-green-500 rounded p-4">
-                  <p className="font-bold text-green-900 mb-3">✓ LEGALLY CORRECT WATTS PERIOD</p>
+                  <p className="font-bold text-green-900 mb-3">[OK] LEGALLY CORRECT WATTS PERIOD</p>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between items-center p-2 bg-white rounded">
                       <span>Watts Charges Accrue:</span>
@@ -462,7 +448,7 @@ const OppositionFilingPage: React.FC = () => {
                     <p className="text-sm italic text-green-700">"I will take full responsibility for the tax withholding"</p>
                   </div>
                   <div className="flex items-center justify-center">
-                    <span className="text-2xl text-red-600 font-bold">⇓ BUT THEN ⇓</span>
+                    <span className="text-2xl text-red-600 font-bold">[DOWN] BUT THEN [DOWN]</span>
                   </div>
                   <div className="border-l-4 border-red-500 bg-red-50 p-3">
                     <p className="font-semibold text-red-900 text-sm mb-1">Statement #2 (RFO ¶ __)</p>
@@ -471,7 +457,7 @@ const OppositionFilingPage: React.FC = () => {
                 </div>
 
                 <div className="bg-yellow-50 border border-yellow-400 rounded p-4">
-                  <p className="font-bold text-yellow-900 text-sm mb-2">⚠️ LOGICAL CONTRADICTION</p>
+                  <p className="font-bold text-yellow-900 text-sm mb-2">[WARNING] LOGICAL CONTRADICTION</p>
                   <p className="text-xs text-yellow-800">
                     One cannot simultaneously "take full responsibility" for an obligation AND demand reimbursement for that same obligation. These positions are mutually exclusive and demonstrate the internally inconsistent nature of Petitioner's RFO.
                   </p>
@@ -483,7 +469,7 @@ const OppositionFilingPage: React.FC = () => {
 
                 <div className="ml-8 my-3 grid grid-cols-2 gap-3">
                   <div className="bg-red-50 border border-red-200 p-3 rounded-sm">
-                    <p className="font-semibold text-xs text-red-900 mb-2">❌ Missing Evidence</p>
+                    <p className="font-semibold text-xs text-red-900 mb-2">[MISSING] Missing Evidence</p>
                     <ul className="text-xs text-red-700 space-y-1">
                       <li>• Tax return calculations</li>
                       <li>• IRS Form 593 documentation</li>
@@ -492,7 +478,7 @@ const OppositionFilingPage: React.FC = () => {
                     </ul>
                   </div>
                   <div className="bg-slate-50 border border-slate-200 p-3 rounded-sm">
-                    <p className="font-semibold text-xs text-slate-900 mb-2">📋 Required Documentation</p>
+                    <p className="font-semibold text-xs text-slate-900 mb-2">[DOCS] Required Documentation</p>
                     <ul className="text-xs text-slate-700 space-y-1">
                       <li>• Basis calculation</li>
                       <li>• Gain/loss determination</li>
@@ -556,10 +542,10 @@ const OppositionFilingPage: React.FC = () => {
 
                 <div className="ml-8 my-2 bg-blue-50 border-l-4 border-blue-500 p-3">
                   <ul className="text-sm space-y-1 text-blue-900">
-                    <li>✓ Proof of actual tax liability</li>
-                    <li>✓ Evidence of payment (cancelled check, wire confirmation)</li>
-                    <li>✓ Tax professional analysis</li>
-                    <li>✓ IRS/FTB correspondence confirming obligation</li>
+                    <li>[OK] Proof of actual tax liability</li>
+                    <li>[OK] Evidence of payment (cancelled check, wire confirmation)</li>
+                    <li>[OK] Tax professional analysis</li>
+                    <li>[OK] IRS/FTB correspondence confirming obligation</li>
                   </ul>
                 </div>
               </div>
