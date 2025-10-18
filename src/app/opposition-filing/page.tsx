@@ -321,33 +321,121 @@ const OppositionFilingPage: React.FC = () => {
               <div className="line">&nbsp;</div>
               <div className="line">     3.5  Petitioner's methodology violates the fundamental</div>
               <div className="line">accounting principle that proceeds equal gross sale price</div>
-              <div className="line">minus all obligations. The equation Petitioner attempts to</div>
-              <div className="line">create is: Available Funds = (Gross Sale - Debt Paid) + Debt</div>
-              <div className="line">Paid. This simplifies to: Available Funds = Gross Sale, which</div>
-              <div className="line">would mean NO debts were ever paid. This is mathematically</div>
-              <div className="line">and legally impossible.</div>
+              <div className="line">minus all obligations.</div>
               <div className="line">&nbsp;</div>
+            </div>
+
+            {/* Visual Enhancement for Mathematical Analysis */}
+            <div className="mt-6 p-6 bg-gradient-to-r from-red-50 to-yellow-50 rounded-xl shadow-xl">
+              <h4 className="text-xl font-bold text-red-800 mb-4 flex items-center">
+                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Mathematical Impossibility Exposed
+              </h4>
+
+              <div className="bg-white p-4 rounded-lg shadow-inner mb-4">
+                <p className="text-sm font-semibold text-gray-700 mb-2">Petitioner's Flawed Formula:</p>
+                <div className="bg-red-100 p-3 rounded font-mono text-center">
+                  <p className="text-red-800">Available Funds = (Gross Sale - Debt Paid) + Debt Paid</p>
+                  <p className="text-sm text-gray-600 mt-2">↓ Simplifies to ↓</p>
+                  <p className="text-red-900 font-bold">Available Funds = Gross Sale</p>
+                  <p className="text-xs text-red-700 mt-2">[WARNING] This would mean NO debts were ever paid!</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Interactive Distribution Breakdown */}
+            <div className="mt-6 p-6 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 rounded-xl shadow-2xl">
+              <h4 className="text-xl font-bold text-indigo-800 mb-4 flex items-center">
+                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Distribution Analysis - Visual Breakdown
+              </h4>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-green-100 p-4 rounded-lg border-2 border-green-400">
+                  <h5 className="font-bold text-green-800 mb-3">✓ Correct Legal Distribution</h5>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Total Proceeds:</span>
+                      <span className="font-mono font-bold">$280,355.83</span>
+                    </div>
+                    <div className="h-px bg-green-300 my-2"></div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Petitioner (35%):</span>
+                      <span className="font-mono text-green-700">$98,124.54</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Respondent (65%):</span>
+                      <span className="font-mono text-green-700">$182,231.29</span>
+                    </div>
+                  </div>
+                  <div className="mt-3 bg-green-200 p-2 rounded text-center">
+                    <span className="text-xs font-semibold text-green-900">Fair & Legal</span>
+                  </div>
+                </div>
+
+                <div className="bg-red-100 p-4 rounded-lg border-2 border-red-400">
+                  <h5 className="font-bold text-red-800 mb-3">✗ Petitioner's Manipulation</h5>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Fictional Total:</span>
+                      <span className="font-mono font-bold text-red-600">$358,155.71</span>
+                    </div>
+                    <div className="h-px bg-red-300 my-2"></div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Petitioner Claims:</span>
+                      <span className="font-mono text-red-700">$125,354.50</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Leaves Respondent:</span>
+                      <span className="font-mono text-red-700">$104,451.41</span>
+                    </div>
+                  </div>
+                  <div className="mt-3 bg-red-200 p-2 rounded text-center">
+                    <span className="text-xs font-semibold text-red-900">+$27,229.96 Theft!</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Visual Bar Chart Comparison */}
+              <div className="mt-6 bg-white p-4 rounded-lg shadow-inner">
+                <h5 className="text-sm font-bold text-gray-700 mb-3">Visual Share Comparison</h5>
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <span className="text-xs w-24">Correct Split:</span>
+                    <div className="flex-1 flex h-6 rounded overflow-hidden">
+                      <div className="bg-blue-500 flex items-center justify-center text-white text-xs" style={{width: '35%'}}>
+                        35%
+                      </div>
+                      <div className="bg-green-500 flex items-center justify-center text-white text-xs" style={{width: '65%'}}>
+                        65%
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xs w-24">Their Claim:</span>
+                    <div className="flex-1 flex h-6 rounded overflow-hidden">
+                      <div className="bg-red-500 flex items-center justify-center text-white text-xs" style={{width: '45%'}}>
+                        45% (!!!)
+                      </div>
+                      <div className="bg-orange-500 flex items-center justify-center text-white text-xs" style={{width: '55%'}}>
+                        55%
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="line-numbers mt-6">
               <div className="line">     3.6  Through this mathematical manipulation, Petitioner</div>
-              <div className="line">seeks to convert her 35% ownership interest into approximately</div>
-              <div className="line">95% of the actual net distribution. The following comparison</div>
-              <div className="line">demonstrates the harm:</div>
+              <div className="line">seeks to unlawfully obtain an additional $27,229.96,</div>
+              <div className="line">representing a 27.7% increase over her rightful 35% share.</div>
               <div className="line">&nbsp;</div>
-              <div className="line">          DISTRIBUTION COMPARISON:</div>
-              <div className="line">&nbsp;</div>
-              <div className="line">          Correct (65/35 split):</div>
-              <div className="line">               Petitioner Gets:     $98,124.54</div>
-              <div className="line">               Respondent Gets:    $182,231.29</div>
-              <div className="line">&nbsp;</div>
-              <div className="line">          Petitioner's Method:</div>
-              <div className="line">               Petitioner Gets:    $125,354.50</div>
-              <div className="line">               Respondent Gets:    $104,451.41</div>
-              <div className="line">               Petitioner's Windfall: +$27,229.96</div>
-              <div className="line">&nbsp;</div>
-              <div className="line">     3.7  Petitioner seeks to unlawfully obtain an additional</div>
-              <div className="line">$27,229.96 through mathematical manipulation, representing a</div>
-              <div className="line">27.7% increase over her rightful 35% share.</div>
-              <div className="line">&nbsp;</div>
-              <div className="line">     3.8  Petitioner cites no California case law, statute,</div>
+              <div className="line">     3.7  Petitioner cites no California case law, statute,</div>
               <div className="line">or legal authority permitting this "add-back" scheme. This</div>
               <div className="line">methodology has no basis in California family law and would</div>
               <div className="line">create an impermissible windfall to the non-paying spouse.</div>
