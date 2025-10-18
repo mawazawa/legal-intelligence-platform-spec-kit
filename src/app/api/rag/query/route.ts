@@ -19,20 +19,20 @@ export interface RAGQueryResponse {
     content: string;
     source: string;
     similarity: number;
-    metadata: Record<string, any>;
+    metadata: Record<string, unknown>;
   }>;
   graphContext?: {
     nodes: Array<{
       id: string;
       labels: string[];
-      properties: Record<string, any>;
+      properties: Record<string, unknown>;
     }>;
     relationships: Array<{
       id: string;
       type: string;
       startNodeId: string;
       endNodeId: string;
-      properties: Record<string, any>;
+      properties: Record<string, unknown>;
     }>;
   };
   metadata: {
@@ -76,32 +76,7 @@ export async function POST(request: NextRequest) {
       threshold
     );
 
-    // Step 3: Graph expansion in Neo4j (if enabled)
-    let graphContext = undefined;
-    if (includeGraph && searchResults.length > 0) {
-      try {
-        const neo4jClient = getNeo4jClient();
-        await neo4jClient.connect();
-        
-        // Get graph neighborhood for top results
-        const topResult = searchResults[0];
-        const neighborhood = await neo4jClient.getNeighborhood(
-          topResult.metadata.externalId,
-          graphHops,
-          50
-        );
-        
-        graphContext = neighborhood;
-      } catch (error) {
-        console.warn('Graph expansion failed:', error);
-        // Continue without graph context
-      }
-    }
-
-    // Step 4: Generate answer with evidence
-    const answer = generateAnswer(query, searchResults, graphContext);
-
-    // Step 5: Prepare evidence citations
+    // Step 3: Prepare evidence citations
     const evidence = searchResults.map(result => ({
       id: result.id,
       content: result.content,
@@ -109,6 +84,31 @@ export async function POST(request: NextRequest) {
       similarity: result.similarity,
       metadata: result.metadata
     }));
+
+    // Step 4: Graph expansion in Neo4j (if enabled)
+    let graphContext = undefined;
+    if (includeGraph && searchResults.length > 0) {
+      try {
+        const neo4jClient = getNeo4jClient();
+        await neo4jClient.connect();
+
+        // Get graph neighborhood for top results
+        const topResult = searchResults[0];
+        const neighborhood = await neo4jClient.getNeighborhood(
+          topResult.metadata.externalId,
+          graphHops,
+          50
+        );
+
+        graphContext = neighborhood;
+      } catch (error) {
+        console.warn('Graph expansion failed:', error);
+        // Continue without graph context
+      }
+    }
+
+    // Step 5: Generate answer with evidence
+    const answer = generateAnswer(query, evidence, graphContext);
 
     // Step 6: Extract unique sources
     const sources = [...new Set(evidence.map(c => c.source))];
@@ -143,8 +143,8 @@ export async function POST(request: NextRequest) {
 
 function generateAnswer(
   query: string,
-  searchResults: any[],
-  graphContext?: any
+  searchResults: RAGQueryResponse['evidence'],
+  graphContext?: RAGQueryResponse['graphContext']
 ): string {
   if (searchResults.length === 0) {
     return `I couldn't find any relevant information to answer your query: "${query}". Please try rephrasing your question or check if the relevant documents have been ingested.`;
@@ -153,33 +153,36 @@ function generateAnswer(
   // Simple answer generation based on search results
   const topResults = searchResults.slice(0, 3);
   const answerParts: string[] = [];
-  
+
   answerParts.push(`Based on the available documents, here's what I found regarding your query: "${query}"`);
-  
+
   for (const result of topResults) {
-    const snippet = result.content.length > 200 
+    const snippet = result.content.length > 200
       ? result.content.substring(0, 200) + '...'
       : result.content;
-    
-    answerParts.push(`\n\nFrom ${result.metadata.source}:`);
+
+    answerParts.push(`\n\nFrom ${result.source}:`);
     answerParts.push(`"${snippet}"`);
   }
-  
-  if (graphContext && graphContext.nodes.length > 0) {
+
+  if (graphContext && graphContext.nodes && graphContext.nodes.length > 0) {
     answerParts.push(`\n\nAdditional context from related documents:`);
     const relatedNodes = graphContext.nodes
-      .filter((node: any) => node.labels.includes('Document') || node.labels.includes('Event'))
+      .filter((node) => node.labels.includes('Document') || node.labels.includes('Event'))
       .slice(0, 3);
-    
+
     for (const node of relatedNodes) {
-      if (node.properties.description || node.properties.title) {
-        answerParts.push(`\n• ${node.properties.title || node.properties.description}`);
+      const title = typeof node.properties.title === 'string' ? node.properties.title : null;
+      const description = typeof node.properties.description === 'string' ? node.properties.description : null;
+      const label = title || description;
+      if (label) {
+        answerParts.push(`\n• ${label}`);
       }
     }
   }
-  
+
   answerParts.push(`\n\nThis information is based on ${searchResults.length} relevant document(s) found in the system.`);
-  
+
   return answerParts.join('');
 }
 
