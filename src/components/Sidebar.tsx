@@ -2,8 +2,9 @@
 
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, X, FileText } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { navigationConfig, type NavItem, CASE_NUMBER } from '@/config/navigation';
 
@@ -140,11 +141,16 @@ export function Sidebar() {
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-slate-700">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition">
-              <div className="p-2 bg-blue-600 rounded-lg">
-                <FileText className="h-6 w-6 text-white" />
-              </div>
+              <Image
+                src="/justiceos-logo.png"
+                alt="JusticeOS"
+                width={48}
+                height={48}
+                className="rounded-lg"
+                priority
+              />
               <div>
-                <h1 className="text-white font-bold text-lg">Legal Intel</h1>
+                <h1 className="text-white font-bold text-lg">JusticeOS™</h1>
                 <p className="text-slate-400 text-xs">{CASE_NUMBER}</p>
               </div>
             </Link>

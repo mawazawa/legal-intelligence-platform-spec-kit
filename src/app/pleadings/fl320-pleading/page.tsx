@@ -46,8 +46,17 @@ function formatCurrency(value?: number): string {
 }
 
 async function loadDeclarationMarkdown(): Promise<string> {
-  const declPath = path.resolve(process.cwd(), 'RESPONSIVE_DECLARATION_FL320_UPDATED.md');
-  return fs.readFile(declPath, 'utf8');
+  try {
+    const declPath = path.resolve(process.cwd(), 'RESPONSIVE_DECLARATION_FL320_UPDATED.md');
+    return await fs.readFile(declPath, 'utf8');
+  } catch {
+    // Fallback content if file doesn't exist
+    return `# Responsive Declaration to Request for Order
+
+This is a placeholder for the responsive declaration. The detailed declaration document will be loaded once available.
+
+Please ensure the RESPONSIVE_DECLARATION_FL320_UPDATED.md file exists in the project root directory.`;
+  }
 }
 
 async function loadLedger(): Promise<LedgerData | null> {
