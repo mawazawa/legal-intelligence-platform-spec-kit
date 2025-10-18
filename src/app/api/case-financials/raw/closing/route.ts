@@ -1,15 +1,3 @@
-import { NextResponse } from 'next/server'
-import fs from 'node:fs/promises'
-import path from 'node:path'
+import { readCaseFile } from '@/lib/api/file-reader'
 
-export async function GET() {
-  try {
-    const p = path.resolve(process.cwd(), '..', 'case-financials', 'results', 'closing-statement-extract.txt')
-    const text = await fs.readFile(p, 'utf8')
-    return new NextResponse(text, { status: 200, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
-  } catch (e: unknown) {
-    const message = e instanceof Error ? e.message : 'not found'
-    return NextResponse.json({ error: message }, { status: 404 })
-  }
-}
-
+export const GET = () => readCaseFile('closing-statement-extract.txt', 'text/plain')
