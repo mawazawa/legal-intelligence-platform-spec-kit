@@ -617,7 +617,7 @@ const HousingCostCalculator: React.FC = () => {
         netAdjustment,
         mathieuFinalDistribution,
         rosannaFinalDistribution,
-        rosannaFTBCredit: sodAdjustments.rosannaWithholding,
+        rosannaFTBCredit: sodAdjustments.rosannaWithholding || 0,
       },
       reasoningPath
     };
@@ -796,7 +796,7 @@ const HousingCostCalculator: React.FC = () => {
                       <div className="mb-4">
                         <h5 className="text-sm font-bold text-slate-700 mb-2">DOCUMENT SOURCES:</h5>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {step.sources.map((source, sourceIndex) => (
+                          {step.sources?.map((source, sourceIndex) => (
                             <div key={sourceIndex} className="bg-slate-50 border border-slate-200 rounded p-3 text-xs">
                               <div className="font-bold text-slate-700">{source.documentName}</div>
                               <div className="text-slate-600">{source.documentDate}</div>

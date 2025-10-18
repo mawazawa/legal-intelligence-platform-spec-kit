@@ -12,6 +12,18 @@ import {
   DocumentSource,
 } from '@/types/calculations';
 import {
+  PROPERTY_SALE,
+  SOD_ALLOCATION,
+  TAX_DATA,
+  SOD_ADJUSTMENTS,
+  REAL_ESTATE_DATA,
+  DOCUMENT_SOURCES,
+  TEXT_PROCESSING,
+  calculateNetAdjustment,
+  calculateMathieuFinalDistribution,
+  calculateRosannaFinalDistribution,
+} from '@/constants/case-data';
+import {
   Calculator,
   GitCompare,
   Scale,
@@ -45,9 +57,9 @@ const FinalDistributionSSOT: React.FC = () => {
     {
       id: 'commission-rate',
       name: 'Commission Rate',
-      currentValue: 6.0,
-      minValue: 4.0,
-      maxValue: 8.0,
+      currentValue: REAL_ESTATE_DATA.DEFAULT_COMMISSION_RATE * 100,
+      minValue: REAL_ESTATE_DATA.MIN_COMMISSION_RATE * 100,
+      maxValue: REAL_ESTATE_DATA.MAX_COMMISSION_RATE * 100,
       step: 0.1,
       unit: '%',
       description: 'Real estate agent commission rate'
@@ -55,10 +67,10 @@ const FinalDistributionSSOT: React.FC = () => {
     {
       id: 'seller-concessions',
       name: 'Seller Concessions',
-      currentValue: 35000,
-      minValue: 25000,
-      maxValue: 50000,
-      step: 1000,
+      currentValue: REAL_ESTATE_DATA.DEFAULT_SELLER_CONCESSIONS,
+      minValue: REAL_ESTATE_DATA.MIN_SELLER_CONCESSIONS,
+      maxValue: REAL_ESTATE_DATA.MAX_SELLER_CONCESSIONS,
+      step: REAL_ESTATE_DATA.CONCESSIONS_STEP,
       unit: '$',
       description: 'Total seller concessions for repairs'
     }
@@ -89,11 +101,11 @@ const FinalDistributionSSOT: React.FC = () => {
   const rfoAttachment7Excerpt = useMemo(() => {
     if (!petitionerRFO) return ''
     const lower = petitionerRFO.toLowerCase()
-    const marker = 'attachment 7'
+    const marker = TEXT_PROCESSING.RFO_ATTACHMENT_MARKER
     const i = lower.indexOf(marker)
-    if (i === -1) return petitionerRFO.slice(0, 1500)
-    const start = Math.max(0, i - 800)
-    return petitionerRFO.slice(start, i + 1600)
+    if (i === -1) return petitionerRFO.slice(0, TEXT_PROCESSING.RFO_DEFAULT_EXCERPT_LENGTH)
+    const start = Math.max(0, i - TEXT_PROCESSING.RFO_EXCERPT_CONTEXT_BEFORE)
+    return petitionerRFO.slice(start, i + TEXT_PROCESSING.RFO_EXCERPT_CONTEXT_AFTER)
   }, [petitionerRFO])
 
   const printRef = useRef<HTMLDivElement>(null);
@@ -106,40 +118,34 @@ const FinalDistributionSSOT: React.FC = () => {
     }
   }, []);
 
-  // Hardcoded calculation result for now
+  // Calculation result - using constants for maintainability
   const calculationResult = useMemo(() => {
-    // Use hardcoded values for now since ledger might not be available
-    const grossSalePrice = 1175000;
-    const netProceedsToSellers = 280355.83;
-    const lenderPayoff = 759364.32;
-    const mathieuSODShare = netProceedsToSellers * 0.65;
-    const rosannaSODShare = netProceedsToSellers * 0.35;
-    const rosannaWithholding = 13694.62;
-    // Mathieu's franchise tax reversal: Rosanna removed her 65% share of her FTB withholding ($8,901.50),
-    // so Mathieu removes the matching 65% share from his tax obligation for symmetry
-    const mathieuFranchiseTaxReversal = 8901.50; // 65% of $13,694.62
-    const mathieuTaxObligation = 25432.88 - mathieuFranchiseTaxReversal;
+    // Load property and financial data from constants
+    const grossSalePrice = PROPERTY_SALE.GROSS_SALE_PRICE;
+    const netProceedsToSellers = PROPERTY_SALE.NET_PROCEEDS_TO_SELLERS;
+    const lenderPayoff = PROPERTY_SALE.LENDER_PAYOFF;
+    const mathieuSODShare = netProceedsToSellers * SOD_ALLOCATION.MATHIEU_PERCENTAGE;
+    const rosannaSODShare = netProceedsToSellers * SOD_ALLOCATION.ROSANNA_PERCENTAGE;
+    const rosannaWithholding = TAX_DATA.ROSANNA_FTB_WITHHOLDING;
+    const mathieuTaxObligation = TAX_DATA.MATHIEU_TAX_OBLIGATION;
 
-    // SOD Adjustments from hardcoded values (should come from ledger in future)
+    // SOD Adjustments from constants (should come from ledger in future)
     const sodAdjustments: SODAdjustments = {
-      wattsChargesOriginal: 48640.00,
-      rentalIncomeShare: 5761.81,
-      motorcycleShare: 5855.00,
-      furnitureShare: 7500.00,
-      rosannaExclusivePossession: 33500.00,
-      // Furniture correction: Mathieu was ordered to pay $7,500, but Rosanna text messaged
-      // Piya that furniture must stay, then they took it. So instead of -$7,500 (payment),
-      // it should be +$7,500 (credit), creating a $15,000 total swing.
-      furnitureCorrection: 15000.00
+      wattsChargesOriginal: SOD_ADJUSTMENTS.WATTS_CHARGES_ORIGINAL,
+      rentalIncomeShare: SOD_ADJUSTMENTS.RENTAL_INCOME_SHARE,
+      motorcycleShare: SOD_ADJUSTMENTS.MOTORCYCLE_SHARE,
+      furnitureShare: SOD_ADJUSTMENTS.FURNITURE_SHARE,
+      rosannaExclusivePossession: SOD_ADJUSTMENTS.ROSANNA_EXCLUSIVE_POSSESSION,
+      furnitureCorrection: SOD_ADJUSTMENTS.FURNITURE_CORRECTION
     };
 
     const mathieuOwesRosanna = sodAdjustments.wattsChargesOriginal + sodAdjustments.rentalIncomeShare + sodAdjustments.motorcycleShare + sodAdjustments.furnitureShare;
     const rosannaOwesMathieu = sodAdjustments.rosannaExclusivePossession + sodAdjustments.furnitureCorrection;
-    const netAdjustment = mathieuOwesRosanna - rosannaOwesMathieu;
-    
+    const netAdjustment = calculateNetAdjustment();
+
     // Final distributions
-    const mathieuFinalDistribution = mathieuSODShare - netAdjustment - mathieuTaxObligation;
-    const rosannaFinalDistribution = rosannaSODShare + netAdjustment - rosannaWithholding;
+    const mathieuFinalDistribution = calculateMathieuFinalDistribution();
+    const rosannaFinalDistribution = calculateRosannaFinalDistribution();
 
     // Progressive disclosure reasoning path
     const reasoningPath: CalculationStep[] = [
@@ -151,10 +157,10 @@ const FinalDistributionSSOT: React.FC = () => {
         formula: 'Contract Price',
         sources: [
           {
-            documentName: 'Final Sellers Closing Statement',
-            documentDate: '05/30/2025',
+            documentName: DOCUMENT_SOURCES.CLOSING_STATEMENT.name,
+            documentDate: DOCUMENT_SOURCES.CLOSING_STATEMENT.date,
             sectionName: 'Sale Price',
-            excerpt: 'Contract Price: $1,175,000'
+            excerpt: `Contract Price: $${grossSalePrice.toLocaleString()}`
           }
         ]
       },
