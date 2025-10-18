@@ -55,8 +55,8 @@ const RespondentView = React.memo<RespondentViewProps>(({ fl320Content, ledger }
       'RESPONSIVE DECLARATION (FL-320) — Computation Outline',
       '',
       'From‑the‑Pot Final Distribution (ledger-based):',
-      `  Respondent: ${fmt(fr)}`,
-      `  Petitioner: ${fmt(fp)}`,
+      `  Respondent: ${formatCurrency(fr)}`,
+      `  Petitioner: ${formatCurrency(fp)}`,
       '  Split: 65% / 35% per Statement of Decision',
       '',
       'Key Corrections:',
@@ -69,10 +69,10 @@ const RespondentView = React.memo<RespondentViewProps>(({ fl320Content, ledger }
     [
       'CALCULATION SNAPSHOT',
       '',
-      `Net proceeds (Due to Seller): ${fmt(d2s)}`,
-      `Constructive net: ${fmt(cn)}`,
-      `SOD 65% (Respondent): ${fmt(r65)}`,
-      `SOD 35% (Petitioner): ${fmt(p35)}`,
+      `Net proceeds (Due to Seller): ${formatCurrency(d2s)}`,
+      `Constructive net: ${formatCurrency(cn)}`,
+      `SOD 65% (Respondent): ${formatCurrency(r65)}`,
+      `SOD 35% (Petitioner): ${formatCurrency(p35)}`,
       '',
       'Adjustments (selected):',
       '  • Watts fixed; $122/mo cutoff; symmetry credit.',
@@ -150,9 +150,9 @@ const RespondentView = React.memo<RespondentViewProps>(({ fl320Content, ledger }
             <div>
               <h4 className="font-semibold text-blue-700 mb-2 text-sm">FROM LEDGER</h4>
               <div className="text-xs text-slate-700 space-y-1">
-                <div><strong>Net Proceeds:</strong> {fmt((ledger as any)?.root?.children?.[0]?.value?.due_to_seller)}</div>
-                <div><strong>Respondent (65%):</strong> {fmt((ledger as any)?.root?.value?.respondent)}</div>
-                <div><strong>Petitioner (35%):</strong> {fmt((ledger as any)?.root?.value?.petitioner)}</div>
+                <div><strong>Net Proceeds:</strong> {formatCurrency(d2s)}</div>
+                <div><strong>Respondent (65%):</strong> {formatCurrency(fr)}</div>
+                <div><strong>Petitioner (35%):</strong> {formatCurrency(fp)}</div>
               </div>
             </div>
             <div>
