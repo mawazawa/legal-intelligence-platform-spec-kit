@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ChecklistFab } from "@/components/ChecklistFab";
 import { Sidebar } from "@/components/Sidebar";
 import { APP_NAME, CASE_TITLE } from "@/config/navigation";
 
@@ -32,7 +31,7 @@ export default function RootLayout({
         <main className="lg:ml-64 min-h-screen">
           {children}
         </main>
-        <ChecklistFab />
+        {/* ChecklistFab and UniversalDropzone temporarily disabled for performance */}
       </body>
     </html>
   );
