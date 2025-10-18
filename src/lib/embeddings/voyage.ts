@@ -1,4 +1,4 @@
-import { VoyageAI } from 'voyageai';
+import { VoyageAIClient } from 'voyageai';
 import { logger } from '../logging/logger';
 import { env } from '../../env';
 
@@ -28,7 +28,7 @@ export interface EmbeddingResult {
 }
 
 export class VoyageEmbeddingClient {
-  private client: any;
+  private client: VoyageAIClient;
   private config: VoyageConfig;
 
   constructor(config: VoyageConfig) {
@@ -39,9 +39,9 @@ export class VoyageEmbeddingClient {
       retryDelay: 1000,
       ...config
     };
-    
-    // The voyageai package types do not expose a constructable class in all versions; use any at runtime.
-    this.client = new (VoyageAI as any)(this.config.apiKey);
+
+    // Instantiate VoyageAIClient with apiKey
+    this.client = new VoyageAIClient({ apiKey: this.config.apiKey });
   }
 
   async embedText(text: string, inputType: 'query' | 'document' = 'query'): Promise<number[]> {
@@ -57,7 +57,7 @@ export class VoyageEmbeddingClient {
           model: this.config.model!,
           inputType
         });
-        return response.embeddings[0];
+        return response.data?.[0]?.embedding || [];
       } catch (error) {
         attempt++;
         if (attempt > max) {
@@ -81,7 +81,8 @@ export class VoyageEmbeddingClient {
           model: this.config.model!,
           inputType
         });
-        embeddings.push(...response.embeddings);
+        const batchEmbeddings = response.data?.map(item => item.embedding || []) || [];
+        embeddings.push(...batchEmbeddings);
         
         // Rate limiting delay
         if (i + batchSize < texts.length) {
@@ -102,7 +103,8 @@ export class VoyageEmbeddingClient {
               model: this.config.model!,
               inputType
             });
-            embeddings.push(...response.embeddings);
+            const batchEmbeddings = response.data?.map(item => item.embedding || []) || [];
+            embeddings.push(...batchEmbeddings);
             break;
           } catch (retryError) {
             retries++;
