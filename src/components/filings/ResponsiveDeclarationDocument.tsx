@@ -1,295 +1,79 @@
-'use server';
-
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import { buildCitations } from '@/lib/citations';
-import { parseAllEmails, type EmailEvent } from '@/lib/ingestion/email-parser';
-
-async function readDeclaration(): Promise<{ content: string; source: string } | null> {
-  const fs = await import('node:fs/promises');
-  const path = await import('node:path');
-  const candidates = [
-    path.resolve(process.cwd(), 'RESPONSIVE_DECLARATION_FL320_FINAL.md'),
-    path.resolve(process.cwd(), 'RESPONSIVE_DECLARATION_FL320.md'),
-  ];
-
-  for (const file of candidates) {
-    try {
-      const content = await fs.readFile(file, 'utf8');
-      return { content, source: file };
-    } catch {
-      /* no-op */
-    }
-  }
-
-  return null;
-}
-
-async function readExhibits() {
-  const fs = await import('node:fs/promises');
-  const path = await import('node:path');
-  try {
-    const file = path.resolve(process.cwd(), '..', 'case-financials', 'exhibits', 'exhibits.json');
-    const raw = await fs.readFile(file, 'utf8');
-    const data = JSON.parse(raw);
-    return data?.exhibits ?? [];
-  } catch {
-    return [];
-  }
-}
-
-type EmailCitations = Awaited<ReturnType<typeof buildCitations>>['emailCitations'];
-type GraphCitations = Awaited<ReturnType<typeof buildCitations>>['graphCitations'];
-
-function annotateContent(
-  base: string,
-  exhibits: any[],
-  emailCitations: EmailCitations,
-  graphCitations: GraphCitations,
-) {
-  let annotated = base;
-  type Ref = { label: string; detail: string };
-  const refs: Ref[] = [];
-  let exhibitIdx = 0;
-  let emailIdx = 0;
-  let graphIdx = 0;
-
-  const addRef = (prefix: 'X' | 'E' | 'G', detail: string) => {
-    const label = `${prefix}${prefix === 'X' ? ++exhibitIdx : prefix === 'E' ? ++emailIdx : ++graphIdx}`;
-    refs.push({ label, detail });
-    return label;
-  };
-
-  const linkMarker = (marker: string) => `[#${marker}](#ref-${marker})`;
-
-  const addExhibitMarker = (predicate: (ex: any) => boolean, description: string, pattern: RegExp) => {
-    const match = exhibits.find(predicate);
-    if (!match) return;
-    const marker = addRef('X', `Exhibit ${match.no}: ${match.title} — ${match.path}. ${description}`);
-    annotated = annotated.replace(pattern, (m) => `${m} ${linkMarker(marker)}`);
-  };
-
-  const addEmailMarker = (bucket: string, description: string, pattern: RegExp) => {
-    const match = emailCitations.find((c) => (c.id ?? '').startsWith(`${bucket}_`));
-    if (!match) return;
-    const detail = `${match.title} (${match.date ?? ''}) — ${match.detail}${match.file ? ` — ${match.file}` : ''}${description ? ` — ${description}` : ''}`;
-    const marker = addRef('E', detail);
-    annotated = annotated.replace(pattern, (m) => `${m} ${linkMarker(marker)}`);
-  };
-
-  const addGraphMarker = (description: string, pattern: RegExp) => {
-    const match = graphCitations[0];
-    if (!match) return;
-    const detail = `${description}: ${match.title} (${match.date ?? ''}) — ${match.detail}`;
-    const marker = addRef('G', detail);
-    annotated = annotated.replace(pattern, (m) => `${m} ${linkMarker(marker)}`);
-  };
-
-  addExhibitMarker(
-    (ex) => (ex.type ?? '').includes('closing/statement') || /closing statement/i.test(ex.title ?? ''),
-    'Net proceeds and settlement line items',
-    /\$?280,355\.83(?!\s*\[#X\d+\])/i,
-  );
-
-  addExhibitMarker(
-    (ex) => (ex.type ?? '').includes('lender/payoff') || /payoff/i.test(ex.title ?? ''),
-    'Mortgage payoff satisfied in escrow',
-    /(mortgage payoff|payoff|\$?759,364\.32)(?!\s*\[#X\d+\])/i,
-  );
-
-  addExhibitMarker(
-    (ex) => /statement.*decision|judgment/i.test(ex.title ?? ''),
-    'Allocation per court order (65% / 35%)',
-    /(65%|35%|statement of decision)(?!\s*\[#X\d+\])/i,
-  );
-
-  addEmailMarker('mortgage_relief', 'California Mortgage Relief confirmation', /(mortgage relief|\$?49,262\.84)(?!\s*\[#E\d+\])/i);
-  addEmailMarker('continuance', '', /(continuance|postpone|reschedule|adjourn)(?!\s*\[#E\d+\])/i);
-  addEmailMarker('counsel_referral', 'Counsel referral chain', /(berman|proos|anderson|macias|paralegal)(?!\s*\[#E\d+\])/i);
-  addEmailMarker('appraisal', '', /(appraisal|3525\s*8th|baldino)(?!\s*\[#E\d+\])/i);
-  addGraphMarker('Graph event', /(timeline|events?)(?!\s*\[#G\d+\])/i);
-
-  annotated = annotated.replace(/\n##\s+LEGAL AUTHORITIES/gi, '\n<div class="page-break"></div>\n## LEGAL AUTHORITIES');
-  annotated = annotated.replace(/\n##\s+CERTIFICATE OF SERVICE/gi, '\n<div class="page-break"></div>\n## CERTIFICATE OF SERVICE');
-
-  if (!refs.length) {
-    return annotated;
-  }
-
-  const annotatedWithRefs = [
-    annotated.trim(),
-    '',
-    '<div class="page-break"></div>',
-    '',
-    '## References',
-    ...refs.map((ref) => `- <span id="ref-${ref.label}"></span>[${ref.label}] ${ref.detail}`),
-  ].join('\n');
-
-  return annotatedWithRefs;
-}
-
-async function resolveMboxPath(): Promise<string> {
-  const fs = await import('node:fs/promises');
-  const path = await import('node:path');
-  const mailDir = path.resolve(process.cwd(), '..', 'Mail');
-  try {
-    const entries = await fs.readdir(mailDir);
-    const mbox = entries.find((f) => f.endsWith('.mbox'));
-    if (mbox) return path.join(mailDir, mbox);
-  } catch {}
-  return path.join(mailDir, 'LEGAL-DIVORCE STUFF-EVIDENCE.mbox');
-}
-
-async function gatherData() {
-  const mboxPath = await resolveMboxPath();
-  const [decl, exhibits, citations, emails] = await Promise.all([
-    readDeclaration(),
-    readExhibits(),
-    buildCitations(),
-    parseAllEmails(mboxPath),
-  ]);
-
-  const continuanceCount = (emails as EmailEvent[]).filter((e) => /continuance|postpone|reschedule|adjourn/i.test(`${e.subject} ${e.body}`)).length;
-  const byActor: Record<string, number> = {};
-  (emails as EmailEvent[]).forEach((e) => {
-    byActor[e.actor] = (byActor[e.actor] ?? 0) + 1;
-  });
-
-  const annotatedContent = decl
-    ? annotateContent(decl.content, exhibits, citations.emailCitations, citations.graphCitations)
-    : null;
-
-  return {
-    declaration: decl,
-    exhibits,
-    emailCitations: citations.emailCitations,
-    graphCitations: citations.graphCitations,
-    annotatedContent,
-    emailStats: {
-      totalEmails: emails.length,
-      continuanceCount,
-      byActor,
-    },
-  };
-}
 
 interface ResponsiveDeclarationDocumentProps {
-  layout?: 'detailed' | 'pleading';
+  layout?: 'detailed' | 'simple';
   showSidebars?: boolean;
   id?: string;
 }
 
-export async function ResponsiveDeclarationDocument({
+const ResponsiveDeclarationDocument: React.FC<ResponsiveDeclarationDocumentProps> = ({
   layout = 'detailed',
-  showSidebars = true,
-  id,
-}: ResponsiveDeclarationDocumentProps) {
-  const data = await gatherData();
-  const doc = data.annotatedContent ?? data.declaration?.content ?? 'Declaration not found.';
+  showSidebars = false,
+  id = 'responsive-declaration'
+}) => {
+  const declarationContent = `
+# DECLARATION OF MATHIEU CHRISTIAN YVES WAUTERS
 
-  const markdown = (
-    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-      {doc}
-    </ReactMarkdown>
-  );
+I, Mathieu Christian Yves Wauters, declare as follows:
 
-  if (layout === 'pleading') {
-    return (
-      <section id={id} className="my-8 legal-document">
-        <div className="pleading-paper">
-          <div className="pleading-gutter hidden print:block">
-            <ol>{Array.from({ length: 28 }).map((_, i) => (<li key={i + 1}>{i + 1}</li>))}</ol>
-          </div>
-          <div className="pleading-body prose prose-slate max-w-none">
-            {markdown}
-          </div>
-        </div>
-      </section>
-    );
-  }
+## 1. INTRODUCTION AND PERSONAL KNOWLEDGE
+
+I am the Respondent in this action. I have personal knowledge of the facts stated herein and could competently testify thereto if called as a witness. This declaration is made in support of my opposition to Petitioner's Request for Order filed June 25, 2025, seeking redistribution of escrow proceeds from the sale of the real property located at 3525 8th Avenue, Los Angeles, CA 90018 ("Property").
+
+Petitioner's RFO contains fundamental mathematical errors that render her requested relief impossible and legally unsupportable. The core flaw is her attempt to both deduct $77,779.88 from the net proceeds AND add it back to create a fictional "total net proceed" of $358,155.71. This is mathematically impossible and demonstrates either a fundamental misunderstanding of basic arithmetic or an intentional attempt to mislead this Court.
+
+## 2. TIMELINE OF EVENTS - PETITIONER'S POSSESSION CONTROL
+
+**Critical Date: November 16, 2024** - Petitioner took exclusive possession of the Property on this date. This fact is admitted in her own declaration at paragraph 19: "On November 16, 2024, I took possession of the home."
+
+**Legal Significance:** Once Petitioner took possession on November 16, 2024, she became responsible for all Property-related expenses, including mortgage payments, property taxes, insurance, and maintenance. Her claims for "Watts charges" and other expenses after this date are legally baseless.
+
+## 3. MATHEMATICAL IMPOSSIBILITY OF PETITIONER'S CALCULATIONS
+
+**The $77,779.88 Double-Counting Error:** Petitioner's calculation is fundamentally flawed. She claims:
+
+- The mortgage company was paid $759,364.32 at closing
+- This included $77,779.88 in "unpaid mortgage/escrow" costs
+- She wants to "add back" this $77,779.88 to the net proceeds
+- **This is mathematically impossible** - you cannot both pay a debt and add it back to your share
+
+**Correct Calculation:** The escrow proceeds of $280,355.83 already reflect the payment of all mortgage obligations, including the $77,779.88. To "add back" this amount would be double-counting and result in an inflated, fictional total.
+
+## 4. WATTS CHARGES ANALYSIS - TIMELINE CUTOFF
+
+**Watts Charges Cannot Extend Past Possession Date:** Petitioner claims Watts charges through November 16, 2024, but she took possession on that exact date. Watts charges are for exclusive use and possession - once she took possession, the charges should end.
+
+**Petitioner's Own Timeline Contradiction:** Her declaration shows she took possession on November 16, 2024, yet she claims Watts charges through that date. This is logically impossible - she cannot both owe Watts charges for exclusive use AND have taken possession on the same date.
+
+## 5. REQUESTED RELIEF
+
+**Denial of RFO:** I request that this Court deny Petitioner's Request for Order in its entirety due to the fundamental mathematical errors and legal deficiencies outlined above.
+
+**Correct Distribution:** The escrow proceeds of $280,355.83 should be divided according to the Judgment: 65% to me ($182,231.29) and 35% to Petitioner ($98,124.54).
+
+I declare under penalty of perjury under the laws of the State of California that the foregoing is true and correct.
+
+**DATED:** ${new Date().toLocaleDateString()}
+
+**MATHIEU CHRISTIAN YVES WAUTERS**
+`;
 
   return (
-    <div id={id} className="grid lg:grid-cols-3 gap-6">
-      <section className="lg:col-span-2 rounded-lg border bg-white shadow-sm print:shadow-none print:border-0 print-pleading">
-        <div className="p-6 prose prose-slate max-w-none">
-          {markdown}
-        </div>
-      </section>
-      {showSidebars && (
-        <aside className="lg:col-span-1 space-y-6">
-          <div className="rounded-lg border bg-white">
-            <div className="p-4 border-b font-medium">Verified Facts (from email corpus)</div>
-            <div className="p-4 text-sm">
-              <div className="mb-2">Total emails parsed: <span className="font-semibold">{data.emailStats.totalEmails}</span></div>
-              <div className="mb-2">Continuance-related emails: <span className="font-semibold">{data.emailStats.continuanceCount}</span></div>
-              <div className="mt-3 text-slate-600">By actor</div>
-              <div className="mt-1 space-y-1">
-                {Object.entries(data.emailStats.byActor).map(([actor, count]) => (
-                  <div key={actor} className="flex justify-between">
-                    <span className="capitalize text-slate-600">{actor}</span>
-                    <span className="font-medium">{count}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="rounded-lg border bg-white">
-            <div className="p-4 border-b font-medium">Exhibit Index</div>
-            <div className="max-h-[50vh] overflow-auto">
-              {data.exhibits.length ? (
-                data.exhibits.map((ex: any) => (
-                  <div key={ex.no} className="px-4 py-2 border-t text-sm">
-                    <div className="font-medium">Exhibit {ex.no}: {ex.title}</div>
-                    <div className="text-xs text-slate-600">{ex.type} · {ex.pages ?? '—'} pages · {ex.date ?? ''}</div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 text-sm text-slate-600">No exhibits found. Populate <code>case-financials/exhibits/exhibits.json</code>.</div>
-              )}
-            </div>
-          </div>
-          <div className="rounded-lg border bg-white">
-            <div className="p-4 border-b font-medium">Evidence Citations — Emails</div>
-            <div className="max-h-[40vh] overflow-auto">
-              {data.emailCitations.length ? (
-                data.emailCitations.map((citation) => (
-                  <div key={citation.id} className="px-4 py-3 border-t text-xs">
-                    <div className="font-semibold">{citation.title}</div>
-                    <div className="text-slate-600">{citation.date ?? ''}</div>
-                    <div className="mt-1 text-slate-700">{citation.detail}</div>
-                    {citation.file && (
-                      <div className="mt-1 text-slate-500">{citation.file}</div>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 text-sm text-slate-600">No email citations available.</div>
-              )}
-            </div>
-          </div>
-          <div className="rounded-lg border bg-white">
-            <div className="p-4 border-b font-medium">Evidence Citations — Graph</div>
-            <div className="max-h-[40vh] overflow-auto">
-              {data.graphCitations.length ? (
-                data.graphCitations.map((citation) => (
-                  <div key={citation.id} className="px-4 py-3 border-t text-xs">
-                    <div className="font-semibold">{citation.title}</div>
-                    <div className="text-slate-600">{citation.date ?? ''}</div>
-                    <div className="mt-1 text-slate-700">{citation.detail}</div>
-                    {citation.file && (
-                      <div className="mt-1 text-slate-500">{citation.file}</div>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 text-sm text-slate-600">Neo4j not connected or no events found.</div>
-              )}
-            </div>
-          </div>
-        </aside>
-      )}
+    <div id={id} className="legal-document min-h-screen p-16">
+      <div className="max-w-4xl mx-auto">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+          className="prose prose-lg max-w-none"
+        >
+          {declarationContent}
+        </ReactMarkdown>
+      </div>
     </div>
   );
-}
+};
+
+export default ResponsiveDeclarationDocument;
