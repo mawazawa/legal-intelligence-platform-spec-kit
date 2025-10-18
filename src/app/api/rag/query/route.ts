@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logging/logger';
+import { validators } from '@/lib/validation/validator';
 import { getVoyageClient } from '@/lib/embeddings/voyage';
 import { getSupabaseClient } from '@/lib/search/supabase';
 import { getNeo4jClient } from '@/lib/neo4j';
@@ -43,9 +45,13 @@ export interface RAGQueryResponse {
   };
 }
 
+/**
+ * RAG (Retrieval-Augmented Generation) Query endpoint
+ * POST /api/rag/query
+ */
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
-  
+
   try {
     const body: RAGQueryRequest = await request.json();
     const {
@@ -56,12 +62,23 @@ export async function POST(request: NextRequest) {
       graphHops = 2
     } = body;
 
-    if (!query || query.trim().length === 0) {
+    // Validate query parameter
+    const queryValidator = validators.string().min(1).max(1000);
+    const queryValidation = queryValidator.validate(query);
+
+    if (!queryValidation.success) {
+      logger.warn('Invalid RAG query', { errors: queryValidation.errors });
       return NextResponse.json(
-        { error: 'Query is required' },
+        { error: 'Query is required and must be less than 1000 characters' },
         { status: 400 }
       );
     }
+
+    logger.debug('Processing RAG query', {
+      queryLength: queryValidation.data!.length,
+      maxResults,
+      includeGraph
+    });
 
     // Step 1: Generate embedding for the query
     const voyageClient = getVoyageClient();
@@ -102,7 +119,9 @@ export async function POST(request: NextRequest) {
 
         graphContext = neighborhood;
       } catch (error) {
-        console.warn('Graph expansion failed:', error);
+        logger.warn('Graph expansion failed', {
+          error: error instanceof Error ? error.message : String(error)
+        });
         // Continue without graph context
       }
     }
@@ -126,13 +145,19 @@ export async function POST(request: NextRequest) {
       }
     };
 
+    logger.info('RAG query completed successfully', {
+      resultCount: evidence.length,
+      processingTime: Date.now() - startTime,
+      hasGraphContext: !!graphContext
+    });
+
     return NextResponse.json(response);
 
   } catch (error) {
-    console.error('RAG query error:', error);
-    
+    logger.error('RAG query error', error as Error);
+
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
