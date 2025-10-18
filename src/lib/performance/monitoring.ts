@@ -6,6 +6,18 @@
 import { logger } from '../logging/logger';
 
 /**
+ * Extended performance entry types for Web Vitals
+ */
+interface LargestContentfulPaintEntry extends PerformanceEntry {
+  renderTime: number;
+  loadTime: number;
+}
+
+interface FirstInputEntry extends PerformanceEntry {
+  processingDuration: number;
+}
+
+/**
  * Performance metrics
  */
 export interface PerformanceMetrics {
@@ -59,7 +71,7 @@ export class PerformanceMonitor {
       try {
         const lcpObserver = new PerformanceObserver(list => {
           const entries = list.getEntries();
-          const lastEntry = entries[entries.length - 1];
+          const lastEntry = entries[entries.length - 1] as LargestContentfulPaintEntry;
           const lcp = lastEntry.renderTime || lastEntry.loadTime;
 
           if (this.metrics) {
@@ -106,7 +118,7 @@ export class PerformanceMonitor {
       try {
         const fidObserver = new PerformanceObserver(list => {
           const entries = list.getEntries();
-          const firstEntry = entries[0];
+          const firstEntry = entries[0] as FirstInputEntry;
 
           if (this.metrics) {
             this.metrics.firstInputDelay = firstEntry.processingDuration;
@@ -137,7 +149,7 @@ export class PerformanceMonitor {
     this.metrics = {
       domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,
       pageLoad: timing.loadEventEnd - timing.navigationStart,
-      dns: timing.dnsLookupEnd - timing.dnsLookupStart,
+      dns: timing.domainLookupEnd - timing.domainLookupStart,
       tcp: timing.connectEnd - timing.connectStart,
       ttfb: timing.responseStart - timing.navigationStart,
       download: timing.responseEnd - timing.responseStart,
