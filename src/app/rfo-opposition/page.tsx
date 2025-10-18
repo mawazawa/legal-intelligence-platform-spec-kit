@@ -32,32 +32,7 @@ import {
   XCircle
 } from 'lucide-react';
 import Link from 'next/link';
-
-// Types
-interface ChecklistItem {
-  id: string;
-  category: string;
-  title: string;
-  description: string;
-  plainEnglish: string;
-  required: boolean;
-  conditionalOn?: string[];
-  status: 'not-started' | 'in-progress' | 'completed';
-  priority: 'critical' | 'high' | 'medium' | 'low';
-  estimatedMinutes: number;
-  documentUrl?: string;
-  helpUrl?: string;
-  attachments?: string[];
-}
-
-interface RFOType {
-  id: string;
-  name: string;
-  icon: React.ReactNode;
-  description: string;
-  commonIn: string;
-  requiredForms: string[];
-}
+import { RFOChecklistItem as ChecklistItem, RFOType } from '@/types/checklist';
 
 // RFO Types Configuration
 const RFO_TYPES: RFOType[] = [

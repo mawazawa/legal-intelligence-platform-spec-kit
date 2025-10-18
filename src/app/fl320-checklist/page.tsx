@@ -19,18 +19,7 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-
-interface ChecklistItem {
-  id: string;
-  title: string;
-  description: string;
-  status: 'pending' | 'in-progress' | 'completed';
-  priority: 'high' | 'medium' | 'low';
-  category: 'form' | 'declaration' | 'exhibit' | 'supporting';
-  filePath?: string;
-  dueDate?: string;
-  notes?: string;
-}
+import { FL320ChecklistItem as ChecklistItem } from '@/types/checklist';
 
 const FL320_CHECKLIST_TEMPLATE = `# FL-320 Responsive Declaration Court Packet Checklist
 
