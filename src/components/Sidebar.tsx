@@ -12,7 +12,8 @@ export function Sidebar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const initialOpenGroups = useMemo(() => {
+  // Calculate which groups should be open based on current pathname
+  const openGroupsForPath = useMemo(() => {
     const open = new Set<string>();
     navigationConfig.forEach((item) => {
       if (item.children?.some((child) => child.href && pathname.startsWith(child.href))) {
@@ -22,19 +23,12 @@ export function Sidebar() {
     return open;
   }, [pathname]);
 
-  const [openGroups, setOpenGroups] = useState<Set<string>>(initialOpenGroups);
+  const [openGroups, setOpenGroups] = useState<Set<string>>(openGroupsForPath);
 
+  // Update open groups when pathname changes
   React.useEffect(() => {
-    setOpenGroups((prev) => {
-      const next = new Set(prev);
-      navigationConfig.forEach((item) => {
-        if (item.children?.some((child) => child.href && pathname.startsWith(child.href))) {
-          next.add(item.name);
-        }
-      });
-      return next;
-    });
-  }, [pathname]);
+    setOpenGroups(openGroupsForPath);
+  }, [openGroupsForPath]);
 
   const toggleGroup = (name: string) => {
     setOpenGroups((prev) => {
