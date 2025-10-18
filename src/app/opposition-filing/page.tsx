@@ -288,95 +288,37 @@ const OppositionFilingPage: React.FC = () => {
               <div className="line">          NET PROCEEDS AVAILABLE:           $280,355.83</div>
               <div className="line">&nbsp;</div>
 
-                <div className="ml-8 my-3 bg-white border-2 border-gray-300 rounded overflow-hidden">
-                  <div className="bg-gray-700 text-white px-4 py-2 font-bold text-sm">ESCROW CLOSING STATEMENT — MAY 30, 2025</div>
-                  <div className="p-4 space-y-3">
-                    <div className="flex justify-between items-center border-b border-gray-200 pb-2">
-                      <span className="text-sm font-semibold">Gross Sale Price</span>
-                      <span className="font-mono text-sm">$1,050,000.00</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-gray-200 pb-2">
-                      <span className="text-sm">Less: Closing Costs & Commissions</span>
-                      <span className="font-mono text-sm text-red-600">($10,280.05)</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-gray-200 pb-2">
-                      <span className="text-sm font-semibold">Less: Mortgage Payoff (Total)</span>
-                      <span className="font-mono text-sm text-red-600 font-bold">($759,364.32)</span>
-                    </div>
-                    <div className="ml-6 flex justify-between items-center text-xs text-gray-600 pb-1">
-                      <span>→ Principal Balance</span>
-                      <span className="font-mono">$681,584.44</span>
-                    </div>
-                    <div className="ml-6 flex justify-between items-center text-xs text-gray-600 pb-1">
-                      <span>→ Arrears & Late Charges</span>
-                      <span className="font-mono font-bold text-red-700">$77,779.88</span>
-                    </div>
-                    <div className="flex justify-between items-center bg-green-50 px-3 py-2 font-bold border-t-2 border-green-600">
-                      <span className="text-sm">NET PROCEEDS AVAILABLE</span>
-                      <span className="font-mono text-base text-green-700">$280,355.83</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="line">     3.3  Petitioner's RFO employs the following logically</div>
+              <div className="line">and mathematically impossible methodology:</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          PETITIONER'S FLAWED CALCULATION:</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          Step 1: Start with net proceeds    $280,355.83</div>
+              <div className="line">          Step 2: "Add back" arrears paid   +$77,779.88</div>
+              <div className="line">          Step 3: Create fictional "total"  =$358,155.71</div>
+              <div className="line">          Step 4: Take her 35% share        =$125,354.50</div>
+              <div className="line">          Step 5: Deduct same $77,779.88</div>
+              <div className="line">                  from my 65% share         -$77,779.88</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          RESULT: The same $77,779.88 is BOTH added to her</div>
+              <div className="line">          share AND subtracted from mine, creating a</div>
+              <div className="line">          $27,229.96 windfall to Petitioner through</div>
+              <div className="line">          mathematical manipulation.</div>
+              <div className="line">&nbsp;</div>
 
-                <p className="leading-relaxed">
-                  <span className="font-semibold">3.3 Petitioner's Impossible "Add-Back" Scheme.</span> Petitioner's RFO employs the following logically and mathematically impossible methodology:
-                </p>
-
-                <div className="ml-8 my-4 space-y-3">
-                  <div className="border-2 border-red-500 bg-red-50 p-4 rounded">
-                    <p className="font-bold text-red-900 text-sm mb-3">❌ PETITIONER'S FLAWED CALCULATION</p>
-
-                    <div className="space-y-2 text-xs">
-                      <div className="flex justify-between bg-white p-2 rounded">
-                        <span><strong>Step 1:</strong> Start with net proceeds</span>
-                        <span className="font-mono">$280,355.83</span>
-                      </div>
-                      <div className="flex justify-between bg-white p-2 rounded">
-                        <span><strong>Step 2:</strong> "Add back" arrears already paid</span>
-                        <span className="font-mono text-red-600">+ $77,779.88</span>
-                      </div>
-                      <div className="flex justify-between bg-red-100 p-2 rounded border border-red-400">
-                        <span><strong>Step 3:</strong> Create fictional "total"</span>
-                        <span className="font-mono font-bold">= $358,155.71</span>
-                      </div>
-                      <div className="flex justify-between bg-white p-2 rounded">
-                        <span><strong>Step 4:</strong> Calculate her 35% share</span>
-                        <span className="font-mono">$125,354.50</span>
-                      </div>
-                      <div className="flex justify-between bg-white p-2 rounded">
-                        <span><strong>Step 5:</strong> Deduct same $77,779.88 from my share</span>
-                        <span className="font-mono text-red-600">($77,779.88)</span>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 p-3 bg-red-200 border border-red-600 rounded">
-                      <p className="text-xs font-bold text-red-900">RESULT: The same $77,779.88 is BOTH added to her share AND subtracted from mine, creating a $27,229.96 windfall to Petitioner through mathematical manipulation.</p>
-                    </div>
-                  </div>
-
-                  <div className="border-2 border-green-600 bg-green-50 p-4 rounded">
-                    <p className="font-bold text-green-900 text-sm mb-3">✓ CORRECT CALCULATION</p>
-
-                    <div className="space-y-2 text-xs">
-                      <div className="flex justify-between bg-white p-2 rounded">
-                        <span><strong>Net Proceeds Available</strong></span>
-                        <span className="font-mono font-bold">$280,355.83</span>
-                      </div>
-                      <div className="flex justify-between bg-white p-2 rounded border-l-4 border-green-600">
-                        <span>Respondent's 65% Share</span>
-                        <span className="font-mono">$182,231.29</span>
-                      </div>
-                      <div className="flex justify-between bg-white p-2 rounded border-l-4 border-blue-600">
-                        <span>Petitioner's 35% Share</span>
-                        <span className="font-mono">$98,124.54</span>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 p-3 bg-green-100 border border-green-600 rounded">
-                      <p className="text-xs">All mortgage obligations, including the $77,779.88 in arrears, were already paid at closing. These amounts are <strong>not</strong> available for distribution and cannot be "added back."</p>
-                    </div>
-                  </div>
-                </div>
+              <div className="line">     3.4  The correct calculation is as follows:</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          CORRECT CALCULATION:</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          Net Proceeds Available:         $280,355.83</div>
+              <div className="line">          Respondent's 65% Share:         $182,231.29</div>
+              <div className="line">          Petitioner's 35% Share:          $98,124.54</div>
+              <div className="line">&nbsp;</div>
+              <div className="line">          All mortgage obligations, including the $77,779.88</div>
+              <div className="line">          in arrears, were already paid at closing. These</div>
+              <div className="line">          amounts are NOT available for distribution and</div>
+              <div className="line">          cannot be "added back."</div>
+              <div className="line">&nbsp;</div>
 
                 <p className="leading-relaxed">
                   <span className="font-semibold">3.4 Violation of Accounting Principles.</span> Petitioner's methodology violates the fundamental accounting principle that <em>proceeds = gross sale price minus all obligations</em>. The equation Petitioner attempts to create is:
@@ -900,9 +842,8 @@ const OppositionFilingPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Print Styles */}
+        {/* Print Styles */}
       <style jsx>{`
         @media print {
           .no-print { display: none !important; }
