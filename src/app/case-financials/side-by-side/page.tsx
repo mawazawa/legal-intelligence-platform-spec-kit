@@ -94,25 +94,33 @@ export default async function SideBySidePage() {
   }
 
   // Build issues from claims or fall back
-  const issues = claims && claims.length ? (
-    claims.slice(0, 12).map((c: any) => {
-      const enrich = buildResponseForClaim(String(c.title||c.claim||''))
+  interface Issue {
+    title: string
+    claim: string
+    response: string
+    formula?: string
+    sources?: { key: string; label: string; range?: { start: number; end: number } }[]
+  }
+
+  const issues: Issue[] = claims && claims.length ? (
+    claims.slice(0, 12).map((c: Record<string, unknown>) => {
+      const title = String(c.title || c.claim || '');
+      const enrich = buildResponseForClaim(title);
       return {
-        title: c.title || 'Claim',
-        claim: c.claim,
+        title: String(c.title || 'Claim'),
+        claim: String(c.claim || ''),
         response: enrich.response,
         formula: enrich.formula,
         sources: [ { key: 'petitioner_rfo', label: 'RFO (ingested)' }, ...(enrich.sources||[]) ],
-      }
+      } as Issue;
     })
   ) : [
-    // Fallback placeholders (pre-existing examples)
     {
       title: 'Division of Net Proceeds',
       claim: 'Petitioner applies 65/35 to an inflated base by adding arrears, then deducts arrears entirely from Respondent — converting 35% into a greater share.',
       response: `Apply SOD 65/35 to constructive net, then share arrears equally before payouts; final from‑the‑pot result is Respondent ${r(ledger?.root?.value?.respondent)} · Petitioner ${r(ledger?.root?.value?.petitioner)} (Total ${r(ledger?.root?.value?.total)}).`,
       sources: [ { key: 'sod', label: 'SOD 65/35', range: { start: 1284, end: 1366 } }, { key: 'closing_statement', label: 'Closing Due to Seller' } ],
-    }
+    } as Issue,
   ]
 
   return (
