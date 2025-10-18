@@ -128,8 +128,9 @@ class Logger {
 
   /**
    * Log entry to console and callback
+   * Fire-and-forget async to avoid blocking - errors are caught to prevent unhandled rejections
    */
-  private async outputEntry(entry: LogEntry): Promise<void> {
+  private outputEntry(entry: LogEntry): void {
     if (this.config.enableConsole && this.config.environment === 'development') {
       const levelStr = this.formatLevel(entry.level);
       const contextStr = entry.context ? ` ${JSON.stringify(entry.context)}` : '';
@@ -142,7 +143,10 @@ class Logger {
     }
 
     if (this.config.onLog) {
-      await this.config.onLog(entry);
+      // Fire-and-forget async callback, catching errors to prevent unhandled rejections
+      Promise.resolve(this.config.onLog(entry)).catch((err) => {
+        console.error('Logger callback error:', err);
+      });
     }
   }
 
