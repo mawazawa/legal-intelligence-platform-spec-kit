@@ -6,10 +6,14 @@
  * Processes emails and ROA data into Neo4j graph and Supabase vectors
  */
 
+const path = require('node:path');
 const { getNeo4jClient } = require('../src/lib/neo4j.ts');
 const { getVoyageClient, VoyageEmbeddingClient } = require('../src/lib/embeddings/voyage.ts');
 const { getSupabaseClient } = require('../src/lib/search/supabase.ts');
-const { parseAllEmails } = require('../src/lib/ingestion/email-parser.ts');
+const {
+  parseMailboxDirectory,
+  normalizeEmailAddress
+} = require('../src/lib/ingestion/email-parser.ts');
 const { parseROAFiles } = require('../src/lib/ingestion/roa-parser.ts');
 
 class DataIngestionPipeline {
@@ -40,9 +44,12 @@ class DataIngestionPipeline {
     console.log('\n📧 Ingesting email data...');
     
     try {
+      const mailRoot = process.env.MAIL_DIR || path.resolve(process.cwd(), '..', 'Mail');
+      console.log(`   Mail directory: ${mailRoot}`);
+      const emailEvents = await parseMailboxDirectory(mailRoot);
+
       // Parse emails
       console.log('   Parsing mbox files...');
-      const emailEvents = await parseAllEmails();
       this.stats.emails.parsed = emailEvents.length;
       console.log(`   ✅ Parsed ${emailEvents.length} email events`);
 
@@ -65,6 +72,8 @@ class DataIngestionPipeline {
             snippet: event.snippet
           });
           this.stats.emails.upserted++;
+
+          await this._upsertParticipants(event);
         } catch (error) {
           this.stats.errors.push(`Email upsert error: ${error.message}`);
         }
@@ -237,7 +246,7 @@ class DataIngestionPipeline {
         console.log(`     Documents: ${supabaseStats.totalDocuments}`);
         console.log(`     Chunks: ${supabaseStats.totalChunks}`);
         console.log(`     Sources: ${supabaseStats.sources.join(', ')}`);
-      } catch (error) {
+      } catch {
         console.log('   ⚠️  Supabase stats unavailable (not connected)');
       }
 
@@ -300,6 +309,70 @@ class DataIngestionPipeline {
       await this.disconnect();
     }
   }
+
+  async _upsertParticipants(event) {
+    const senderAddress = normalizeEmailAddress(event.metadata.from);
+    const participantIds = new Set();
+
+    if (senderAddress) {
+      const senderName = deriveDisplayName(event.metadata.from) || senderAddress.split('@')[0];
+      await this.neo4jClient.upsertPerson({
+        externalId: senderAddress,
+        name: senderName,
+        role: event.actor,
+        email: senderAddress,
+        phone: undefined
+      });
+      participantIds.add(senderAddress);
+
+      await this.neo4jClient.createRelationship(senderAddress, event.externalId, 'SENT', {
+        medium: 'email',
+        sourcePath: event.sourcePath,
+        occurredAt: event.date
+      });
+    }
+
+    const recipientAddresses = [...event.metadata.to, ...event.metadata.cc]
+      .map(address => normalizeEmailAddress(address))
+      .filter(Boolean);
+
+    for (const recipient of recipientAddresses) {
+      if (!recipient) continue;
+      const recipientName = recipient.split('@')[0];
+      if (!participantIds.has(recipient)) {
+        await this.neo4jClient.upsertPerson({
+          externalId: recipient,
+          name: recipientName,
+          role: 'other',
+          email: recipient,
+          phone: undefined
+        });
+        participantIds.add(recipient);
+      }
+
+      if (senderAddress) {
+        await this.neo4jClient.createRelationship(senderAddress, recipient, 'COMMUNICATES_WITH', {
+          medium: 'email',
+          lastSeen: event.date,
+          sourceEventId: event.externalId
+        });
+      }
+
+      await this.neo4jClient.createRelationship(event.externalId, recipient, 'DELIVERED_TO', {
+        medium: 'email',
+        sourcePath: event.sourcePath,
+        occurredAt: event.date
+      });
+    }
+  }
+}
+
+function deriveDisplayName(raw) {
+  if (!raw) return '';
+  const beforeBracket = raw.split('<')[0].trim();
+  if (beforeBracket) return beforeBracket.replace(/"/g, '').trim();
+  const normalized = normalizeEmailAddress(raw);
+  return normalized ? normalized.split('@')[0] : '';
 }
 
 async function main() {

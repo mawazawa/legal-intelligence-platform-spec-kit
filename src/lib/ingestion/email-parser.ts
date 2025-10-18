@@ -1,4 +1,6 @@
 import 'server-only';
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * Email event extracted from mbox files
@@ -56,6 +58,12 @@ interface ParsedEmail {
  * Applies semantic analysis to classify emails by actor and event type
  */
 export class EmailParser {
+  private mboxPath?: string;
+
+  constructor(mboxPath?: string) {
+    this.mboxPath = mboxPath;
+  }
+
   private actorPatterns = {
     respondent: [
       'mathieu@example.com',
@@ -236,6 +244,21 @@ export class EmailParser {
   }
 
   /**
+   * Parse the mailbox path supplied to the constructor (or override)
+   */
+  async parseMbox(mboxPath?: string): Promise<EmailEvent[]> {
+    const targetPath = mboxPath ?? this.mboxPath;
+    if (!targetPath) {
+      throw new Error('mboxPath is required to parse emails');
+    }
+    return parseAllEmails(targetPath, {
+      source: path.relative(process.cwd(), targetPath),
+      startIndex: 0,
+      treatInputAsPath: true
+    });
+  }
+
+  /**
    * Detect continuance requests from email list
    */
   detectContinuances(emails: EmailEvent[]): ContinuanceEvent[] {
@@ -315,34 +338,72 @@ export class EmailParser {
 }
 
 /**
- * Parse all emails from an mbox file
+ * Parse options for mailbox ingestion
+ */
+export interface ParseMailboxOptions {
+  source?: string;
+  startIndex?: number;
+  treatInputAsPath?: boolean;
+}
+
+/**
+ * Normalize an email address string
+ */
+export function normalizeEmailAddress(value: string): string | null {
+  if (!value) return null;
+  const trimmed = value.trim();
+  const match = trimmed.match(/<([^>]+)>/);
+  const candidate = (match ? match[1] : trimmed).trim().toLowerCase();
+  return candidate.includes('@') ? candidate : null;
+}
+
+/**
+ * Parse all emails from mbox content or a file path
  * Convenience function that creates parser and returns events
  */
-export async function parseAllEmails(mboxContent: string): Promise<EmailEvent[]> {
+export async function parseAllEmails(
+  input: string,
+  options: ParseMailboxOptions = {}
+): Promise<EmailEvent[]> {
   const parser = new EmailParser();
   const events: EmailEvent[] = [];
 
-  // Split by email boundaries (lines starting with "From ")
+  let mboxContent = input;
+  let sourcePath = options.source ?? '';
+
+  const probablyFilePath = !input.includes('\n');
+  if (options.treatInputAsPath !== false && probablyFilePath) {
+    try {
+      mboxContent = fs.readFileSync(input, 'utf8');
+      sourcePath = sourcePath || path.relative(process.cwd(), input);
+    } catch {
+      // Fall back to treating input as inline content
+      mboxContent = input;
+    }
+  }
+
   const emailBlocks = mboxContent
     .split(/^From /m)
     .filter(block => block.trim())
     .map(block => `From ${block}`);
 
-  let index = 0;
+  let index = options.startIndex ?? 0;
   for (const block of emailBlocks) {
     const parsed = parser.parseEmailBlock(block);
     if (parsed) {
       const actor = parser.determineActor(parsed.from, parsed.subject, parsed.body);
       const description = parser.generateDescription(parsed);
       const snippet = parser.extractSnippet(parsed.body);
+      const messageId = parsed.messageId || `email_${index}`;
+      const externalId = sanitizeExternalId(messageId, index);
 
       events.push({
-        externalId: `email_${index++}`,
+        externalId,
         type: 'email',
         date: parsed.date,
         description,
         actor,
-        sourcePath: '',
+        sourcePath: sourcePath || options.source || 'mailbox',
         snippet,
         metadata: {
           from: parsed.from,
@@ -352,8 +413,35 @@ export async function parseAllEmails(mboxContent: string): Promise<EmailEvent[]>
           messageId: parsed.messageId
         }
       });
+      index += 1;
     }
   }
 
   return events;
+}
+
+/**
+ * Parse all .mbox files in a directory (non-recursive)
+ */
+export async function parseMailboxDirectory(mailDir: string): Promise<EmailEvent[]> {
+  const dirEntries = fs.readdirSync(mailDir, { withFileTypes: true });
+  const events: EmailEvent[] = [];
+
+  for (const entry of dirEntries) {
+    if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.mbox')) continue;
+    const filePath = path.join(mailDir, entry.name);
+    const fileEvents = await parseAllEmails(filePath, {
+      source: path.relative(process.cwd(), filePath),
+      startIndex: events.length,
+      treatInputAsPath: true
+    });
+    events.push(...fileEvents);
+  }
+
+  return events;
+}
+
+function sanitizeExternalId(messageId: string, index: number): string {
+  const base = messageId || `email_${index}`;
+  return base.replace(/[^a-zA-Z0-9@._-]/g, '_');
 }

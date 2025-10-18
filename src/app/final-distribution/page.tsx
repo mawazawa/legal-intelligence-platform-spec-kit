@@ -170,7 +170,10 @@ const FinalDistributionSSOT: React.FC = () => {
     const mathieuSODShare = netProceedsToSellers * 0.65;
     const rosannaSODShare = netProceedsToSellers * 0.35;
     const rosannaWithholding = 13694.62;
-    const mathieuTaxObligation = 25432.88;
+    // Mathieu's franchise tax reversal: Rosanna removed her 65% share of her FTB withholding ($8,901.50),
+    // so Mathieu removes the matching 65% share from his tax obligation for symmetry
+    const mathieuFranchiseTaxReversal = 8901.50; // 65% of $13,694.62
+    const mathieuTaxObligation = 25432.88 - mathieuFranchiseTaxReversal;
 
     // SOD Adjustments from hardcoded values (should come from ledger in future)
     const sodAdjustments: SODAdjustments = {
@@ -179,6 +182,9 @@ const FinalDistributionSSOT: React.FC = () => {
       motorcycleShare: 5855.00,
       furnitureShare: 7500.00,
       rosannaExclusivePossession: 33500.00,
+      // Furniture correction: Mathieu was ordered to pay $7,500, but Rosanna text messaged
+      // Piya that furniture must stay, then they took it. So instead of -$7,500 (payment),
+      // it should be +$7,500 (credit), creating a $15,000 total swing.
       furnitureCorrection: 15000.00
     };
 

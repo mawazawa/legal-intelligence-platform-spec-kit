@@ -103,8 +103,10 @@ async function testEmailParser() {
   console.log('\n🔍 Testing email parser...');
   
   try {
-    const { parseAllEmails } = require('./src/lib/ingestion/email-parser.ts');
-    const emailEvents = await parseAllEmails();
+    const path = require('node:path');
+    const { parseMailboxDirectory } = require('./src/lib/ingestion/email-parser.ts');
+    const mailRoot = process.env.MAIL_DIR || path.resolve(process.cwd(), '..', 'Mail');
+    const emailEvents = await parseMailboxDirectory(mailRoot);
     
     console.log('✅ Email parser test passed');
     console.log('   Total emails parsed:', emailEvents.length);

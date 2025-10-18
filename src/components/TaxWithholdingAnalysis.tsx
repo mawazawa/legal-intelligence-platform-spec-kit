@@ -74,6 +74,10 @@ const TaxWithholdingAnalysis: React.FC = () => {
     const mathieuBase = financialInputs.totalProceeds * (financialInputs.mathieuPercentage / 100);
     const rosannaBase = financialInputs.totalProceeds * (financialInputs.rosannaPercentage / 100);
 
+    // Mathieu's franchise tax reversal: Rosanna took hers out ($8,901.50 - 65% of $13,694.62),
+    // so Mathieu does the same with his matching share
+    const mathieuFranchiseTaxReversal = 8901.50;
+
     return {
       totalProceeds: financialInputs.totalProceeds,
       mathieuPercentage: financialInputs.mathieuPercentage,
@@ -82,7 +86,7 @@ const TaxWithholdingAnalysis: React.FC = () => {
       rosannaBase,
       mathieuWithholding: 0,
       rosannaWithholding: financialInputs.rosannaWithholding,
-      mathieuNet: mathieuBase,
+      mathieuNet: mathieuBase + mathieuFranchiseTaxReversal,
       rosannaNet: rosannaBase - financialInputs.rosannaWithholding,
       withholdingRate: financialInputs.caWithholdingRate
     };
@@ -389,6 +393,12 @@ const TaxWithholdingAnalysis: React.FC = () => {
                         <div className="flex justify-between">
                           <span className="text-green-700">Tax Withholding:</span>
                           <span className="font-mono font-bold text-green-900">$0.00</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-green-700">Franchise Tax Reversal:</span>
+                          <span className="font-mono font-bold text-green-600">
+                            +$8,901.50
+                          </span>
                         </div>
                         <div className="border-t border-green-300 pt-1 mt-1"></div>
                         <div className="flex justify-between">
