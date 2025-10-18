@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import React from 'react'
+import { formatCurrency } from '@/lib/transforms/dataTransform'
 import { PrintButton } from '@/components/case/PrintButton'
 import { Formula } from '@/components/case/Formula'
 
@@ -24,10 +25,6 @@ interface LedgerNode {
 interface Ledger {
   root?: LedgerNode
 }
-
-// Currency formatter (DRY - shared with side-by-side page)
-const formatCurrency = (n?: number) =>
-  typeof n === 'number' ? n.toLocaleString('en-US', {style: 'currency', currency: 'USD'}) : '—'
 
 export default async function ReportPage() {
   let ledger: Ledger | null = null

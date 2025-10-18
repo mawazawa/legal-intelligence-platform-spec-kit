@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import React from 'react'
+import { formatCurrency } from '@/lib/transforms/dataTransform'
 import { SideBySide } from '@/components/case/SideBySide'
 
 interface LedgerValue {
@@ -14,10 +15,6 @@ interface LedgerNode {
 interface Ledger {
   root?: LedgerNode
 }
-
-// Currency formatter (DRY - single definition)
-const formatCurrency = (n?: number) =>
-  typeof n === 'number' ? n.toLocaleString('en-US', {style: 'currency', currency: 'USD'}) : '—'
 
 export default async function SideBySidePage() {
   let ledger: Ledger | null = null
