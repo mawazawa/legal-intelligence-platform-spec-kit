@@ -1,4 +1,5 @@
 import { DashboardLayout } from '@/components/DashboardLayout';
+import { formatCurrency } from '@/lib/transforms/dataTransform';
 import { participants } from '@/data/participants';
 
 const formatDate = (value: string) =>
@@ -13,16 +14,6 @@ const formatHours = (hours?: number) => {
     return '—';
   }
   return `${hours.toFixed(1)} h`;
-};
-
-const formatCurrency = (value?: number) => {
-  if (value === undefined) {
-    return '—';
-  }
-  return `$${value.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
 };
 
 export default function ScorecardsPage() {

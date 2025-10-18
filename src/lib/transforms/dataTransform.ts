@@ -221,9 +221,12 @@ export function formatNumber(value: number, decimals: number = 2): string {
 }
 
 /**
- * Format currency
+ * Format currency - returns formatted string or '—' if value is undefined
  */
-export function formatCurrency(value: number, currency: string = 'USD'): string {
+export function formatCurrency(value?: number, currency: string = 'USD'): string {
+  if (value === undefined) {
+    return '—';
+  }
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency,
