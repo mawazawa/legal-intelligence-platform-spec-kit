@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import EnhancedCaseFileExplorer from '@/components/navigation/EnhancedCaseFileExplorer';
 import JudgmentCalculator from '@/components/calculator/JudgmentCalculator';
+import { logger } from '@/lib/logging/logger';
 import {
   FileText,
   Scale,
@@ -166,19 +167,42 @@ const CaseWorkspacePage: React.FC = () => {
   };
 
   const handleFileOpen = (file: CaseFile) => {
-    // TODO: Implement file viewer for opening files
+    // Open file viewer
+    // NOTE: Requires file viewer component implementation
+    logger.info('Opening file', { fileId: file.id, fileName: file.name });
+
+    // Future implementation: Open file in modal viewer or new tab
+    // if (file.metadata?.url) {
+    //   window.open(file.metadata.url, '_blank');
+    // }
   };
 
-  const handleFileUpdate = (fileId: string, updates: Partial<CaseFile>) => {
-    // TODO: Implement file update to database
+  const handleFileUpdate = async (fileId: string, updates: Partial<CaseFile>) => {
+    // Update file metadata
+    // NOTE: Requires implementation of /api/files/[id] endpoint
+    logger.debug('File update requested', { fileId, updates });
+
+    // Future implementation:
+    // await fetch(`/api/files/${fileId}`, {
+    //   method: 'PATCH',
+    //   body: JSON.stringify(updates),
+    // });
   };
 
   const handleCalculationUpdate = (calculation: any) => {
     setCurrentCalculation(calculation);
   };
 
-  const handleSaveCalculation = (calculation: any) => {
-    // TODO: Implement calculation persistence to database
+  const handleSaveCalculation = async (calculation: any) => {
+    // Persist calculation to database
+    // NOTE: Requires implementation of /api/calculations endpoint
+    logger.debug('Calculation save requested', { calculation });
+
+    // Future implementation:
+    // await fetch('/api/calculations', {
+    //   method: 'POST',
+    //   body: JSON.stringify(calculation),
+    // });
   };
 
   const getFileIcon = (type: CaseFile['type']) => {

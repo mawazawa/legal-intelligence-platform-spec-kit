@@ -8,10 +8,15 @@ export const useRFOAnalysis = () => {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
 
   useEffect(() => {
-    // TODO: Replace with real API call to /api/rfo-analysis
+    // Load RFO analysis data
+    // NOTE: Using mock data until /api/rfo-analysis endpoint is implemented
     const loadData = async () => {
       setLoading(true);
+
+      // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Use mock data (replace with: const response = await fetch('/api/rfo-analysis'))
       setAnalysisData(getMockRFOData());
       setLoading(false);
     };

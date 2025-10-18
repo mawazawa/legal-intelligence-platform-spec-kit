@@ -128,7 +128,7 @@ export function Sidebar() {
       <aside
         className={cn(
           'fixed top-0 left-0 z-40 h-screen transition-transform duration-300',
-          'w-64 bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700',
+          'w-64 bg-black border-r border-black',
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
@@ -138,8 +138,8 @@ export function Sidebar() {
               <Image
                 src="/justiceos-logo.png"
                 alt="JusticeOS"
-                width={48}
-                height={48}
+                width={96}
+                height={96}
                 className="rounded-lg"
                 priority
               />

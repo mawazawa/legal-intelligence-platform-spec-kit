@@ -4,6 +4,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Printer, Download } from 'lucide-react';
 import RotertDeclarationDocument from '@/components/filings/RotertDeclarationDocument';
+import { handleExportToPDF } from './utils/printUtils';
 
 const RotertDeclaration: React.FC = () => {
   const printDeclaration = () => {
@@ -11,7 +12,8 @@ const RotertDeclaration: React.FC = () => {
   };
 
   const exportToPDF = () => {
-    // TODO: Implement PDF export functionality
+    // Use print-to-PDF workflow
+    handleExportToPDF();
   };
 
   return (
