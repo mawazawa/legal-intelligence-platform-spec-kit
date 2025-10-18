@@ -30,6 +30,7 @@ export const navigationConfig: NavItem[] = [
     children: [
       { name: 'Court Filing Hub', href: '/court-filings' },
       { name: 'RFO Opposition Filing', href: '/rfo-opposition', badge: 'URGENT' },
+      { name: 'Opposition Assistant', href: '/opposition-assistant', badge: 'NEW' },
       { name: 'Final Distribution', href: '/final-distribution' },
       { name: 'Responsive Declaration', href: '/responsive-declaration' },
       { name: 'Integrated FL-320 Pleading', href: '/pleadings/fl320-pleading' },
