@@ -8,6 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
+import {
+  SODAdjustments,
+  DocumentSource,
+  CalculationStep,
+} from '@/types/calculations';
 // Removed PDF generation dependencies - using browser print-to-PDF instead
 import {
   Calculator,
@@ -72,22 +77,6 @@ interface CostAllocation {
   color: string;
 }
 
-interface SODAdjustments {
-  // Mathieu owes Rosanna (from SOD)
-  wattsChargesOriginal: number; // $48,640 from SOD
-  rentalIncomeShare: number; // $5,761.81
-  motorcycleShare: number; // $5,855
-  furnitureShare: number; // $7,500 (disputed)
-
-  // Rosanna owes Mathieu (adjustments)
-  rosannaExclusivePossession: number; // 6.7 months × $5,000 = $33,500, Mathieu's 65% = $21,775
-  furnitureCorrection: number; // $15,000 swing (she kept furniture)
-
-  // Other adjustments
-  rosannaWithholding: number; // $13,694.62 FTB withholding
-  mathieuTaxObligation: number; // Estimated $25,000
-}
-
 interface RealtorInfo {
   name: string;
   role: 'listing' | 'buying';
@@ -103,25 +92,6 @@ interface NegotiableParameters {
   agentBrokerSplit: number; // percentage agent gets vs brokerage (e.g., 0.7 for 70%)
   wattsChargesRate: number; // monthly rate for Watts charges (e.g., 5000)
   exclusivePossessionMonths: number; // months for exclusive possession credit
-}
-
-interface DocumentSource {
-  documentName: string;
-  documentDate: string;
-  pageNumber?: string;
-  lineNumber?: string;
-  sectionName?: string;
-  excerpt?: string;
-}
-
-interface CalculationStep {
-  stepNumber: number;
-  stepName: string;
-  amount: number;
-  formula?: string;
-  sources: DocumentSource[];
-  explanation: string;
-  subSteps?: CalculationStep[];
 }
 
 interface CalculationResult {

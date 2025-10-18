@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { 
-  Calculator, 
-  FileText, 
+import { CalculationStep } from '@/types/calculations';
+import {
+  Calculator,
+  FileText,
   CheckCircle,
   Clock,
   Download,
@@ -22,7 +23,7 @@ import {
   Shield
 } from 'lucide-react';
 
-// Types
+// Types - FilingTask is specific to this page
 interface FilingTask {
   id: string;
   title: string;
@@ -36,21 +37,6 @@ interface FilingTask {
   dependencies?: string[];
   notes?: string;
   documents?: string[];
-}
-
-interface CalculationStep {
-  stepNumber: number;
-  stepName: string;
-  explanation: string;
-  amount: number;
-  formula?: string;
-  sources?: Array<{
-    documentName: string;
-    documentDate: string;
-    sectionName?: string;
-    excerpt?: string;
-  }>;
-  subSteps?: CalculationStep[];
 }
 
 interface EvidenceItem {

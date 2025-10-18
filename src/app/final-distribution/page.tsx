@@ -3,17 +3,25 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { 
-  Calculator, 
-  GitCompare, 
-  Scale, 
-  FileText, 
-  Eye, 
-  EyeOff, 
-  ScrollText, 
-  ScaleIcon, 
-  PenLine, 
-  Upload, 
+import {
+  CalculationStep,
+  SellerDeduction,
+  BrokerageAllocation,
+  SODAdjustments,
+  NegotiableParameter,
+  DocumentSource,
+} from '@/types/calculations';
+import {
+  Calculator,
+  GitCompare,
+  Scale,
+  FileText,
+  Eye,
+  EyeOff,
+  ScrollText,
+  ScaleIcon,
+  PenLine,
+  Upload,
   Trash2,
   CheckCircle2
 } from 'lucide-react';
@@ -25,71 +33,8 @@ const RechartsComponents = React.lazy(() => import('recharts').then(module => ({
 
 // Removed unused chart components following YAGNI principles
 
-// Types
+// Local types - application-specific to this page
 type TabType = 'calculation' | 'comparison' | 'declarations';
-
-interface CalculationStep {
-  stepNumber: number;
-  stepName: string;
-  explanation: string;
-  amount: number;
-  formula?: string;
-  sources?: Array<{
-    documentName: string;
-    documentDate: string;
-    sectionName?: string;
-    excerpt?: string;
-  }>;
-  subSteps?: CalculationStep[];
-}
-
-interface SellerDeduction {
-  id: string;
-  description: string;
-  amount: number;
-  category: 'commission' | 'concessions' | 'fees' | 'taxes' | 'other';
-  negotiable: boolean;
-  sources: Array<{
-    documentName: string;
-    documentDate: string;
-    sectionName?: string;
-    excerpt?: string;
-  }>;
-}
-
-interface BrokerageAllocation {
-  id: string;
-  brokerName: string;
-  commissionRate: number;
-  commissionAmount: number;
-  negotiable: boolean;
-  sources: Array<{
-    documentName: string;
-    documentDate: string;
-    sectionName?: string;
-    excerpt?: string;
-  }>;
-}
-
-interface SODAdjustments {
-  wattsChargesOriginal: number;
-  rentalIncomeShare: number;
-  motorcycleShare: number;
-  furnitureShare: number;
-  rosannaExclusivePossession: number;
-  furnitureCorrection: number;
-}
-
-interface NegotiableParameter {
-  id: string;
-  name: string;
-  currentValue: number;
-  minValue: number;
-  maxValue: number;
-  step: number;
-  unit: string;
-  description: string;
-}
 
 
 const FinalDistributionSSOT: React.FC = () => {

@@ -1,10 +1,12 @@
 "use client"
 import React, { useMemo, useState } from 'react'
 import { SourceDrawer } from '@/components/case/SourceDrawer'
+import { SourceCitation } from '@/types/calculations'
 import { typography, tx, textColors } from '@/styles/typography'
 
 function toCurrency(n?: number) { return typeof n==='number'? n.toLocaleString('en-US',{style:'currency',currency:'USD'}) : '—' }
 
+// Local types - specific to ledger/computation display
 interface LedgerItem {
   label: string;
   amount?: number;
@@ -29,12 +31,6 @@ interface LedgerNode {
   value?: LedgerNodeValue;
   items?: LedgerItem[];
   formulas?: string[];
-}
-
-interface SourceCitation {
-  citations?: Array<{
-    lines?: [number, number];
-  }>;
 }
 
 interface LedgerData {
