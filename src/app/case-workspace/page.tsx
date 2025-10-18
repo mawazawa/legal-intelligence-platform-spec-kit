@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import CaseFileExplorer from '@/components/navigation/CaseFileExplorer';
+import EnhancedCaseFileExplorer from '@/components/navigation/EnhancedCaseFileExplorer';
 import JudgmentCalculator from '@/components/calculator/JudgmentCalculator';
 import { 
   FileText, 
@@ -177,6 +177,12 @@ const CaseWorkspacePage: React.FC = () => {
     console.log('Opening file:', file);
   };
 
+  const handleFileUpdate = (fileId: string, updates: Partial<CaseFile>) => {
+    // In real implementation, this would update the file in the database
+    console.log('Updating file:', fileId, updates);
+    // For now, we'll just log the update
+  };
+
   const handleCalculationUpdate = (calculation: any) => {
     setCurrentCalculation(calculation);
   };
@@ -232,10 +238,11 @@ const CaseWorkspacePage: React.FC = () => {
             </TabsList>
             
             <TabsContent value="explorer" className="flex-1 m-0">
-              <CaseFileExplorer
+              <EnhancedCaseFileExplorer
                 files={mockFiles}
                 onFileSelect={handleFileSelect}
                 onFileOpen={handleFileOpen}
+                onFileUpdate={handleFileUpdate}
                 selectedFileId={selectedFile?.id}
               />
             </TabsContent>
