@@ -68,7 +68,36 @@ export class Neo4jClient {
     }
   }
 
-  // Event upsert operations
+  /**
+   * Generic upsert operation for any node type
+   * Consolidates all typed upsert methods
+   */
+  private async upsertNode(
+    label: string,
+    data: Record<string, any>,
+    extraLabels?: string[]
+  ): Promise<void> {
+    if (!data.externalId) {
+      throw new Error('externalId is required for upsert operations');
+    }
+
+    const extraLabelSets = extraLabels?.map(l => `SET n:${l}`).join('\n') || '';
+    const query = `
+      MERGE (n:${label} {externalId: $externalId})
+      ${extraLabelSets}
+      SET n += $properties,
+          n.updatedAt = datetime()
+      RETURN n
+    `;
+
+    const { externalId, ...properties } = data;
+    await this.executeQuery(query, {
+      externalId,
+      properties,
+    });
+  }
+
+  // Typed upsert operations (delegate to generic implementation)
   async upsertEvent(event: {
     externalId: string;
     type: string;
@@ -78,19 +107,7 @@ export class Neo4jClient {
     sourcePath?: string;
     snippet?: string;
   }): Promise<void> {
-    const query = `
-      MERGE (e:Event {externalId: $externalId})
-      SET e.type = $type,
-          e.date = $date,
-          e.description = $description,
-          e.actor = $actor,
-          e.sourcePath = $sourcePath,
-          e.snippet = $snippet,
-          e.updatedAt = datetime()
-      RETURN e
-    `;
-
-    await this.executeQuery(query, event);
+    await this.upsertNode('Event', event);
   }
 
   async upsertContinuance(continuance: {
@@ -102,19 +119,7 @@ export class Neo4jClient {
     sourcePath?: string;
     snippet?: string;
   }): Promise<void> {
-    const query = `
-      MERGE (c:Continuance {externalId: $externalId})
-      SET c.date = $date,
-          c.reason = $reason,
-          c.requestedBy = $requestedBy,
-          c.durationDays = $durationDays,
-          c.sourcePath = $sourcePath,
-          c.snippet = $snippet,
-          c.updatedAt = datetime()
-      RETURN c
-    `;
-
-    await this.executeQuery(query, continuance);
+    await this.upsertNode('Continuance', continuance);
   }
 
   async upsertPerson(person: {
@@ -124,17 +129,7 @@ export class Neo4jClient {
     email?: string;
     phone?: string;
   }): Promise<void> {
-    const query = `
-      MERGE (p:Person {externalId: $externalId})
-      SET p.name = $name,
-          p.role = $role,
-          p.email = $email,
-          p.phone = $phone,
-          p.updatedAt = datetime()
-      RETURN p
-    `;
-
-    await this.executeQuery(query, person);
+    await this.upsertNode('Person', person);
   }
 
   async upsertDocument(document: {
@@ -145,18 +140,7 @@ export class Neo4jClient {
     date?: string;
     checksum?: string;
   }): Promise<void> {
-    const query = `
-      MERGE (d:Document {externalId: $externalId})
-      SET d.path = $path,
-          d.type = $type,
-          d.title = $title,
-          d.date = $date,
-          d.checksum = $checksum,
-          d.updatedAt = datetime()
-      RETURN d
-    `;
-
-    await this.executeQuery(query, document);
+    await this.upsertNode('Document', document);
   }
 
   async upsertNodeWithLabels(params: {
@@ -165,24 +149,14 @@ export class Neo4jClient {
     properties: Record<string, any>;
   }): Promise<void> {
     if (!params.labels || params.labels.length === 0) {
-      throw new Error('At least one label is required to upsert node');
+      throw new Error('At least one label is required');
     }
 
     const [primaryLabel, ...extraLabels] = params.labels;
-    const extraLabelSets = extraLabels.map(label => `SET n:${label}`).join('\n');
-
-    const query = `
-      MERGE (n:${primaryLabel} {externalId: $externalId})
-      ${extraLabelSets}
-      SET n += $properties,
-          n.updatedAt = datetime()
-      RETURN n
-    `;
-
-    await this.executeQuery(query, {
+    await this.upsertNode(primaryLabel, {
       externalId: params.externalId,
-      properties: params.properties,
-    });
+      ...params.properties,
+    }, extraLabels);
   }
 
   // Relationship operations
