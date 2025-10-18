@@ -52,7 +52,7 @@ export class StringValidator extends Validator<string> {
   private maxLength?: number;
   private pattern?: RegExp;
   private transform?: (value: string) => string;
-  private custom?: (value: string) => ValidationError | null;
+  private customValidator?: (value: string) => ValidationError | null;
 
   min(length: number): this {
     this.minLength = length;
@@ -95,7 +95,7 @@ export class StringValidator extends Validator<string> {
   }
 
   custom(validator: (value: string) => ValidationError | null): this {
-    this.custom = validator;
+    this.customValidator = validator;
     return this;
   }
 
@@ -140,8 +140,8 @@ export class StringValidator extends Validator<string> {
       });
     }
 
-    if (this.custom) {
-      const error = this.custom(str);
+    if (this.customValidator) {
+      const error = this.customValidator(str);
       if (error) {
         errors.push(error);
       }

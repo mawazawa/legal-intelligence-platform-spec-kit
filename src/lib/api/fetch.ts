@@ -218,7 +218,8 @@ export async function batchFetch<T = unknown>(
   const inProgress = new Set<Promise<unknown>>();
 
   for (const url of urls) {
-    const promise = (async () => {
+    let promise: Promise<unknown>;
+    promise = (async () => {
       const result = await safeFetch<T>(url, fetchOptions);
       results.push(result);
       inProgress.delete(promise);
