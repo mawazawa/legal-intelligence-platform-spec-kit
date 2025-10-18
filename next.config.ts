@@ -79,6 +79,11 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  // Turbopack configuration
+  turbopack: {
+    root: __dirname,
+  },
+
   // Experimental features for performance
   experimental: {
     optimizePackageImports: [

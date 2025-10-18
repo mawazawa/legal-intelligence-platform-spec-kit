@@ -916,6 +916,7 @@ const OppositionFilingPage: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
 
         {/* Dual-Format Styles: Beautiful Web UI + California Rules of Court Print */}
       <style jsx>{`
