@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from 'react';
 import { Download, Printer } from 'lucide-react';
+import { logger } from '@/lib/logging/logger';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getExhibitIndex } from '@/lib/services/evidenceService';
@@ -27,12 +28,17 @@ export function ExhibitIndexDocument({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Load exhibit index for the specified filing type
+     */
     async function loadExhibits() {
       try {
+        logger.debug('Loading exhibit index', { filingType });
         const data = await getExhibitIndex(filingType);
         setExhibits(data);
+        logger.debug('Exhibit index loaded', { count: data.length });
       } catch (error) {
-        console.error('Error loading exhibit index:', error);
+        logger.error('Error loading exhibit index', error as Error);
       } finally {
         setLoading(false);
       }
@@ -201,12 +207,17 @@ export function SimpleExhibitIndex({ filingType, className = '' }: SimpleExhibit
   const [exhibits, setExhibits] = useState<ExhibitIndexEntry[]>([]);
 
   useEffect(() => {
+    /**
+     * Load exhibit index for simple display
+     */
     async function loadExhibits() {
       try {
+        logger.debug('Loading simple exhibit index', { filingType });
         const data = await getExhibitIndex(filingType);
         setExhibits(data);
+        logger.debug('Simple exhibit index loaded', { count: data.length });
       } catch (error) {
-        console.error('Error loading exhibit index:', error);
+        logger.error('Error loading exhibit index', error as Error);
       }
     }
 
