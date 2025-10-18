@@ -161,7 +161,7 @@ const RFOComparisonPage: React.FC = () => {
       {/* Print styles moved to globals.css */}
 
       <TooltipProvider>
-        <div ref={printRef} className="min-h-screen bg-gray-50">
+        <div ref={printRef} className="legal-document min-h-screen bg-gray-50 py-8">
           {/* Print Button */}
           <div className="fixed top-4 right-4 z-50 no-print">
             <Tooltip>
@@ -203,13 +203,13 @@ const RFOComparisonPage: React.FC = () => {
               </div>
 
               {/* Tab Content: keep all mounted; toggle visibility for instant switching */}
-              <div style={{ display: isActive('petitioner') ? 'block' : 'none' }}>
+              <div className="letter-page page-break" style={{ display: isActive('petitioner') ? 'block' : 'none' }}>
                 <PetitionerView rfoContent={petitionerRFO} />
               </div>
-              <div style={{ display: isActive('respondent') ? 'block' : 'none' }}>
+              <div className="letter-page page-break" style={{ display: isActive('respondent') ? 'block' : 'none' }}>
                 <RespondentView fl320Content={respondentFL320} ledger={ledger} />
               </div>
-              <div style={{ display: isActive('comparison') ? 'block' : 'none' }}>
+              <div className="letter-page page-break" style={{ display: isActive('comparison') ? 'block' : 'none' }}>
                 <ComparisonView comparisonPoints={comparisonPoints} />
               </div>
             </div>
